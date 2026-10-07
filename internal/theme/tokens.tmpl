@@ -1,0 +1,60 @@
+// Package tokens provides the palette a uix app installs, the way the CSS
+// variables of shadcn/ui give a web app its design tokens.
+//
+// The MyGo theme already names its colors semantically: Background,
+// Surface, Text, Accent, Danger, Border and so on. This package curates
+// their values into one palette. Apply it at the top of a view:
+//
+//	c.SetTheme(tokens.For(c.Theme().Dark))
+//
+// The mapping to the shadcn/ui tokens is:
+//
+//	background   -> Background    primary     -> Accent
+//	foreground   -> Text          primary-fg  -> AccentText
+//	secondary    -> Surface       destructive -> Danger
+//	muted        -> SurfaceHover  border      -> Border
+//	muted-fg     -> TextMuted     ring        -> Focus
+//
+// uix theme set regenerates this file from the palette it names.
+package tokens
+
+import "github.com/egoist/mygo/ui"
+
+// Light returns the light appearance with the {{.Name}} palette. It
+// starts from the MyGo light theme, which keeps the system-tuned
+// neutrals, fonts and metrics, and overrides the values the palette
+// names. Change a value here and every component restyles at once.
+func Light() *ui.Theme {
+	t := ui.LightTheme()
+	t.Radius = {{.Radius}}
+	t.Accent = ui.Hex("{{.Light.Accent}}")
+	t.AccentHover = ui.Hex("{{.Light.AccentHover}}")
+	t.AccentPressed = ui.Hex("{{.Light.AccentPressed}}")
+	t.AccentText = ui.Hex("{{.Light.AccentText}}")
+	t.Danger = ui.Hex("{{.Light.Danger}}")
+	t.Selection = {{.Light.Selection}}
+	t.Focus = {{.Light.Focus}}
+	return t
+}
+
+// Dark returns the dark appearance with the {{.Name}} palette.
+func Dark() *ui.Theme {
+	t := ui.DarkTheme()
+	t.Radius = {{.Radius}}
+	t.Accent = ui.Hex("{{.Dark.Accent}}")
+	t.AccentHover = ui.Hex("{{.Dark.AccentHover}}")
+	t.AccentPressed = ui.Hex("{{.Dark.AccentPressed}}")
+	t.AccentText = ui.Hex("{{.Dark.AccentText}}")
+	t.Danger = ui.Hex("{{.Dark.Danger}}")
+	t.Selection = {{.Dark.Selection}}
+	t.Focus = {{.Dark.Focus}}
+	return t
+}
+
+// For returns Light or Dark after the given appearance.
+func For(dark bool) *ui.Theme {
+	if dark {
+		return Dark()
+	}
+	return Light()
+}

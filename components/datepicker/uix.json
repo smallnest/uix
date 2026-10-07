@@ -1,0 +1,6 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/datepicker",
+  "dependencies": ["github.com/egoist/mygo"],
+  "registryDependencies": ["base"]
+}

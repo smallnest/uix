@@ -1,0 +1,5 @@
+{
+  "type": "components:base",
+  "install": "internal/ui/tokens",
+  "dependencies": ["github.com/egoist/mygo"]
+}

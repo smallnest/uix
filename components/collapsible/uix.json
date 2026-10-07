@@ -1,0 +1,6 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/collapsible",
+  "dependencies": ["github.com/egoist/mygo"],
+  "registryDependencies": ["base"]
+}

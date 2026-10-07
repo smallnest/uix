@@ -1,0 +1,6 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/popover",
+  "dependencies": ["github.com/egoist/mygo"],
+  "registryDependencies": ["base"]
+}

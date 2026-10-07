@@ -1,0 +1,1025 @@
+{
+  "items": [
+    {
+      "name": "accordion",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/accordion/accordion.go",
+          "content": "// Package accordion provides a shadcn/ui-style Accordion: a column of\n// sections in a bordered box, one above the other, that a click opens and\n// closes, as do Enter and Space, and that the Up and Down arrows move\n// between. Each section keeps its own open state, so several may be open\n// at once.\n//\n//\taccordion.Accordion(c, accordion.Props{\n//\t\tItems: []accordion.Item{\n//\t\t\t{Title: \"General\", Open: \u0026app.general, Build: buildGeneral},\n//\t\t\t{Title: \"Privacy\", Open: \u0026app.privacy, Build: buildPrivacy},\n//\t\t},\n//\t})\n//\n// To keep one section open at a time, close the others as one opens, as\n// this registry does in its examples: build the sections with\n// AccordionItem and an index of the one open:\n//\n//\tfor i, s := range sections {\n//\t\topen := app.section == i\n//\t\tif accordion.AccordionItem(c, accordion.Item{Title: s, Open: \u0026open}).Changed() {\n//\t\t\tapp.section = -1\n//\t\t\tif open {\n//\t\t\t\tapp.section = i\n//\t\t\t}\n//\t\t}\n//\t}\npackage accordion\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Item is one section of an Accordion: a header showing Title, which a\n// click opens and closes, and below it what Build draws while *Open is\n// true.\ntype Item struct {\n\t// Title is the text of the header, such as \"General\".\n\tTitle string\n\t// Open is whether the section is open.\n\tOpen *bool\n\t// Build draws the content of the section while it is open.\n\tBuild func(c *ui.Context)\n}\n\n// Props describes the accordion to draw.\ntype Props struct {\n\t// Items are the sections of the accordion, in order.\n\tItems []Item\n\t// Disabled keeps the sections from opening and closing.\n\tDisabled bool\n}\n\n// Accordion draws the sections in a bordered box and returns it, so a\n// view can chain more calls on it.\nfunc Accordion(c *ui.Context, p Props) *ui.Element {\n\te := ui.Accordion(c, func() {\n\t\tfor _, it := range p.Items {\n\t\t\tui.AccordionItem(c, it.Title, it.Open, func() {\n\t\t\t\tif it.Build != nil {\n\t\t\t\t\tit.Build(c)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t})\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n\n// AccordionItem builds one section of an Accordion, for a view that\n// keeps one open at a time, or that builds its sections itself.\nfunc AccordionItem(c *ui.Context, it Item) *ui.Element {\n\treturn ui.AccordionItem(c, it.Title, it.Open, func() {\n\t\tif it.Build != nil {\n\t\t\tit.Build(c)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/alert/alert.go",
+          "content": "// Package alert provides a shadcn/ui-style Alert: a colored notice with\n// a bold title and an optional description, in the accent, success,\n// warning or danger color.\n//\n//\talert.Alert(c, alert.Props{\n//\t\tTitle:       \"Heads up!\",\n//\t\tDescription: \"You can add components to your app.\",\n//\t\tVariant:     alert.Info,\n//\t})\npackage alert\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Variant is the color of an alert.\ntype Variant int\n\nconst (\n\t// Info is the default notice, in the accent color.\n\tInfo Variant = iota\n\t// Success announces success, in the success color.\n\tSuccess\n\t// Warning announces a warning, in the warning color.\n\tWarning\n\t// Danger announces a failure, in the danger color.\n\tDanger\n)\n\n// Props describes the alert to draw.\ntype Props struct {\n\t// Title is the bold heading of the alert.\n\tTitle string\n\t// Description is the text under the title.\n\tDescription string\n\t// Variant is the color of the alert; Info unless set.\n\tVariant Variant\n}\n\n// Alert draws a rounded notice: a tinted face, a colored border and a\n// colored bold title. It returns the notice, so a view can size it.\nfunc Alert(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tcol := variantColor(t, p.Variant)\n\te := ui.Column(c).Radius(t.Radius).Clip().Padding(t.Space(3)).Gap(t.Space(1)).\n\t\tBackground(ui.RGBA(col.R, col.G, col.B, 0.1)).\n\t\tBorder(1, ui.RGBA(col.R, col.G, col.B, 0.4))\n\te.Children(func() {\n\t\tif p.Title != \"\" {\n\t\t\tui.Text(c, p.Title).Bold().TextColor(col)\n\t\t}\n\t\tif p.Description != \"\" {\n\t\t\tui.Text(c, p.Description).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t}\n\t})\n\treturn e\n}\n\n// variantColor returns the color of a variant: the accent for Info.\nfunc variantColor(t *ui.Theme, v Variant) ui.Color {\n\tswitch v {\n\tcase Success:\n\t\treturn t.Success\n\tcase Warning:\n\t\treturn t.Warning\n\tcase Danger:\n\t\treturn t.Danger\n\t}\n\treturn t.Accent\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "autocomplete",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/autocomplete/autocomplete.go",
+          "content": "// Package autocomplete provides a field that completes the text as it is\n// typed, as a shadcn/ui component for the Autocomplete of MyGo: the\n// suggestions containing the text show below it, those starting with it\n// first, and Up and Down move among them while Enter takes one.\n//\n//\tautocomplete.Autocomplete(c, autocomplete.Props{\n//\t\tValue:       \u0026task,\n//\t\tSuggestions: []string{\"Water the plants\", \"Write the report\"},\n//\t\tLabel:       \"Task\",\n//\t})\npackage autocomplete\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the field to draw.\ntype Props struct {\n\t// Value is the text being edited, which the field changes in place,\n\t// as the user types or takes a suggestion.\n\tValue *string\n\t// Suggestions are the texts offered, of which those containing the\n\t// text show below the field, those starting with it first.\n\tSuggestions []string\n\t// Label names the field for the assistive technology.\n\tLabel string\n}\n\n// Autocomplete draws the field and its suggestions below it, and returns\n// it, so a view can chain more calls on it. The field stretches over its\n// parent, as the other fields do; a bounded width overrides it in a Row.\nfunc Autocomplete(c *ui.Context, p Props) *ui.Element {\n\te := ui.Autocomplete(c, p.Value, p.Suggestions)\n\te.FillWidth()\n\tif p.Label != \"\" {\n\t\te.Label(p.Label)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/avatar/avatar.go",
+          "content": "// Package avatar provides a shadcn/ui-style Avatar: a circle with a\n// photo, or the initials of a name on a muted face. Assistive technology\n// sees an image labeled with the name.\n//\n//\tavatar.Avatar(c, avatar.Props{Name: \"Ada Lovelace\"})\npackage avatar\n\nimport (\n\t\"unicode\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the avatar to draw.\ntype Props struct {\n\t// Name is the person's name: its initials fill the circle when there\n\t// is no photo, and it labels the avatar for assistive technology.\n\tName string\n\t// Image is the photo, cropped to the circle. Nil draws the initials.\n\tImage *ui.Bitmap\n\t// Size is the diameter of the circle, in points. 0 uses the default\n\t// of about twice the font size.\n\tSize float32\n}\n\n// Avatar draws a circle with the photo or the initials, and returns the\n// circle.\nfunc Avatar(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tsize := p.Size\n\tif size == 0 {\n\t\tsize = t.FontSize * 2.25\n\t}\n\te := ui.Box(c).Size(size, size).Radius(size / 2).Clip().Shrink(0).Center().\n\t\tRole(ui.RoleImage).Label(p.Name)\n\tif p.Image != nil {\n\t\te.Children(func() { ui.Image(c, p.Image).Fit(ui.Cover).Size(size, size) })\n\t\treturn e\n\t}\n\te.Background(t.SurfaceHover).TextColor(t.Text)\n\te.Children(func() {\n\t\tui.Text(c, initials(p.Name)).FontWeight(600).FontSize(size * 0.4).SingleLine()\n\t})\n\treturn e\n}\n\n// initials returns the first letters of the first and last words of\n// name, like \"AL\" for \"Ada Lovelace\". Why not MyGo's helper: it is\n// unexported, and the loop is a few lines.\nfunc initials(name string) string {\n\tvar first, last rune\n\tinWord := false\n\tfor _, r := range name {\n\t\tletter := unicode.IsLetter(r) || unicode.IsDigit(r)\n\t\tif letter \u0026\u0026 !inWord {\n\t\t\tif first == 0 {\n\t\t\t\tfirst = unicode.ToUpper(r)\n\t\t\t} else {\n\t\t\t\tlast = unicode.ToUpper(r)\n\t\t\t}\n\t\t}\n\t\tinWord = letter\n\t}\n\tswitch {\n\tcase first == 0:\n\t\treturn \"\"\n\tcase last == 0:\n\t\treturn string(first)\n\t}\n\treturn string(first) + string(last)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/badge/badge.go",
+          "content": "// Package badge provides a shadcn/ui-style badge: a short label in a\n// pill, for counts and status.\n//\n//\tbadge.Badge(c, badge.Props{Label: \"Beta\", Variant: badge.Secondary})\npackage badge\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Variant is the look of a badge.\ntype Variant int\n\nconst (\n\t// Default is a solid badge in the text color.\n\tDefault Variant = iota\n\t// Secondary is a badge on a muted face.\n\tSecondary\n\t// Destructive is a badge in the danger color.\n\tDestructive\n\t// Outline is a bordered badge without a face.\n\tOutline\n)\n\n// Props describes the badge to draw.\ntype Props struct {\n\t// Label is the text of the badge.\n\tLabel string\n\t// Variant is the look of the badge; Default unless set.\n\tVariant Variant\n}\n\n// Badge draws a pill with the label for props.\nfunc Badge(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tface, fg, border := variantColors(t, p.Variant)\n\tb := ui.Box(c).Padding(t.Space(0.5), t.Space(1.5)).Radius(999).Background(face).TextColor(fg)\n\tif border.A \u003e 0 {\n\t\tb.Border(1, border)\n\t}\n\tb.Children(func() { ui.Text(c, p.Label).SingleLine() })\n\treturn b\n}\n\n// variantColors returns the face, text and border colors of a variant.\nfunc variantColors(t *ui.Theme, v Variant) (face, fg, border ui.Color) {\n\tswitch v {\n\tcase Secondary:\n\t\treturn t.SurfaceHover, t.Text, ui.Color{}\n\tcase Destructive:\n\t\treturn t.Danger, ui.Hex(\"#ffffff\"), ui.Color{}\n\tcase Outline:\n\t\treturn ui.Color{}, t.Text, t.Border\n\t}\n\t// Default is the theme turned over: text on the text color, so it\n\t// reads in both appearances.\n\treturn t.Text, t.InverseText, ui.Color{}\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "base",
+      "type": "components:base",
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/tokens/tokens.go",
+          "content": "// Package tokens provides the palette a uix app installs, the way the CSS\n// variables of shadcn/ui give a web app its design tokens.\n//\n// The MyGo theme already names its colors semantically: Background,\n// Surface, Text, Accent, Danger, Border and so on. This package curates\n// their values into one palette. Apply it at the top of a view:\n//\n//\tc.SetTheme(tokens.For(c.Theme().Dark))\n//\n// The mapping to the shadcn/ui tokens is:\n//\n//\tbackground   -\u003e Background    primary     -\u003e Accent\n//\tforeground   -\u003e Text          primary-fg  -\u003e AccentText\n//\tsecondary    -\u003e Surface       destructive -\u003e Danger\n//\tmuted        -\u003e SurfaceHover  border      -\u003e Border\n//\tmuted-fg     -\u003e TextMuted     ring        -\u003e Focus\n//\n// uix theme set regenerates this file from the palette it names.\npackage tokens\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Light returns the light appearance with the indigo palette. It\n// starts from the MyGo light theme, which keeps the system-tuned\n// neutrals, fonts and metrics, and overrides the values the palette\n// names. Change a value here and every component restyles at once.\nfunc Light() *ui.Theme {\n\tt := ui.LightTheme()\n\tt.Radius = 8\n\tt.Accent = ui.Hex(\"#6366f1\")\n\tt.AccentHover = ui.Hex(\"#4f46e5\")\n\tt.AccentPressed = ui.Hex(\"#4338ca\")\n\tt.AccentText = ui.Hex(\"#ffffff\")\n\tt.Danger = ui.Hex(\"#e11d48\")\n\tt.Selection = ui.RGBA(99, 102, 241, 0.25)\n\tt.Focus = ui.RGBA(99, 102, 241, 0.55)\n\treturn t\n}\n\n// Dark returns the dark appearance with the indigo palette.\nfunc Dark() *ui.Theme {\n\tt := ui.DarkTheme()\n\tt.Radius = 8\n\tt.Accent = ui.Hex(\"#818cf8\")\n\tt.AccentHover = ui.Hex(\"#6366f1\")\n\tt.AccentPressed = ui.Hex(\"#4f46e5\")\n\tt.AccentText = ui.Hex(\"#ffffff\")\n\tt.Danger = ui.Hex(\"#f43f5e\")\n\tt.Selection = ui.RGBA(129, 140, 248, 0.4)\n\tt.Focus = ui.RGBA(129, 140, 248, 0.6)\n\treturn t\n}\n\n// For returns Light or Dark after the given appearance.\nfunc For(dark bool) *ui.Theme {\n\tif dark {\n\t\treturn Dark()\n\t}\n\treturn Light()\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/breadcrumbs/breadcrumbs.go",
+          "content": "// Package breadcrumbs provides a shadcn/ui-style Breadcrumb: a path of\n// items separated by chevrons, as Finder's path bar shows one. The items\n// but the last are links, which a click chooses, as Enter does, setting\n// *Chosen to the index of the item clicked; the last item is where the\n// path is, not a link. Long items shorten with an ellipsis as room runs\n// short.\n//\n//\tbreadcrumbs.Breadcrumbs(c, breadcrumbs.Props{\n//\t\tItems:  []string{\"Home\", \"Docs\", \"Guide\"},\n//\t\tChosen: \u0026app.chosen,\n//\t})\npackage breadcrumbs\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the breadcrumb path to draw.\ntype Props struct {\n\t// Items are the items of the path, in order; the last is where the\n\t// path is.\n\tItems []string\n\t// Chosen is set to the index of the item a click chooses; -1 while\n\t// no item has been chosen.\n\tChosen *int\n\t// Disabled keeps the items from being chosen.\n\tDisabled bool\n}\n\n// Breadcrumbs draws the path and returns it, so a view can chain more\n// calls on it.\nfunc Breadcrumbs(c *ui.Context, p Props) *ui.Element {\n\te := ui.Breadcrumbs(c, p.Items, p.Chosen)\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/button/button.go",
+          "content": "// Package button provides a shadcn/ui-style Button for the MyGo native\n// toolkit. It wraps the MyGo primitives in a variant and size system: a\n// view asks for a button by its role, not by its colors.\n//\n//\tbutton.Button(c, button.Props{\n//\t\tLabel:   \"Save\",\n//\t\tVariant: button.Primary,\n//\t\tOnClick: save,\n//\t})\n//\n// All colors come from the theme of the Context, so applying the palette\n// of the tokens package restyles every button in the app at once.\npackage button\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Variant is the role of a button: how it looks and what it does.\ntype Variant int\n\nconst (\n\t// Primary is the main action of a view, in the accent color.\n\tPrimary Variant = iota\n\t// Secondary is a regular button on a surface.\n\tSecondary\n\t// Outline is a button with a border but no face.\n\tOutline\n\t// Ghost is a borderless button that fills on hover.\n\tGhost\n\t// Destructive is for actions that cannot be undone, in the danger color.\n\tDestructive\n\t// Link is a text button styled as a link.\n\tLink\n)\n\n// Size sets how much room a button takes.\ntype Size int\n\nconst (\n\t// Sm is a compact button, for toolbars and tables.\n\tSm Size = iota\n\t// Md is the default size.\n\tMd\n\t// Lg is a large button, for empty states and forms.\n\tLg\n)\n\n// Props describes the button to draw.\ntype Props struct {\n\t// Label is the button's text.\n\tLabel string\n\t// Variant is the role of the button; Primary by default.\n\tVariant Variant\n\t// Size is how large the button is; Md by default.\n\tSize Size\n\t// Disabled keeps the button from acting.\n\tDisabled bool\n\t// OnClick runs for the click, on the frame of the click.\n\tOnClick func()\n}\n\n// Button draws a button for props and returns the MyGo element behind it,\n// so a view can chain more calls on it. When the user clicks, Button\n// calls OnClick and the view rebuilds on the next frame.\nfunc Button(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tswitch p.Variant {\n\tcase Link:\n\t\treturn link(c, p)\n\tcase Primary:\n\t\tb := ui.PrimaryButton(c, p.Label)\n\t\tpaddingSize(c, t, b, p.Size, false)\n\t\treturn finish(c, b, p)\n\t}\n\t// The variants with a custom face: Secondary, Outline, Ghost,\n\t// Destructive. The face is drawn each frame, so hover and press\n\t// track the pointer even though the view does not rebuild.\n\tface, hover, pressed, fg, border := variantColors(c, t, p.Variant)\n\tif p.Disabled {\n\t\tfg = t.TextMuted\n\t}\n\tb := ui.ButtonBase(c)\n\tpaddingSize(c, t, b, p.Size, false)\n\tb.TextColor(fg)\n\tif border.A \u003e 0 {\n\t\tb.Border(1, border)\n\t}\n\tradius := t.Radius\n\tb.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\tbg := face\n\t\tif !b.IsDisabled() {\n\t\t\tswitch {\n\t\t\tcase b.Pressed():\n\t\t\t\tbg = pressed\n\t\t\tcase b.Hovered():\n\t\t\t\tbg = hover\n\t\t\t}\n\t\t}\n\t\tif bg.A \u003e 0 {\n\t\t\tpp.Fill(r, bg, radius)\n\t\t}\n\t})\n\tb.Children(func() { ui.Text(c, p.Label).SingleLine() })\n\treturn finish(c, b, p)\n}\n\n// variantColors returns the face, hover, pressed and text colors and the\n// border color of a custom-face variant.\nfunc variantColors(c *ui.Context, t *ui.Theme, v Variant) (face, hover, pressed, fg, border ui.Color) {\n\tswitch v {\n\tcase Secondary:\n\t\treturn t.Surface, t.SurfaceHover, t.SurfacePressed, t.Text, t.Border\n\tcase Outline:\n\t\treturn ui.Color{}, ui.Color{}, ui.Color{}, t.Text, t.Border\n\tcase Ghost:\n\t\treturn ui.Color{}, t.SurfaceHover, t.SurfacePressed, t.Text, ui.Color{}\n\tcase Destructive:\n\t\treturn t.Danger, t.Danger, t.Danger, ui.Hex(\"#ffffff\"), ui.Color{}\n\t}\n\treturn ui.Color{}, ui.Color{}, ui.Color{}, t.Text, t.Border\n}\n\n// link draws a text button: accent text, no face, padded only across.\nfunc link(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tb := ui.ButtonBase(c)\n\tfg := t.Accent\n\tif p.Disabled {\n\t\tfg = t.TextMuted\n\t}\n\tb.TextColor(fg)\n\tpx := t.Space(3.5)\n\tif p.Size == Sm {\n\t\tpx = t.Space(2.5)\n\t}\n\tif p.Size == Lg {\n\t\tpx = t.Space(4.5)\n\t}\n\tb.PaddingX(px)\n\tb.Children(func() { ui.Text(c, p.Label).SingleLine() })\n\treturn finish(c, b, p)\n}\n\n// paddingSize sets the padding of the button for its size.\nfunc paddingSize(c *ui.Context, t *ui.Theme, b *ui.Element, s Size, link bool) {\n\tvar py, px float32\n\tswitch s {\n\tcase Sm:\n\t\tpy, px = t.Space(1), t.Space(2.5)\n\tcase Lg:\n\t\tpy, px = t.Space(2), t.Space(4.5)\n\tdefault:\n\t\tpy, px = t.Space(1.5), t.Space(3.5)\n\t}\n\tif link {\n\t\tb.PaddingX(px)\n\t} else {\n\t\tb.Padding(py, px)\n\t}\n}\n\n// finish applies Disabled and runs OnClick for the click. Disabled is\n// checked here so a disabled button never acts.\nfunc finish(c *ui.Context, b *ui.Element, p Props) *ui.Element {\n\tif p.Disabled {\n\t\tb.Disabled(true)\n\t}\n\tif p.OnClick != nil \u0026\u0026 !p.Disabled \u0026\u0026 b.Clicked() {\n\t\tp.OnClick()\n\t}\n\treturn b\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/calendar/calendar.go",
+          "content": "// Package calendar provides a month's calendar choosing a day, as a\n// shadcn/ui component for the Calendar of MyGo, like the graphical date\n// picker of SwiftUI.\n//\n//\tcalendar.Calendar(c, calendar.Props{Date: \u0026due})\npackage calendar\n\nimport (\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the calendar to draw.\ntype Props struct {\n\t// Date is the day chosen, which the calendar changes in place,\n\t// keeping its time of day and its location.\n\tDate *time.Time\n}\n\n// Calendar draws the month around Date, and returns it, so a view can\n// chain more calls on it. A click chooses a day, as the arrows do while\n// the calendar has the focus, Page Up and Page Down move by months, and\n// Home and End go to the first and the last day of the month.\nfunc Calendar(c *ui.Context, p Props) *ui.Element {\n\treturn ui.Calendar(c, p.Date)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/card/card.go",
+          "content": "// Package card provides a shadcn/ui-style Card: a bordered rounded\n// container with an optional header and footer, for grouping related\n// content on a surface.\n//\n//\tcard.Card(c, card.Props{\n//\t\tTitle:       \"Account\",\n//\t\tDescription: \"How people reach you.\",\n//\t\tFooter: func() {\n//\t\t\tbutton.Button(c, button.Props{Label: \"Save\", Variant: button.Primary})\n//\t\t},\n//\t}, func() {\n//\t\tfield.Field(c, field.Props{Label: \"Name\"}, func() {\n//\t\t\tinput.Input(c, input.Props{Value: \u0026name})\n//\t\t})\n//\t})\npackage card\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the card to draw.\ntype Props struct {\n\t// Title is the heading of the card.\n\tTitle string\n\t// Description is the text under the title.\n\tDescription string\n\t// Footer draws into the action row at the bottom, right-aligned.\n\tFooter func()\n}\n\n// Card draws a bordered rounded container: the header, then the content\n// that content draws, then the footer row. It returns the container, so\n// a view can size it (for example, to grow in a column).\nfunc Card(c *ui.Context, p Props, content func()) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Column(c).Background(t.Background).Border(1, t.Border).Radius(t.Radius).\n\t\tPadding(t.Space(4)).Gap(t.Space(3)).Children(func() {\n\t\tif p.Title != \"\" || p.Description != \"\" {\n\t\t\tui.Column(c).Gap(t.Space(1)).Children(func() {\n\t\t\t\tif p.Title != \"\" {\n\t\t\t\t\tui.Text(c, p.Title).Bold()\n\t\t\t\t}\n\t\t\t\tif p.Description != \"\" {\n\t\t\t\t\tui.Text(c, p.Description).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\tcontent()\n\t\tif p.Footer != nil {\n\t\t\tui.Row(c).Justify(ui.End).Gap(t.Space(1.5)).Children(p.Footer)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/checkbox/checkbox.go",
+          "content": "// Package checkbox provides a shadcn/ui-style check box: a box and a\n// label that toggle a bool together, from the Checkbox of MyGo.\n//\n//\tcheckbox.Checkbox(c, checkbox.Props{\n//\t\tChecked: \u0026agree,\n//\t\tLabel:   \"I agree to the terms\",\n//\t})\npackage checkbox\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the check box to draw.\ntype Props struct {\n\t// Checked is the bool the box toggles.\n\tChecked *bool\n\t// Label is the text beside the box.\n\tLabel string\n\t// Disabled keeps the box from being toggled.\n\tDisabled bool\n}\n\n// Checkbox draws a check box for props, the whole row being clickable.\nfunc Checkbox(c *ui.Context, p Props) *ui.Element {\n\tb := ui.Checkbox(c, p.Checked, p.Label)\n\tif p.Disabled {\n\t\tb.Disabled(true)\n\t}\n\treturn b\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "checkboxgroup",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/checkboxgroup/checkboxgroup.go",
+          "content": "// Package checkboxgroup provides a group of check boxes under a check of\n// all of them, as a shadcn/ui component for the CheckboxGroup of MyGo:\n// the label's check checks all the boxes, or none when they all are, and\n// shows mixed while some are.\n//\n//\tcheckboxgroup.CheckboxGroup(c, checkboxgroup.Props{\n//\t\tLabel: \"Notifications\",\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tcheckbox.Checkbox(c, checkbox.Props{Checked: \u0026mail, Label: \"Mail\"})\n//\t\t\tcheckbox.Checkbox(c, checkbox.Props{Checked: \u0026schedule, Label: \"Calendar\"})\n//\t\t},\n//\t})\npackage checkboxgroup\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the group to draw.\ntype Props struct {\n\t// Label is the name of the group, next to the check of all its\n\t// boxes.\n\tLabel string\n\t// Children are the check boxes of the group.\n\tChildren func(c *ui.Context)\n}\n\n// CheckboxGroup draws the label with the check of all the boxes, and the\n// boxes indented under it, and returns the group. A click on the label\n// checks all the boxes, or none when they all are; the check shows mixed\n// while some are, and a click then checks them all.\nfunc CheckboxGroup(c *ui.Context, p Props) *ui.Element {\n\treturn ui.CheckboxGroup(c, p.Label, func() {\n\t\tif p.Children != nil {\n\t\t\tp.Children(c)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/collapsible/collapsible.go",
+          "content": "// Package collapsible provides a shadcn/ui-style Collapsible: a\n// disclosure with a label and an arrow, which a click opens and closes,\n// as do Enter and Space, showing below it what Children draws while\n// *Open is true. The arrow turns and the content grows into view as it\n// opens.\n//\n//\tcollapsible.Collapsible(c, collapsible.Props{\n//\t\tLabel:    \"Advanced\",\n//\t\tOpen:     \u0026app.advanced,\n//\t\tChildren: func(c *ui.Context) { ui.Text(c, \"Verbose logging\") },\n//\t})\npackage collapsible\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the collapsible to draw.\ntype Props struct {\n\t// Label is the text of the disclosure, such as \"Advanced\".\n\tLabel string\n\t// Open is whether the content is shown.\n\tOpen *bool\n\t// Children draws the content of the collapsible while it is open.\n\tChildren func(c *ui.Context)\n\t// Disabled keeps the collapsible from opening and closing.\n\tDisabled bool\n}\n\n// Collapsible draws the disclosure and returns it, so a view can chain\n// more calls on it.\nfunc Collapsible(c *ui.Context, p Props) *ui.Element {\n\te := ui.Collapsible(c, p.Label, p.Open, func() {\n\t\tif p.Children != nil {\n\t\t\tp.Children(c)\n\t\t}\n\t})\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "colorpicker",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/colorpicker/colorpicker.go",
+          "content": "// Package colorpicker provides a shadcn/ui-style ColorPicker: a swatch\n// of the color, whose picker below it changes it — a square of\n// saturation and brightness, sliders of the hue and the opacity, the\n// color in hex, and swatches of common colors.\n//\n//\tcolorpicker.ColorPicker(c, colorpicker.Props{Value: \u0026accent})\npackage colorpicker\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the color picker to draw.\ntype Props struct {\n\t// Value is the color being edited.\n\tValue *ui.Color\n\t// Disabled keeps the swatch from opening its picker.\n\tDisabled bool\n}\n\n// ColorPicker draws a swatch of *Value, which a picker below it\n// changes, and returns it, so a view can chain more calls on it.\nfunc ColorPicker(c *ui.Context, p Props) *ui.Element {\n\te := ui.ColorWell(c, p.Value)\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "colorwell",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/colorwell/colorwell.go",
+          "content": "// Package colorwell provides a swatch of a color that opens a picker\n// below it, as AppKit's color well does, for the ColorWell of MyGo.\n//\n//\twell := colorwell.ColorWell(c, colorwell.Props{\n//\t\tColor: \u0026tint,\n//\t\tLabel: \"Tint\",\n//\t})\n//\tif well.Changed() {\n//\t\tsave()\n//\t}\n//\n// A click, Enter or Space opens the picker, and Escape or a click outside\n// closes it. The picker edits the color by swatch, by channel, by hex or\n// on a square of hue and brightness. Changed reports a new color, so the\n// view can save it. Assistive technology sees a color well whose value\n// is the color in hex, named by Label.\npackage colorwell\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the swatch to draw.\ntype Props struct {\n\t// Color is the color being set; the well shows it and the picker\n\t// edits it.\n\tColor *ui.Color\n\t// Label names the well for assistive technology.\n\tLabel string\n}\n\n// ColorWell draws a swatch of *Color that opens a ColorPicker below it,\n// and returns it, so a view can chain more calls on it.\nfunc ColorWell(c *ui.Context, p Props) *ui.Element {\n\tw := ui.ColorWell(c, p.Color)\n\tif p.Label != \"\" {\n\t\tw.Label(p.Label)\n\t}\n\treturn w\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/combobox/combobox.go",
+          "content": "// Package combobox provides a shadcn/ui-style Combobox: a searchable\n// drop-down. The field shows the choice; the text filters the options as\n// you type, and the arrows or a click choose one.\n//\n//\tcombobox.Combobox(c, combobox.Props{\n//\t\tValue:   \u0026city,\n//\t\tOptions: []string{\"Beijing\", \"Shanghai\", \"Chengdu\"},\n//\t})\npackage combobox\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the combobox to draw.\ntype Props struct {\n\t// Value is the chosen option; the field shows it.\n\tValue *string\n\t// Options are the choices in the popup, which the text filters.\n\tOptions []string\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n}\n\n// Combobox draws a searchable drop-down for props and returns the field,\n// so a view can chain more calls on it. Label names it for assistive\n// technology. The text filters the options as you type, those starting\n// with it first; a click or Down shows them all, and Up and Down move\n// among them, Enter or a click chooses one, and Escape closes the popup.\n// It fills the width of its container.\nfunc Combobox(c *ui.Context, p Props) *ui.Element {\n\te := ui.Combobox(c, p.Value, p.Options)\n\te.FillWidth()\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "datepicker",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/datepicker/datepicker.go",
+          "content": "// Package datepicker provides a shadcn/ui-style DatePicker: a field\n// showing the date, whose calendar below it changes it, the arrows and\n// Enter moving among the days and Page Up and Page Down among the\n// months.\n//\n//\tdatepicker.DatePicker(c, datepicker.Props{Value: \u0026due})\npackage datepicker\n\nimport (\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the date picker to draw.\ntype Props struct {\n\t// Value is the date being edited; its time of day is kept.\n\tValue *time.Time\n\t// Disabled keeps the field from opening its calendar.\n\tDisabled bool\n}\n\n// DatePicker draws a field editing *Value as a date, which a calendar\n// below it changes, and returns it, so a view can chain more calls on\n// it. The field stretches over its parent, as the other fields do; a\n// bounded width overrides it in a Row.\nfunc DatePicker(c *ui.Context, p Props) *ui.Element {\n\te := ui.DateInput(c, p.Value)\n\te.FillWidth()\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/dialog/dialog.go",
+          "content": "// Package dialog provides a shadcn/ui-style modal dialog with a title, a\n// description and an action row, on top of the DialogBase of MyGo.\n//\n//\tdialog.Dialog(c, dialog.Props{\n//\t\tOpen:        \u0026open,\n//\t\tTitle:       \"Delete account?\",\n//\t\tDescription: \"This cannot be undone.\",\n//\t\tConfirm:     \"Delete\",\n//\t\tDestructive: true,\n//\t\tOnConfirm:   deleteAccount,\n//\t})\npackage dialog\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the dialog to draw.\ntype Props struct {\n\t// Open is the bool that shows and hides the dialog; the backdrop\n\t// and Escape set it to false.\n\tOpen *bool\n\t// Title is the heading of the dialog.\n\tTitle string\n\t// Description is the text under the title.\n\tDescription string\n\t// Confirm labels the confirm button; an empty label hides it.\n\tConfirm string\n\t// Cancel labels the cancel button; \"Cancel\" when empty.\n\tCancel string\n\t// Destructive colors the confirm button with the danger color.\n\tDestructive bool\n\t// OnConfirm runs for the confirm button, which also closes the\n\t// dialog.\n\tOnConfirm func()\n\t// OnCancel runs for the cancel button; the button closes the\n\t// dialog either way.\n\tOnCancel func()\n}\n\n// Dialog draws the dialog for props, or nothing while it is closed, and\n// returns the panel. The backdrop dims the window; clicking it or\n// pressing Escape closes the dialog.\nfunc Dialog(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tcancel := p.Cancel\n\tif cancel == \"\" {\n\t\tcancel = \"Cancel\"\n\t}\n\treturn ui.DialogBase(c, p.Open, func(back, panel *ui.Element) {\n\t\tback.Background(ui.RGBA(0, 0, 0, 0.4))\n\t\tpanel.Padding(t.Space(5)).Gap(t.Space(3)).Radius(t.Radius+4).Background(t.Background).\n\t\t\tMinWidth(t.Space(48)).MaxWidth(t.Space(72)).Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))\n\t\tpanel.Children(func() {\n\t\t\tui.Column(c).Gap(t.Space(1.5)).Children(func() {\n\t\t\t\tui.Text(c, p.Title).Bold()\n\t\t\t\tif p.Description != \"\" {\n\t\t\t\t\tui.Text(c, p.Description).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t\t}\n\t\t\t})\n\t\t\tui.Row(c).Justify(ui.End).Gap(t.Space(1.5)).Children(func() {\n\t\t\t\tcancelButton(c, t, cancel, p)\n\t\t\t\tif p.Confirm != \"\" {\n\t\t\t\t\tconfirmButton(c, t, p)\n\t\t\t\t}\n\t\t\t})\n\t\t})\n\t})\n}\n\n// cancelButton draws the cancel button, which closes the dialog. Why not\n// a hover face: the pointer is already inside the modal, so a solid face\n// keeps the dialog calm, as the Modal of MyGo does.\nfunc cancelButton(c *ui.Context, t *ui.Theme, label string, p Props) {\n\tb := ui.ButtonBase(c).Padding(t.Space(1.5), t.Space(3.5)).Radius(t.Radius).\n\t\tBackground(t.Surface).TextColor(t.Text).Border(1, t.Border)\n\tb.Children(func() { ui.Text(c, label).SingleLine() })\n\tif b.Clicked() {\n\t\t*p.Open = false\n\t\tif p.OnCancel != nil {\n\t\t\tp.OnCancel()\n\t\t}\n\t}\n}\n\n// confirmButton draws the confirm button, in the accent or the danger\n// color, which closes the dialog and runs OnConfirm.\nfunc confirmButton(c *ui.Context, t *ui.Theme, p Props) {\n\tface, fg := t.Accent, t.AccentText\n\tif p.Destructive {\n\t\tface, fg = t.Danger, ui.Hex(\"#ffffff\")\n\t}\n\tb := ui.ButtonBase(c).Padding(t.Space(1.5), t.Space(3.5)).Radius(t.Radius).Background(face).TextColor(fg)\n\tb.Children(func() { ui.Text(c, p.Confirm).SingleLine() })\n\tif b.Clicked() {\n\t\t*p.Open = false\n\t\tif p.OnConfirm != nil {\n\t\t\tp.OnConfirm()\n\t\t}\n\t}\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "dropdown",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/dropdown/dropdown.go",
+          "content": "// Package dropdown provides a shadcn/ui-style dropdown menu: a button\n// that opens a list of actions under it, to run one. The menu is a panel\n// styled like a select's popup, over the view; it closes on a choice, on\n// a press outside the menu or the button, or on Escape.\n//\n//\tdropdown.Dropdown(c, dropdown.Props{\n//\t\tTrigger: \"Account\",\n//\t\tOpen:    \u0026open,\n//\t\tItems: []dropdown.Item{\n//\t\t\t{Label: \"View profile\", OnClick: viewProfile},\n//\t\t\t{Label: \"Copy link\", OnClick: copyLink},\n//\t\t\t{Separator: true},\n//\t\t\t{Label: \"Sign out\", OnClick: signOut},\n//\t\t},\n//\t})\npackage dropdown\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Item is one entry of a dropdown menu.\ntype Item struct {\n\t// Label is the text of the item.\n\tLabel string\n\t// Disabled keeps the item from acting; it still shows, muted.\n\tDisabled bool\n\t// Separator draws a divider instead of a row; the other fields of a\n\t// separator are ignored.\n\tSeparator bool\n\t// OnClick runs when the item is chosen; the menu closes either way.\n\tOnClick func()\n}\n\n// Props describes the dropdown to draw.\ntype Props struct {\n\t// Trigger is the label of the button that opens the menu.\n\tTrigger string\n\t// Open shows the menu while true; the button toggles it, and a\n\t// choice, a press outside the menu and the button, and Escape set\n\t// it to false.\n\tOpen *bool\n\t// Items are the entries of the menu, in order.\n\tItems []Item\n}\n\n// Dropdown draws a button for props, with a menu of its items under it,\n// and returns the button. The button opens the menu; choosing an item\n// runs its OnClick and closes the menu. Why not a modal backdrop: a\n// modal popover is not exposed by PopoverBase, and without one the press\n// that closes the menu goes on to what is under it, as with the web's\n// dropdown menus.\nfunc Dropdown(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tb := ui.ButtonBase(c).Padding(t.Space(1.5), t.Space(3.5)).Radius(t.Radius).\n\t\tBackground(t.Surface).TextColor(t.Text).Border(1, t.Border)\n\tb.Children(func() {\n\t\tui.Row(c).Gap(t.Space(1.5)).Children(func() {\n\t\t\tui.Text(c, p.Trigger).SingleLine()\n\t\t\tchevron(c, t)\n\t\t})\n\t})\n\t// The button toggles the menu. Why not a popover that closes on a\n\t// press of the button: the popover leaves the presses on its anchor\n\t// to the anchor, so the toggle is the whole story of the button, and\n\t// the presses elsewhere are the popover's to close.\n\tif b.Clicked() {\n\t\t*p.Open = !*p.Open\n\t}\n\tui.PopoverBase(c, b, p.Open, func(panel *ui.Element) {\n\t\tpanel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)).Radius(t.Radius+2).\n\t\t\tBackground(t.Background).Border(1, t.Border).MinWidth(t.Space(36))\n\t\tpanel.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))\n\t\tpanel.Children(func() {\n\t\t\tfor _, it := range p.Items {\n\t\t\t\titem(c, t, it, p.Open)\n\t\t\t}\n\t\t})\n\t})\n\treturn b\n}\n\n// item draws one entry of the menu: a divider for a separator, else a\n// row that runs its OnClick and closes the menu.\nfunc item(c *ui.Context, t *ui.Theme, it Item, open *bool) {\n\tif it.Separator {\n\t\tui.Box(c).FillWidth().Height(1).Margin(t.Space(0.5), 0, t.Space(0.5), 0).Background(t.Border)\n\t\treturn\n\t}\n\trow := ui.ButtonBase(c).FillWidth().Padding(t.Space(1.25), t.Space(2.5)).Radius(t.Radius)\n\tfg := t.Text\n\tif it.Disabled {\n\t\tfg = t.TextMuted\n\t}\n\trow.TextColor(fg)\n\tif !it.Disabled {\n\t\trow.Draw(func(p *ui.Painter, r ui.Rect) {\n\t\t\tif row.Hovered() {\n\t\t\t\tp.Fill(r, t.SurfaceHover, t.Radius)\n\t\t\t}\n\t\t})\n\t}\n\trow.Children(func() { ui.Text(c, it.Label).SingleLine() })\n\tif row.Clicked() \u0026\u0026 !it.Disabled {\n\t\t*open = false\n\t\tif it.OnClick != nil {\n\t\t\tit.OnClick()\n\t\t}\n\t}\n}\n\n// chevron draws the arrow of the button.\nfunc chevron(c *ui.Context, t *ui.Theme) {\n\tui.Box(c).Size(t.Space(2.5), t.Space(2.5)).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {\n\t\tvar path ui.Path\n\t\tpath.MoveTo(r.X+r.W*0.1, r.Y+r.H*0.3).LineTo(r.X+r.W*0.5, r.Y+r.H*0.7).LineTo(r.X+r.W*0.9, r.Y+r.H*0.3)\n\t\tp.StrokePath(\u0026path, 1.5, t.TextMuted)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "editabletext",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/editabletext/editabletext.go",
+          "content": "// Package editabletext provides a text the user edits in place, as a\n// shadcn/ui component for the EditableText of MyGo: a double click on\n// it, or Enter while it has the focus, shows a field of it, with the\n// text before the extension chosen, ready to type over.\n//\n//\teditabletext.EditableText(c, editabletext.Props{\n//\t\tValue:    \u0026title,\n//\t\tOnChange: func(v string) { app.rename(v) },\n//\t})\npackage editabletext\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the editable text to draw.\ntype Props struct {\n\t// Value is the text shown and edited.\n\tValue *string\n\t// OnChange runs when the user commits a new text, by Enter or by\n\t// moving the focus away.\n\tOnChange func(v string)\n}\n\n// EditableText draws the value as a text the user edits in place, and\n// returns it. A double click on it, or Enter while it has the focus,\n// shows a field with the text before its extension chosen; Enter or\n// moving the focus away keeps what was typed, and Escape goes back.\nfunc EditableText(c *ui.Context, p Props) *ui.Element {\n\te := ui.EditableText(c, p.Value)\n\tif e.Changed() \u0026\u0026 p.OnChange != nil {\n\t\tp.OnChange(*p.Value)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/field/field.go",
+          "content": "// Package field wraps a form control with its label and helper text, as\n// the FormItem of shadcn/ui does. A field is a small column:\n//\n//\tfield.Field(c, field.Props{\n//\t\tLabel: \"Name\",\n//\t\tHint:  \"How people find you.\",\n//\t}, func() {\n//\t\tinput.Input(c, input.Props{Value: \u0026name})\n//\t})\n//\n// The label and the messages come from the theme, so the palette of the\n// tokens package restyles every field at once.\npackage field\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the field to draw.\ntype Props struct {\n\t// Label is the name of the control.\n\tLabel string\n\t// Required marks the field as mandatory, with a star.\n\tRequired bool\n\t// Hint is the helper text under the control.\n\tHint string\n\t// Error is the validation message under the control. It replaces\n\t// Hint and shows in the danger color.\n\tError string\n}\n\n// Field draws the label, the control that fn builds, and the message\n// under it, and returns the column.\nfunc Field(c *ui.Context, p Props, fn func()) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\t// A required label ends in a star in the danger color.\n\t\t\tui.Row(c).Gap(t.Space(0.5)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tif p.Required {\n\t\t\t\t\tui.Text(c, \"*\").FontSize(t.FontSize * 0.875).Bold().TextColor(t.Danger)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\tfn()\n\t\tswitch {\n\t\tcase p.Error != \"\":\n\t\t\tui.Text(c, p.Error).FontSize(t.FontSize * 0.875).TextColor(t.Danger)\n\t\tcase p.Hint != \"\":\n\t\t\tui.Text(c, p.Hint).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "fieldset",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/fieldset/fieldset.go",
+          "content": "// Package fieldset provides a group of fields under a legend, as a\n// shadcn/ui component for the Fieldset of MyGo.\n//\n//\tfieldset.Fieldset(c, fieldset.Props{\n//\t\tLegend: \"Type\",\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tradio.Radio(c, radio.Props{...})\n//\t\t},\n//\t})\npackage fieldset\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the field set to draw.\ntype Props struct {\n\t// Legend is the bold text above the fields.\n\tLegend string\n\t// Children are the fields of the group.\n\tChildren func(c *ui.Context)\n}\n\n// Fieldset draws the legend and the fields as a group, and returns the\n// column. A margin sits above it when another group is above it.\nfunc Fieldset(c *ui.Context, p Props) *ui.Element {\n\treturn ui.Fieldset(c, p.Legend, func() {\n\t\tif p.Children != nil {\n\t\t\tp.Children(c)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "findbar",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/findbar/findbar.go",
+          "content": "// Package findbar provides a bar to find within a document, as a\n// shadcn/ui component for the FindBar of MyGo: a search field, the\n// count and the current match, and buttons to step to the next and the\n// previous. The app counts the matches and shows them highlighted.\n//\n//\tfindbar.FindBar(c, findbar.Props{\n//\t\tOpen: \u0026open, Query: \u0026query, Matches: 3, Current: \u0026current,\n//\t})\npackage findbar\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the find bar to draw.\ntype Props struct {\n\t// Open shows the bar when true; the Escape key and the Done button\n\t// set it false.\n\tOpen *bool\n\t// Query is the text being searched for, which the field edits.\n\tQuery *string\n\t// Matches is the number of times Query occurs, which the app\n\t// counts; the bar shows \"n of m\" and steps within it.\n\tMatches int\n\t// Current is the index of the match shown, which the bar steps as\n\t// the user asks.\n\tCurrent *int\n}\n\n// FindBar draws the search field, the match count, the step buttons and\n// the Done button, and returns the bar. Enter and Cmd+G (F3 elsewhere)\n// step to the next match, Shift adds the previous, and Escape or Done\n// closes. While the bar is closed it draws nothing.\nfunc FindBar(c *ui.Context, p Props) *ui.Element {\n\treturn ui.FindBar(c, p.Open, p.Query, p.Matches, p.Current)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "form",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/form/form.go",
+          "content": "// Package form provides a form whose field labels line up, in the way\n// macOS draws them: a column of fields, with the label of each to its\n// left, right-aligned to the widest. It wraps the Form of MyGo.\n//\n//\tform.Form(c, form.Props{\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tui.Field(c, \"Name\", func() { input.Input(c, input.Props{Value: \u0026name}) })\n//\t\t\tui.Field(c, \"Email\", func() { input.Input(c, input.Props{Value: \u0026email}) })\n//\t\t},\n//\t})\n//\n// Build each field with the Field of MyGo (or the Fieldset of uix), whose\n// labels the form lines up and names for assistive technology; a click on\n// a label focuses its control.\npackage form\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the form to draw.\ntype Props struct {\n\t// Children build the fields of the form, with the Field or the\n\t// Fieldset of MyGo, whose labels line up at the widest.\n\tChildren func(c *ui.Context)\n}\n\n// Form draws a column of the fields that Children builds, with their\n// labels to the left, right-aligned to the widest, and returns it.\nfunc Form(c *ui.Context, p Props) *ui.Element {\n\tif p.Children == nil {\n\t\tp.Children = func(c *ui.Context) {}\n\t}\n\treturn ui.Form(c, func() { p.Children(c) })\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "grid",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/grid/grid.go",
+          "content": "// Package grid provides a grid layout, as a shadcn/ui component for the\n// Grid of MyGo: children placed in cells of columns, which they fill in\n// order, or place themselves in with the placement of a cell.\n//\n//\tgrid.Grid(c, grid.Props{\n//\t\tColumns: 3,\n//\t\tGap:     12,\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tfor _, p := range photos {\n//\t\t\t\tui.Image(c, p).AspectRatio(1).Fit(ui.Cover)\n//\t\t\t}\n//\t\t},\n//\t})\npackage grid\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the grid to draw.\ntype Props struct {\n\t// Columns are the columns of equal width.\n\tColumns int\n\t// ColumnTracks set the columns instead, each a width: Fixed, Fr or\n\t// Auto.\n\tColumnTracks []ui.Track\n\t// Gap spaces the cells.\n\tGap float32\n\t// Children are the cells, which fill the columns in order or place\n\t// themselves with the placement of their elements, as a header\n\t// across a grid.\n\tChildren func(c *ui.Context)\n}\n\n// Grid draws the grid and returns it. The children fill the columns in\n// order; a child places itself with the ColumnStart, RowStart, ColumnSpan\n// and RowSpan methods of its element.\nfunc Grid(c *ui.Context, p Props) *ui.Element {\n\tg := ui.Grid(c)\n\tif p.Columns \u003e 0 {\n\t\tg.Columns(p.Columns)\n\t}\n\tif p.ColumnTracks != nil {\n\t\tg.ColumnTracks(p.ColumnTracks...)\n\t}\n\tif p.Gap \u003e 0 {\n\t\tg.Gap(p.Gap)\n\t}\n\tif p.Children != nil {\n\t\tg.Children(func() { p.Children(c) })\n\t}\n\treturn g\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "gridview",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/gridview/gridview.go",
+          "content": "// Package gridview provides a scrolling grid of items, as a shadcn/ui\n// component for the GridView of MyGo: as many columns as items of a\n// minimum width fit, a click chooses an item, and the arrow keys move\n// the choice around.\n//\n//\tgridview.GridView(c, gridview.Props{\n//\t\tState:    \u0026state,\n//\t\tCount:    len(photos),\n//\t\tMinWidth: 140,\n//\t\tHeight:   120,\n//\t\tItem: func(c *ui.Context, i int) {\n//\t\t\tui.Image(c, photos[i]).Fit(ui.Contain).Grow(1)\n//\t\t},\n//\t})\npackage gridview\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the grid view to draw.\ntype Props struct {\n\t// State keeps the place and the choice of the grid, which the app\n\t// owns. Set its Selected to let a click choose an item, as the\n\t// arrow keys do while the grid has the focus.\n\tState *ui.GridState\n\t// Count is the number of items.\n\tCount int\n\t// MinWidth is the least width of an item; as many columns as fit\n\t// share the width.\n\tMinWidth float32\n\t// Height is the height of every item.\n\tHeight float32\n\t// Item draws item i, in a cell the grid styles when it is chosen.\n\tItem func(c *ui.Context, i int)\n\t// OnChoose runs when a click or the arrow keys choose an item.\n\tOnChoose func(i int)\n}\n\n// GridView draws the items in a scrolling grid, and returns it. A click\n// or the arrow keys choose an item when State.Selected is set, and the\n// chosen cell shows its choice.\nfunc GridView(c *ui.Context, p Props) *ui.Element {\n\tg := ui.GridView(c, p.State, p.Count, p.MinWidth, p.Height, func(i int) {\n\t\tif p.Item != nil {\n\t\t\tp.Item(c, i)\n\t\t}\n\t})\n\tif p.OnChoose != nil \u0026\u0026 g.Changed() \u0026\u0026 p.State != nil \u0026\u0026 p.State.Selected != nil {\n\t\tp.OnChoose(*p.State.Selected)\n\t}\n\treturn g\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "icon",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/icon/icon.go",
+          "content": "// Package icon provides an SVG shown as an icon, in the color of the\n// text around it, for the Icon of MyGo.\n//\n//\ticon.Icon(c, icon.Props{\n//\t\tSVG:   save,\n//\t\tLabel: \"Save\",\n//\t})\n//\n// The icon is as high as the font of the text around it, keeping the\n// aspect of the SVG, and does not stretch across a column. The color\n// follows the text: the theme of the Context, or a TextColor set on the\n// row around it. Size fits it into another box, and Grayscale draws it\n// without color. Icons are decorations that assistive technology does\n// not see, unless Label names them.\npackage icon\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the icon to draw.\ntype Props struct {\n\t// SVG is the shape of the icon, in currentColor so it takes the\n\t// color of the text.\n\tSVG *ui.SVG\n\t// Label names the icon for assistive technology; without it the\n\t// icon is a decoration it skips.\n\tLabel string\n\t// Width and Height, when set, fit the icon into a box of that size,\n\t// instead of the height of the font.\n\tWidth, Height float32\n\t// Grayscale draws the icon in shades of gray.\n\tGrayscale bool\n}\n\n// Icon draws the SVG as an icon and returns it, so a view can chain more\n// calls on it.\nfunc Icon(c *ui.Context, p Props) *ui.Element {\n\te := ui.Icon(c, p.SVG)\n\tif p.Label != \"\" {\n\t\te.Label(p.Label)\n\t}\n\tif p.Width \u003e 0 \u0026\u0026 p.Height \u003e 0 {\n\t\te.Size(p.Width, p.Height)\n\t}\n\tif p.Grayscale {\n\t\te.Grayscale()\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "image",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/image/image.go",
+          "content": "// Package image provides a bitmap or an SVG shown as a picture, for the\n// Image of MyGo.\n//\n//\timage.Image(c, image.Props{\n//\t\tSrc:     photo,\n//\t\tWidth:   120,\n//\t\tHeight:  90,\n//\t\tFit:     ui.ScaleDown,\n//\t})\n//\n// The picture shows at the size of its source, in DIPs, unless Width and\n// Height fit it into another box, scaled by Fit: ScaleDown fits it within\n// without enlarging it, and the default, Contain, fits it within whatever\n// the size needs, keeping the aspect. Width alone fits it into a box of\n// its own aspect, and Height alone into one of the aspect of the source.\n// Grayscale draws it without color.\npackage image\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the picture to draw.\ntype Props struct {\n\t// Src is the picture: a *ui.Bitmap, or an *ui.SVG in its own colors.\n\tSrc ui.ImageSource\n\t// Width and Height, when set, fit the picture into a box of that\n\t// size. One of them alone keeps the aspect of the source; neither\n\t// shows the picture at its own size.\n\tWidth, Height float32\n\t// Fit scales the picture to the box: the zero value, Contain, fits\n\t// it within keeping the aspect, ScaleDown only where that is\n\t// smaller, Cover crops to cover it, and FillBox stretches it.\n\tFit ui.Fit\n\t// Grayscale draws the picture in shades of gray.\n\tGrayscale bool\n}\n\n// Image draws the picture and returns it, so a view can chain more calls\n// on it.\nfunc Image(c *ui.Context, p Props) *ui.Element {\n\te := ui.Image(c, p.Src)\n\tif p.Width \u003e 0 || p.Height \u003e 0 {\n\t\tswitch {\n\t\tcase p.Width \u003e 0 \u0026\u0026 p.Height \u003e 0:\n\t\t\te.Size(p.Width, p.Height)\n\t\tcase p.Width \u003e 0:\n\t\t\te.Width(p.Width)\n\t\tcase p.Height \u003e 0:\n\t\t\te.Height(p.Height)\n\t\t}\n\t}\n\tif p.Fit != 0 {\n\t\te.Fit(p.Fit)\n\t}\n\tif p.Grayscale {\n\t\te.Grayscale()\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/input/input.go",
+          "content": "// Package input provides a shadcn/ui-style text field for the MyGo native\n// toolkit: a single-line TextInput. The multi-line field is the separate\n// textarea component, so a form says which it means.\n//\n//\tinput.Input(c, input.Props{\n//\t\tValue:       \u0026email,\n//\t\tPlaceholder: \"you@example.com\",\n//\t})\npackage input\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the input to draw.\ntype Props struct {\n\t// Value is the text being edited.\n\tValue *string\n\t// Placeholder shows in the empty field, in the muted color.\n\tPlaceholder string\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n}\n\n// Input draws a field editing *Value and returns it, so a view can chain\n// more calls on it. It fills the width of its container.\nfunc Input(c *ui.Context, p Props) *ui.Element {\n\te := ui.TextInput(c, p.Value)\n\te.Placeholder(p.Placeholder)\n\te.FillWidth()\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "link",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/link/link.go",
+          "content": "// Package link provides a text that opens a URL in the browser when it\n// is clicked, as a shadcn/ui component for the Link of MyGo.\n//\n//\tlink.Link(c, link.Props{\n//\t\tLabel: \"Read the guide\",\n//\t\tURL:   \"https://example.com/guide\",\n//\t})\n//\n// The label shows in the accent color, and gains an underline when the\n// pointer rests on it. In a page of a Router, a URL without a scheme, as\n// \"/notes/42\", goes there in the router instead of the browser.\npackage link\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the link to draw.\ntype Props struct {\n\t// Label is the text of the link.\n\tLabel string\n\t// URL is what the link opens: an address for the browser, or a path\n\t// for the Router the page lives in.\n\tURL string\n}\n\n// Link draws the label as a link that opens URL when clicked or Entered,\n// and returns it.\nfunc Link(c *ui.Context, p Props) *ui.Element {\n\treturn ui.Link(c, p.Label, p.URL)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "list",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/list/list.go",
+          "content": "// Package list provides a scrolling list of rows, from the mygo List\n// widget. The list builds only the rows in view and keeps its place\n// among them; choosing a row highlights it in the accent color.\npackage list\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props configure the list.\ntype Props struct {\n\t// State is the place and the choice of the list, kept from frame\n\t// to frame. Give each list a state of its own, and set its fields\n\t// before building: to let the user choose a row, set\n\t// State.Selected = \u0026app.Chosen, where app.Chosen is the row\n\t// chosen, -1 for none.\n\tState *ui.ListState\n\t// Items are the rows, each shown as its text, unless Row draws it.\n\t// Items also count the rows, so a Row builder changes only the\n\t// look, not the number.\n\tItems []string\n\t// Row draws row i in place of its text; nil shows Items[i] in a\n\t// line of the theme's height.\n\tRow func(c *ui.Context, i int)\n\t// OnChoose runs when the user chooses a row: i is the row chosen.\n\t// It needs State.Selected, which names the choice.\n\tOnChoose func(i int)\n\t// Disabled keeps the list from choosing rows.\n\tDisabled bool\n}\n\n// List draws the items as a scrolling list. A click chooses a row, as\n// the arrow keys and Home and End do while the list has the keyboard\n// focus; a double click or Enter submits it.\nfunc List(c *ui.Context, p Props) *ui.Element {\n\te := ui.List(c, p.State, len(p.Items), func(i int) {\n\t\tif p.Row != nil {\n\t\t\tp.Row(c, i)\n\t\t\treturn\n\t\t}\n\t\t// The row shows its text across the list, as a row of the\n\t\t// gallery's lists does, so the chosen row highlights along the\n\t\t// whole list.\n\t\tui.Row(c).Height(32).PaddingX(12).Children(func() {\n\t\t\tui.Text(c, p.Items[i]).Grow(1)\n\t\t})\n\t})\n\tif p.OnChoose != nil \u0026\u0026 e.Changed() \u0026\u0026 p.State != nil \u0026\u0026 p.State.Selected != nil {\n\t\tp.OnChoose(*p.State.Selected)\n\t}\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "menu",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/menu/menu.go",
+          "content": "// Package menu provides a shadcn/ui-style Menu: a button showing a label\n// and an arrow, which opens a menu below it, as the pointer goes down on\n// it, or for Enter, Space or Down while it has the focus. The menu holds\n// the items of the Props, one above the other; choosing one runs its\n// Action and closes the menu. An item may show a check and be disabled;\n// a Separator item draws a line between the items.\n//\n//\tmenu.Menu(c, menu.Props{\n//\t\tLabel: \"File\",\n//\t\tItems: []menu.Item{\n//\t\t\t{Label: \"New\", Action: func() { app.new() }},\n//\t\t\t{Separator: true},\n//\t\t\t{Label: \"Save\", Checked: app.dirty, Action: func() { app.save() }},\n//\t\t},\n//\t})\npackage menu\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Item is one entry of a Menu.\ntype Item struct {\n\t// Label is the text of the item.\n\tLabel string\n\t// Checked shows a check beside the label, as for a setting that is\n\t// on.\n\tChecked bool\n\t// Disabled keeps the item from being chosen.\n\tDisabled bool\n\t// Separator draws a line instead of an item, as between groups of\n\t// items; the other fields are ignored.\n\tSeparator bool\n\t// Action runs when the item is chosen; nil for none.\n\tAction func()\n}\n\n// Props describes the menu to draw.\ntype Props struct {\n\t// Label is the text of the button, such as \"File\".\n\tLabel string\n\t// Items are the entries of the menu, in order.\n\tItems []Item\n\t// Disabled keeps the menu from opening.\n\tDisabled bool\n}\n\n// Menu draws the button, and the menu it opens, and returns the button,\n// so a view can chain more calls on it.\nfunc Menu(c *ui.Context, p Props) *ui.Element {\n\te := ui.MenuButton(c, p.Label, func(m *ui.Menu) {\n\t\tfor _, it := range p.Items {\n\t\t\tif it.Separator {\n\t\t\t\tm.Separator()\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\titem := m.Item(it.Label)\n\t\t\titem.Checked(it.Checked).Disabled(it.Disabled)\n\t\t\tif item.Chosen() \u0026\u0026 it.Action != nil {\n\t\t\t\tit.Action()\n\t\t\t}\n\t\t}\n\t})\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "meter",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/meter/meter.go",
+          "content": "// Package meter provides a shadcn/ui-style meter: a bar that shows a\n// measure against its range, colored by how near the top it is, with a\n// label and a live readout, from the Meter of MyGo.\n//\n//\tmeter.Meter(c, meter.Props{\n//\t\tValue:  0.78,\n//\t\tMax:    1,\n//\t\tLabel:  \"Disk usage\",\n//\t\tLevels: \u0026ui.MeterLevels{Warning: 0.7, Critical: 0.9},\n//\t})\npackage meter\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the meter to draw.\ntype Props struct {\n\t// Value is the measure, between Min and Max.\n\tValue float64\n\t// Min and Max bound the measure. A Max at or below Min is taken as 1\n\t// above Min, so a bare fraction fills the bar.\n\tMin, Max float64\n\t// Levels turn the bar the Warning color from its Warning share of the\n\t// range, and the Danger color from Critical. The zero value keeps the\n\t// Success color throughout. A Critical below Warning makes low values\n\t// the bad ones, as a battery's.\n\tLevels *ui.MeterLevels\n\t// Label is the text above the bar, next to the readout.\n\tLabel string\n\t// Format renders the readout; the default prints the rounded value.\n\tFormat func(v float64) string\n}\n\n// Meter draws the label, the readout and the bar, and returns the\n// column. The readout follows the value as the app changes it, because\n// the view builds every frame.\nfunc Meter(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tformat := p.Format\n\tif format == nil {\n\t\tformat = func(v float64) string { return fmt.Sprintf(\"%.0f\", v) }\n\t}\n\thi := p.Max\n\tif hi \u003c= p.Min {\n\t\thi = p.Min + 1\n\t}\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tui.Text(c, format(p.Value)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t})\n\t\t}\n\t\tui.Meter(c, p.Value, p.Min, hi, p.Levels).FillWidth()\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "numberinput",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/numberinput/numberinput.go",
+          "content": "// Package numberinput provides a shadcn/ui-style NumberInput: a field\n// for a number between bounds, which the arrows and the buttons beside\n// it step by step.\n//\n//\tnumberinput.NumberInput(c, numberinput.Props{\n//\t\tValue: \u0026copies,\n//\t\tLo:    1, Hi: 99, Step: 1,\n//\t})\npackage numberinput\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the number input to draw.\ntype Props struct {\n\t// Value is the number being edited.\n\tValue *float64\n\t// Lo is the smallest value allowed.\n\tLo float64\n\t// Hi is the largest value allowed.\n\tHi float64\n\t// Step is how much the arrows and the buttons change the value.\n\tStep float64\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n}\n\n// NumberInput draws a field editing *Value as a number between Lo and\n// Hi, stepped by Step, and returns it, so a view can chain more calls on\n// it. What is typed applies as soon as it is a number in range, and\n// shows rounded to the decimals of Step once the field loses the focus.\nfunc NumberInput(c *ui.Context, p Props) *ui.Element {\n\te := ui.NumberInput(c, p.Value, p.Lo, p.Hi, p.Step)\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/popover/popover.go",
+          "content": "// Package popover provides a shadcn/ui-style Popover: a panel that shows\n// below the element Trigger draws, while *Open is true, and that a click\n// on the trigger opens and closes. Clicking outside the panel or pressing\n// Escape closes it.\n//\n//\tpopover.Popover(c, popover.Props{\n//\t\tOpen: \u0026app.help,\n//\t\tTrigger: func(c *ui.Context) *ui.Element {\n//\t\t\treturn ui.Button(c, \"Help\")\n//\t\t},\n//\t\tContent: func(c *ui.Context) {\n//\t\t\tui.Text(c, \"Press the key for what you want.\")\n//\t\t},\n//\t})\npackage popover\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the popover to draw.\ntype Props struct {\n\t// Open is whether the panel shows.\n\tOpen *bool\n\t// Trigger draws the element the panel belongs to; a click on it\n\t// opens and closes the panel.\n\tTrigger func(c *ui.Context) *ui.Element\n\t// Content draws the panel, below the trigger.\n\tContent func(c *ui.Context)\n\t// Disabled keeps the trigger from opening the panel.\n\tDisabled bool\n}\n\n// Popover draws the trigger, and while *Open is true the panel below it.\n// It returns the panel while it shows, and nil while it is closed, so a\n// view can chain more calls on the panel.\nfunc Popover(c *ui.Context, p Props) *ui.Element {\n\tanchor := p.Trigger(c)\n\tif p.Disabled {\n\t\tanchor.Disabled(true)\n\t} else if anchor.Clicked() {\n\t\t*p.Open = !*p.Open\n\t}\n\treturn ui.Popover(c, anchor, p.Open, func() {\n\t\tif p.Content != nil {\n\t\t\tp.Content(c)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/progress/progress.go",
+          "content": "// Package progress provides a shadcn/ui-style progress bar with a label\n// and a live readout, from the Progress of MyGo.\n//\n//\tprogress.Progress(c, progress.Props{\n//\t\tValue: 0.64,\n//\t\tLabel: \"Disk usage\",\n//\t})\npackage progress\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the progress bar to draw.\ntype Props struct {\n\t// Value is the share filled, 0 to 1. A negative value shows\n\t// activity of unknown length, which moves on its own.\n\tValue float64\n\t// Label is the text above the bar, next to the readout.\n\tLabel string\n\t// Format renders the readout; the default prints the percentage.\n\tFormat func(v float64) string\n\t// Indeterminate shows activity of unknown length instead of Value.\n\tIndeterminate bool\n}\n\n// Progress draws the label, the readout and the bar, and returns the\n// column. The readout follows the value as the app changes it, because\n// the view builds every frame.\nfunc Progress(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tformat := p.Format\n\tif format == nil {\n\t\tformat = func(v float64) string { return fmt.Sprintf(\"%.0f%%\", v*100) }\n\t}\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tif !p.Indeterminate {\n\t\t\t\t\tui.Text(c, format(p.Value)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\tvalue := p.Value\n\t\tif p.Indeterminate {\n\t\t\tvalue = -1\n\t\t}\n\t\tui.Progress(c, value).FillWidth()\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "radio",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/radio/radio.go",
+          "content": "// Package radio provides a shadcn/ui-style radio group: a column of\n// options, of which one is chosen. The group is one stop of Tab; the\n// arrows and Home and End choose among the options, as a radio group of\n// the system does.\n//\n//\tradio.Group(c, radio.Props[string]{\n//\t\tSelected: \u0026size,\n//\t\tOptions: []radio.Option[string]{\n//\t\t\t{Value: \"sm\", Label: \"Small\"},\n//\t\t\t{Value: \"lg\", Label: \"Large\"},\n//\t\t},\n//\t})\npackage radio\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Option is one choice of a group.\ntype Option[T comparable] struct {\n\t// Value is the value chosen into Selected.\n\tValue T\n\t// Label is the text next to the circle.\n\tLabel string\n}\n\n// Props describes the group to draw.\ntype Props[T comparable] struct {\n\t// Selected is the chosen value; the group edits it, and Changed\n\t// reports a new one.\n\tSelected *T\n\t// Options are the choices, in order.\n\tOptions []Option[T]\n}\n\n// Group draws a column of the options for props, the chosen one in the\n// accent color, and returns the group, so a view can chain more calls on\n// it.\nfunc Group[T comparable](c *ui.Context, p Props[T]) *ui.Element {\n\treturn ui.RadioGroup(c, func() {\n\t\tfor _, o := range p.Options {\n\t\t\tui.Radio(c, p.Selected, o.Value, o.Label)\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "rangeslider",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/rangeslider/rangeslider.go",
+          "content": "// Package rangeslider provides a shadcn/ui-style range slider: a track\n// with two knobs that set the low and the high of a range, with a label\n// and a live readout, from the RangeSlider of MyGo.\n//\n//\trangeslider.RangeSlider(c, rangeslider.Props{\n//\t\tLow:    \u0026minPrice,\n//\t\tHigh:   \u0026maxPrice,\n//\t\tMin:    0,\n//\t\tMax:    1000,\n//\t\tStep:   50,\n//\t\tLabel:  \"Price\",\n//\t\tFormat: func(lo, hi float64) string { return fmt.Sprintf(\"$%.0f – $%.0f\", lo, hi) },\n//\t})\npackage rangeslider\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the range slider to draw.\ntype Props struct {\n\t// Low and High are the bounds of the range, which the knobs set; Low\n\t// never passes High.\n\tLow, High *float64\n\t// Min and Max bound the whole range.\n\tMin, Max float64\n\t// Step snaps the values to multiples of it from Min, and shows tick\n\t// marks; 0 is continuous.\n\tStep float64\n\t// Label is the text above the track, next to the readout. It also\n\t// names the knobs, as \"Price minimum\" and \"Price maximum\".\n\tLabel string\n\t// Format renders the readout from the two values; the default prints\n\t// them rounded.\n\tFormat func(lo, hi float64) string\n}\n\n// RangeSlider draws the label, the readout and the track, and returns\n// the column. The readout follows the knobs as the user drags, because\n// the view builds every frame.\nfunc RangeSlider(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tformat := p.Format\n\tif format == nil {\n\t\tformat = func(lo, hi float64) string { return fmt.Sprintf(\"%.0f – %.0f\", lo, hi) }\n\t}\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tui.Text(c, format(*p.Low, *p.High)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t})\n\t\t}\n\t\tr := ui.RangeSlider(c, p.Low, p.High, p.Min, p.Max, p.Step)\n\t\tr.Label(p.Label).FillWidth()\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "rating",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/rating/rating.go",
+          "content": "// Package rating provides a shadcn/ui-style Rating: a row of stars that\n// show and set a score, by a click or the arrows.\n//\n//\trating.Rating(c, rating.Props{Value: \u0026stars, Max: 5})\npackage rating\n\nimport (\n\t\"math\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the rating to draw.\ntype Props struct {\n\t// Value is the score, from 0 to Max.\n\tValue *int\n\t// Max is the number of stars.\n\tMax int\n\t// ReadOnly draws the stars without letting the user change the score.\n\tReadOnly bool\n}\n\n// Rating draws Max stars showing *Value, and returns the row, so a view\n// can chain more calls on it. Label names it for assistive technology. A\n// click on a star sets the score to it, and a click on the set star\n// clears it; the arrows and Home and End move the score while focused.\n// ReadOnly draws the stars as they are, without the interaction.\nfunc Rating(c *ui.Context, p Props) *ui.Element {\n\tif p.ReadOnly {\n\t\treturn readOnly(c, p)\n\t}\n\treturn ui.Rating(c, p.Value, p.Max)\n}\n\n// readOnly draws the stars for ReadOnly. Why not MyGo's rating: it takes\n// the pointer and the arrows, and no flag turns that off from outside.\nfunc readOnly(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\te := ui.Row(c).Gap(t.Space(0.5)).Shrink(0).Role(ui.RoleSlider).\n\t\tRange(0, float64(p.Max), float64(*p.Value))\n\tstar := t.FontSize * 1.25\n\te.Children(func() {\n\t\tfor i := range p.Max {\n\t\t\tb := ui.Box(c).Size(star, star).Shrink(0).Role(ui.RoleNone)\n\t\t\tb.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\t\t\tpath := starPath(r)\n\t\t\t\tif i \u003c *p.Value {\n\t\t\t\t\tpp.FillPath(path, t.Warning)\n\t\t\t\t} else {\n\t\t\t\t\tpp.StrokePath(path, 1.2, t.TextMuted)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t})\n\treturn e\n}\n\n// starPath returns a five-pointed star in r. Why not MyGo's helper: it\n// is unexported, and the ten points are easy to place.\nfunc starPath(r ui.Rect) *ui.Path {\n\tvar path ui.Path\n\tcx, cy := r.X+r.W/2, r.Y+r.H/2+r.H*0.04\n\touter, inner := r.W*0.48, r.W*0.2\n\tfor i := range 10 {\n\t\trad := outer\n\t\tif i%2 == 1 {\n\t\t\trad = inner\n\t\t}\n\t\ta := float64(i)*math.Pi/5 - math.Pi/2\n\t\tx, y := cx+rad*float32(math.Cos(a)), cy+rad*float32(math.Sin(a))\n\t\tif i == 0 {\n\t\t\tpath.MoveTo(x, y)\n\t\t} else {\n\t\t\tpath.LineTo(x, y)\n\t\t}\n\t}\n\tpath.Close()\n\treturn \u0026path\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "richtext",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/richtext/richtext.go",
+          "content": "// Package richtext provides a text of styled runs, as a shadcn/ui\n// component for the RichText of MyGo: spans with their own weight,\n// color, underline or background, over the style of the text around\n// them.\n//\n//\trichtext.RichText(c, richtext.Props{\n//\t\tSpans: []ui.Span{\n//\t\t\t{Text: \"Saved \"},\n//\t\t\t{Text: \"report.pdf\", Weight: 600},\n//\t\t\t{Text: \" to the cloud.\", Color: t.TextMuted},\n//\t\t},\n//\t})\npackage richtext\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the rich text to draw.\ntype Props struct {\n\t// Spans are the styled runs of the text, in order. What a span\n\t// leaves zero takes the style of the text around it.\n\tSpans []ui.Span\n}\n\n// RichText draws the spans as one text, and returns it. Style the whole\n// text with the methods of the returned element, as for a Text.\nfunc RichText(c *ui.Context, p Props) *ui.Element {\n\treturn ui.RichText(c, p.Spans...)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "scroll",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/scroll/scroll.go",
+          "content": "// Package scroll provides a container that scrolls its content, as a\n// shadcn/ui component for the Scroll of MyGo.\n//\n//\tscroll.Scroll(c, scroll.Props{\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tfor _, line := range lines {\n//\t\t\t\tui.Text(c, line)\n//\t\t\t}\n//\t\t},\n//\t}).Grow(1)\npackage scroll\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the scroll container to draw.\ntype Props struct {\n\t// Children are the content, which the scroll moves when it goes\n\t// past the edge.\n\tChildren func(c *ui.Context)\n}\n\n// Scroll draws a container that scrolls its children vertically, and\n// returns it. Size it, or Grow it within its parent; the content sizes\n// to itself, so the scroll can move it.\nfunc Scroll(c *ui.Context, p Props) *ui.Element {\n\ts := ui.Scroll(c)\n\tif p.Children != nil {\n\t\ts.Children(func() { p.Children(c) })\n\t}\n\treturn s\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "scrollboth",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/scrollboth/scrollboth.go",
+          "content": "// Package scrollboth provides a container that scrolls its content both\n// ways, as a canvas or a wide table does, for the ScrollBoth of MyGo.\n//\n//\tscrollboth.ScrollBoth(c, scrollboth.Props{\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tfor _, row := range grid {\n//\t\t\t\tui.Text(c, row)\n//\t\t\t}\n//\t\t},\n//\t})\npackage scrollboth\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the scroll container to draw.\ntype Props struct {\n\t// Children are the content, which the scroll moves up and sideways\n\t// when it goes past the edge.\n\tChildren func(c *ui.Context)\n}\n\n// ScrollBoth draws a container that scrolls its children up and sideways,\n// and returns it. Size it, or Grow it within its parent; the content\n// sizes to itself, so the scroll can move it.\nfunc ScrollBoth(c *ui.Context, p Props) *ui.Element {\n\ts := ui.ScrollBoth(c)\n\tif p.Children != nil {\n\t\ts.Children(func() { p.Children(c) })\n\t}\n\treturn s\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "scrollhorizontal",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/scrollhorizontal/scrollhorizontal.go",
+          "content": "// Package scrollhorizontal provides a container that scrolls its content\n// horizontally, as a shadcn/ui component for the ScrollHorizontal of\n// MyGo.\n//\n//\tscrollhorizontal.ScrollHorizontal(c, scrollhorizontal.Props{\n//\t\tChildren: func(c *ui.Context) {\n//\t\t\tfor _, t := range tabs {\n//\t\t\t\tui.Text(c, t)\n//\t\t\t}\n//\t\t},\n//\t})\npackage scrollhorizontal\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the scroll container to draw.\ntype Props struct {\n\t// Children are the content, which the scroll moves sideways when it\n\t// goes past the edge.\n\tChildren func(c *ui.Context)\n}\n\n// ScrollHorizontal draws a row that scrolls its children horizontally,\n// and returns it. Size it, or Grow it within its parent; the content\n// sizes to itself, so the scroll can move it.\nfunc ScrollHorizontal(c *ui.Context, p Props) *ui.Element {\n\ts := ui.ScrollHorizontal(c)\n\tif p.Children != nil {\n\t\ts.Children(func() { p.Children(c) })\n\t}\n\treturn s\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "searchfield",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/searchfield/searchfield.go",
+          "content": "// Package searchfield provides a shadcn/ui-style SearchField: a field\n// for searching, with a magnifying glass and a button that clears the\n// text. The field shows \"Search\" while empty.\n//\n//\tsearchfield.SearchField(c, searchfield.Props{Value: \u0026query})\npackage searchfield\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the search field to draw.\ntype Props struct {\n\t// Value is the text being searched.\n\tValue *string\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n}\n\n// SearchField draws a field editing *Value and returns it, so a view can\n// chain more calls on it. Label names it for assistive technology. A\n// clear button shows while the text holds any, which clears it, as\n// Escape does then; Enter reports Submitted, and any change reports\n// Changed. It fills the width of its container.\nfunc SearchField(c *ui.Context, p Props) *ui.Element {\n\te := ui.SearchField(c, p.Value)\n\te.FillWidth()\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "segmented",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/segmented/segmented.go",
+          "content": "// Package segmented provides a segmented control: a row of segments of\n// which one is chosen, as a shadcn/ui component for the Segmented of\n// MyGo, a switch between views.\n//\n//\tsegmented.Segmented(c, segmented.Props{\n//\t\tSelected: \u0026view,\n//\t\tLabels:   []string{\"List\", \"Grid\"},\n//\t})\npackage segmented\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the segmented control to draw.\ntype Props struct {\n\t// Selected is the index of the segment chosen, which a click or the\n\t// arrow keys change.\n\tSelected *int\n\t// Labels are the segments.\n\tLabels []string\n\t// OnChange runs when a click or the arrows choose another segment.\n\tOnChange func(i int)\n\t// Label names the control to assistive technology.\n\tLabel string\n}\n\n// Segmented draws the segments and returns the control. A click chooses\n// a segment, and the arrow keys move the choice while the control has\n// the focus; the chosen segment reads on a raised background.\nfunc Segmented(c *ui.Context, p Props) *ui.Element {\n\te := ui.Segmented(c, p.Selected, p.Labels...)\n\tif p.Label != \"\" {\n\t\te.Label(p.Label)\n\t}\n\tif e.Changed() \u0026\u0026 p.OnChange != nil {\n\t\tp.OnChange(*p.Selected)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/select/select.go",
+          "content": "// Package selector provides a shadcn/ui-style drop-down: a trigger button\n// that opens a list of options to choose one from. The package is named\n// selector because select is a Go keyword.\n//\n//\tselector.Select(c, selector.Props{\n//\t\tSelected:    \u0026country,\n//\t\tOptions:     []string{\"China\", \"Japan\", \"Germany\"},\n//\t\tPlaceholder: \"Choose a country\",\n//\t})\npackage selector\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the select to draw.\ntype Props struct {\n\t// Selected is the chosen option; the trigger shows it, or the\n\t// placeholder while it is empty.\n\tSelected *string\n\t// Options are the choices in the popup.\n\tOptions []string\n\t// Placeholder shows in the trigger while nothing is chosen.\n\tPlaceholder string\n\t// Disabled keeps the select from opening.\n\tDisabled bool\n}\n\n// Select draws a drop-down for props and returns the trigger element, so\n// a view can chain more calls on it. The popup opens under the trigger on\n// click; the arrows and Enter choose by keyboard.\nfunc Select(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tsel := ui.SelectBase(c, p.Selected)\n\tb := sel.Trigger\n\tb.Padding(t.Space(1.5), t.Space(3.5)).Gap(t.Space(1.5)).Radius(t.Radius).\n\t\tJustify(ui.SpaceBetween).MinWidth(t.Space(35)).\n\t\tBackground(t.Surface).TextColor(t.Text).Border(1, t.Border)\n\tif p.Disabled {\n\t\tb.Disabled(true)\n\t\tb.TextColor(t.TextMuted)\n\t}\n\tb.Children(func() {\n\t\tswitch chosen := *p.Selected; {\n\t\tcase chosen != \"\":\n\t\t\tui.Text(c, chosen).SingleLine()\n\t\tcase p.Placeholder != \"\":\n\t\t\tui.Text(c, p.Placeholder).SingleLine().TextColor(t.TextMuted)\n\t\t}\n\t\tchevron(c, t)\n\t})\n\tsel.Popup(func(panel *ui.Element) {\n\t\tpanel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)).Radius(t.Radius+2).\n\t\t\tBackground(t.Background).Border(1, t.Border).MinWidth(b.Bounds().W)\n\t\tpanel.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))\n\t\tfor _, opt := range p.Options {\n\t\t\titem := sel.Item(opt).Padding(t.Space(1.5), t.Space(2.5)).Radius(t.Radius)\n\t\t\tswitch {\n\t\t\tcase item.Highlighted():\n\t\t\t\titem.Background(t.Accent).TextColor(t.AccentText)\n\t\t\tcase opt == *p.Selected:\n\t\t\t\titem.Background(t.Surface)\n\t\t\t}\n\t\t\titem.Children(func() { ui.Text(c, opt).SingleLine() })\n\t\t}\n\t})\n\treturn b\n}\n\n// chevron draws the arrow of the trigger.\nfunc chevron(c *ui.Context, t *ui.Theme) {\n\tui.Box(c).Size(t.Space(2.5), t.Space(2.5)).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {\n\t\tvar path ui.Path\n\t\tpath.MoveTo(r.X+r.W*0.1, r.Y+r.H*0.3).LineTo(r.X+r.W*0.5, r.Y+r.H*0.7).LineTo(r.X+r.W*0.9, r.Y+r.H*0.3)\n\t\tp.StrokePath(\u0026path, 1.5, t.TextMuted)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/separator/separator.go",
+          "content": "// Package separator provides a shadcn/ui-style Separator: a thin line\n// that divides content, horizontal or vertical.\n//\n//\tseparator.Separator(c, separator.Props{})\npackage separator\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Orientation of the line.\ntype Orientation int\n\nconst (\n\t// Horizontal draws a line across the width. The default.\n\tHorizontal Orientation = iota\n\t// Vertical draws a line down the height.\n\tVertical\n)\n\n// Props describes the separator to draw.\ntype Props struct {\n\t// Orientation of the line. Horizontal fills the width of the parent,\n\t// vertical fills the height.\n\tOrientation Orientation\n}\n\n// Separator draws a 1-point line in the border color, labeled for\n// assistive technology, and returns it.\nfunc Separator(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\te := ui.Box(c).Background(t.Border).Label(\"separator\").Shrink(0)\n\tif p.Orientation == Vertical {\n\t\treturn e.Width(1).FillHeight()\n\t}\n\treturn e.Height(1).FillWidth()\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/sidebar/sidebar.go",
+          "content": "// Package sidebar provides a shadcn/ui-style Sidebar: a rail of sections\n// and items at the side of a window, as Finder's sidebar shows one. A\n// click on an item chooses it, setting *Selected to its ID; the arrows,\n// Home and End and the first letters of an item move the choice among the\n// items. A section's title shows and hides its items with a click, unless\n// its Open is nil, which keeps it open. The item chosen takes the focus\n// and reads selected to assistive technology.\n//\n//\tsidebar.Sidebar(c, sidebar.Props{\n//\t\tSelected: \u0026app.place,\n//\t\tSections: []sidebar.Section{\n//\t\t\t{Title: \"Favorites\", Items: []sidebar.Item{\n//\t\t\t\t{ID: \"recents\", Label: \"Recents\"},\n//\t\t\t\t{ID: \"desktop\", Label: \"Desktop\"},\n//\t\t\t}},\n//\t\t},\n//\t})\npackage sidebar\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Item is one entry of a Section, choosing ID when it is clicked.\ntype Item struct {\n\t// ID is what *Selected holds while the item is chosen.\n\tID string\n\t// Label is the text of the item, such as \"Recents\".\n\tLabel string\n}\n\n// Section is a group of Items under a title, which a click on the title\n// shows and hides.\ntype Section struct {\n\t// Title is the text of the section's title.\n\tTitle string\n\t// Open is whether the items show; nil keeps the section open.\n\tOpen *bool\n\t// Items are the entries of the section, in order.\n\tItems []Item\n}\n\n// Props describes the sidebar to draw.\ntype Props struct {\n\t// Selected is set to the ID of the item a click chooses.\n\tSelected *string\n\t// Sections are the sections of the sidebar, in order.\n\tSections []Section\n\t// Disabled keeps the items from being chosen.\n\tDisabled bool\n}\n\n// Sidebar draws the rail and returns it, so a view can chain more calls\n// on it.\nfunc Sidebar(c *ui.Context, p Props) *ui.Element {\n\te := ui.Sidebar(c, p.Selected, func() {\n\t\tfor _, s := range p.Sections {\n\t\t\tui.SidebarSection(c, s.Title, s.Open, func() {\n\t\t\t\tfor _, it := range s.Items {\n\t\t\t\t\tui.SidebarItem(c, it.ID, nil, it.Label)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t})\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/slider/slider.go",
+          "content": "// Package slider provides a shadcn/ui-style slider: a track and a knob\n// that set a number, with a label and a live readout above it.\n//\n//\tslider.Slider(c, slider.Props{\n//\t\tValue:  \u0026volume,\n//\t\tMin:    0,\n//\t\tMax:    100,\n//\t\tLabel:  \"Volume\",\n//\t\tFormat: func(v float64) string { return fmt.Sprintf(\"%.0f%%\", v) },\n//\t})\npackage slider\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the slider to draw.\ntype Props struct {\n\t// Value is the number being set.\n\tValue *float64\n\t// Min and Max bound the value.\n\tMin, Max float64\n\t// Step snaps the value to multiples of it from Min; 0 is continuous.\n\tStep float64\n\t// Label is the text above the track, next to the readout.\n\tLabel string\n\t// Format renders the readout; the default prints the rounded value.\n\tFormat func(v float64) string\n}\n\n// Slider draws the label, the readout and the track, and returns the\n// column. The readout follows the value as the user drags, because the\n// view builds every frame.\nfunc Slider(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tformat := p.Format\n\tif format == nil {\n\t\tformat = func(v float64) string { return fmt.Sprintf(\"%.0f\", v) }\n\t}\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tui.Text(c, format(*p.Value)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t})\n\t\t}\n\t\tvar s *ui.Element\n\t\tif p.Step \u003e 0 {\n\t\t\ts = ui.StepSlider(c, p.Value, p.Min, p.Max, p.Step)\n\t\t} else {\n\t\t\ts = ui.Slider(c, p.Value, p.Min, p.Max)\n\t\t}\n\t\ts.FillWidth()\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/spinner/spinner.go",
+          "content": "// Package spinner provides a shadcn/ui-style spinner: a ring of spokes\n// that turns while work goes on, from the Spinner of MyGo.\n//\n//\tspinner.Spinner(c, spinner.Props{Label: \"Scanning\"})\npackage spinner\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the spinner to draw.\ntype Props struct {\n\t// Label names the spinner to assistive technology. It is not drawn.\n\tLabel string\n}\n\n// Spinner draws the turning spokes, and returns the element. It turns on\n// its own, repainting without rebuilding the view, so a view that shows\n// it does not have to animate.\nfunc Spinner(c *ui.Context, p Props) *ui.Element {\n\te := ui.Spinner(c)\n\tif p.Label != \"\" {\n\t\te.Label(p.Label)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "split",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/split/split.go",
+          "content": "// Package split provides resizable panes, from the mygo Split widget.\n// A divider between the panes drags to resize them, or moves with the\n// arrows once it has the keyboard focus.\npackage split\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props configure the split.\ntype Props struct {\n\t// Size is the width of the first pane, or its height when the\n\t// split is Vertical. The divider keeps it between 40 DIPs and the\n\t// room left; give it a field of the app, which the divider edits\n\t// as it moves.\n\tSize *float32\n\t// Vertical stacks the panes, first above second; a horizontal\n\t// split puts them side by side.\n\tVertical bool\n\t// First builds the pane before the divider.\n\tFirst func(c *ui.Context)\n\t// Second builds the pane after the divider.\n\tSecond func(c *ui.Context)\n}\n\n// Split lays out the two panes with a divider between them that the\n// user drags to resize, or moves with the arrows once the divider has\n// the keyboard focus. Size it, as a Row or Column, to fill the room it\n// shares.\nfunc Split(c *ui.Context, p Props) *ui.Element {\n\tif p.First == nil {\n\t\tp.First = func(c *ui.Context) {}\n\t}\n\tif p.Second == nil {\n\t\tp.Second = func(c *ui.Context) {}\n\t}\n\t// There is no Disabled prop: mygo does not gate the drag of the\n\t// divider on a disabled flag, so it could not freeze the divider,\n\t// and a frozen divider is rarely what an app wants anyway.\n\tif p.Vertical {\n\t\treturn ui.SplitVertical(c, p.Size, func() { p.First(c) }, func() { p.Second(c) })\n\t}\n\treturn ui.Split(c, p.Size, func() { p.First(c) }, func() { p.Second(c) })\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/stepper/stepper.go",
+          "content": "// Package stepper provides a shadcn/ui-style stepper: a number with two\n// arrow buttons that step it, and a label and a live readout, from the\n// Stepper of MyGo.\n//\n//\tstepper.Stepper(c, stepper.Props{\n//\t\tValue: \u0026port,\n//\t\tMin:   1024,\n//\t\tMax:   65535,\n//\t\tStep:  1,\n//\t\tLabel: \"Port\",\n//\t})\npackage stepper\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the stepper to draw.\ntype Props struct {\n\t// Value is the number being set.\n\tValue *float64\n\t// Min and Max bound the value.\n\tMin, Max float64\n\t// Step is how much the arrows and the arrow keys move the value.\n\tStep float64\n\t// Label is the text above the control, next to the readout.\n\tLabel string\n\t// Format renders the readout; the default prints the rounded value.\n\tFormat func(v float64) string\n}\n\n// Stepper draws the label, the readout and the arrows, and returns the\n// column. The readout follows the value as the user clicks or holds an\n// arrow — it repeats, faster after a while — or presses the arrow keys,\n// Home and End while the control has the focus, because the view builds\n// every frame.\nfunc Stepper(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tformat := p.Format\n\tif format == nil {\n\t\tformat = func(v float64) string { return fmt.Sprintf(\"%.0f\", v) }\n\t}\n\treturn ui.Column(c).Gap(t.Space(0.5)).Children(func() {\n\t\tif p.Label != \"\" {\n\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, p.Label).FontSize(t.FontSize * 0.875).Bold().TextColor(t.TextMuted)\n\t\t\t\tui.Text(c, format(*p.Value)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t})\n\t\t}\n\t\ts := ui.Stepper(c, p.Value, p.Min, p.Max, p.Step)\n\t\ts.Label(p.Label)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/switch/switch.go",
+          "content": "// Package switcher provides a shadcn/ui-style switch with a label, from\n// the Switch of MyGo. The package is named switcher because switch is a\n// Go keyword.\n//\n//\tswitcher.Switch(c, switcher.Props{\n//\t\tOn:    \u0026dark,\n//\t\tLabel: \"Dark mode\",\n//\t})\npackage switcher\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the switch to draw.\ntype Props struct {\n\t// On is the bool the switch toggles.\n\tOn *bool\n\t// Label is the text beside the switch. It also names the switch for\n\t// tests: Click(\"Dark mode\") toggles it.\n\tLabel string\n\t// Disabled keeps the switch from being toggled.\n\tDisabled bool\n\t// Changed reports the new On, when the user toggled the switch.\n\tChanged func(on bool)\n}\n\n// Switch draws a row with the switch and its label, and returns it. The\n// switch itself is clickable; the label is not.\nfunc Switch(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\trow := ui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\ts := ui.Switch(c, p.On)\n\t\tif p.Label != \"\" {\n\t\t\ts.Label(p.Label)\n\t\t}\n\t\tif p.Disabled {\n\t\t\ts.Disabled(true)\n\t\t}\n\t\tif p.Changed != nil \u0026\u0026 s.Changed() {\n\t\t\tp.Changed(*p.On)\n\t\t}\n\t\tif p.Label != \"\" {\n\t\t\tui.Text(c, p.Label)\n\t\t}\n\t})\n\treturn row\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/table/table.go",
+          "content": "// Package table provides a shadcn/ui-style data table for the MyGo native\n// toolkit, on top of the Table of MyGo: a bordered box with a header\n// band, rows that highlight under the pointer, and a chosen row in the\n// accent color. The sort, the choice and the column layout live in the\n// ListState the caller owns, as the state of any control does.\n//\n//\ttable.Table(c, table.Props{\n//\t\tState:   list, // \u0026ui.ListState, owned by the view\n//\t\tColumns: []ui.TableColumn{{Title: \"Name\", Sortable: true}, {Title: \"Size\", Align: ui.End, Sortable: true}},\n//\t\tRows:    len(rows),\n//\t\tCell: func(row, col int) {\n//\t\t\tui.Text(c, rows[row][col]).SingleLine()\n//\t\t},\n//\t}).Grow(1)\npackage table\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the table to draw.\ntype Props struct {\n\t// State is the ListState the table keeps its choice, its sort and\n\t// its column layout in; the caller owns it and keeps it across\n\t// frames. A nil State works, but then rows cannot be chosen, sorted\n\t// or rearranged.\n\tState *ui.ListState\n\t// Columns are the columns of the table. The user resizes them by\n\t// dragging the edges of their headers, and moves them by dragging\n\t// the headers.\n\tColumns []ui.TableColumn\n\t// Rows is the number of rows the table draws. It builds only those\n\t// in view, so a table of thousands is as cheap as one of ten.\n\tRows int\n\t// Cell builds the content of the cell of a row and a column, usually\n\t// a Text.\n\tCell func(row, col int)\n}\n\n// Table draws a table and returns it, so a view can chain more calls on\n// it, such as Grow and Submitted.\nfunc Table(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\te := ui.Table(c, p.State, p.Columns, p.Rows, p.Cell)\n\te.Background(t.Background).Border(1, t.Border).Radius(t.Radius)\n\t// The header band: MyGo's table draws no face for its header row,\n\t// which the band gives it, as the muted band of shadcn/ui.\n\t//\n\t// Why not set a background on the header itself: it is built inside\n\t// MyGo's Table, out of reach, so the band is drawn behind it, the\n\t// height of the header the table sets.\n\te.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\tpp.Fill(ui.Rect{X: r.X, Y: r.Y, W: r.W, H: t.Space(8)}, t.Surface, 0)\n\t})\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/tabs/tabs.go",
+          "content": "// Package tabs provides a shadcn/ui-style tab list: a row of triggers\n// that switch a pane of content, of which one is chosen. The chosen one\n// shows in the text color, with a bar in the accent color under it; the\n// others show muted, over a hairline. Draw the content of the chosen tab\n// yourself, next to the list.\n//\n//\ttabs.Tabs(c, tabs.Props{Selected: \u0026tab, Labels: []string{\"General\", \"About\"}})\n//\tswitch *tab {\n//\tcase 0:\n//\t\tgeneral(c)\n//\tcase 1:\n//\t\tabout(c)\n//\t}\npackage tabs\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the tab list to draw.\ntype Props struct {\n\t// Selected is the index of the chosen tab; the list edits it, and a\n\t// click or the arrow keys choose.\n\tSelected *int\n\t// Labels are the tabs, in order.\n\tLabels []string\n}\n\n// Tabs draws a list of tabs for props: the chosen one in the text color\n// with an accent bar under it, the others muted, on a hairline, as the\n// tabs of shadcn/ui. It returns the list, so a view can chain more calls\n// on it.\nfunc Tabs(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\ttp := ui.TabsBase(c, p.Selected, len(p.Labels))\n\tlist := tp.List.Gap(0)\n\t// The hairline sits behind the tabs, so the accent bar of the chosen\n\t// tab draws over it.\n\tlist.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\tpp.Fill(ui.Rect{X: r.X, Y: r.Y + r.H - 1, W: r.W, H: 1}, t.Border, 0)\n\t})\n\tlist.Children(func() {\n\t\tfor i, label := range p.Labels {\n\t\t\ttab := tp.Tab(i).Padding(t.Space(2), t.Space(3)).FocusRing(false)\n\t\t\ton := i == *p.Selected\n\t\t\ttab.TextColor(t.TextMuted)\n\t\t\tif on {\n\t\t\t\ttab.TextColor(t.Text).FontWeight(600)\n\t\t\t}\n\t\t\ttab.DrawOver(func(pp *ui.Painter, r ui.Rect) {\n\t\t\t\tif on {\n\t\t\t\t\tin, h := t.Space(1.5), t.Space(0.5)\n\t\t\t\t\tpp.Fill(ui.Rect{X: r.X + in, Y: r.Y + r.H - h, W: r.W - 2*in, H: h}, t.Accent, h/2)\n\t\t\t\t}\n\t\t\t})\n\t\t\ttab.Children(func() { ui.Text(c, label).SingleLine() })\n\t\t}\n\t})\n\treturn list\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/textarea/textarea.go",
+          "content": "// Package textarea provides a shadcn/ui-style multi-line text field for\n// the MyGo native toolkit.\n//\n//\ttextarea.Textarea(c, textarea.Props{\n//\t\tValue:       \u0026notes,\n//\t\tPlaceholder: \"Write your notes here…\",\n//\t})\npackage textarea\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the text area to draw.\ntype Props struct {\n\t// Value is the text being edited.\n\tValue *string\n\t// Placeholder shows in the empty field, in the muted color.\n\tPlaceholder string\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n\t// Rows is the height of the field in lines of text; the default is 4.\n\tRows int\n}\n\n// Textarea draws a multi-line field editing *Value and returns it, so a\n// view can chain more calls on it. It fills the width of its container.\nfunc Textarea(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tif p.Rows \u003c= 0 {\n\t\tp.Rows = 4\n\t}\n\te := ui.TextArea(c, p.Value)\n\te.Placeholder(p.Placeholder)\n\te.FillWidth()\n\t// MyGo's text area comes with a floor of 20 units, near four lines;\n\t// MinHeight replaces it, so Rows can ask for any height.\n\t//\n\t// Why not the line height of the text engine: it is a metric of the\n\t// font, internal to MyGo, so we approximate it with CSS's standard\n\t// line height of 1.4em, as Rem returns. The box grows by the padding\n\t// of the field, 1.5 units top and bottom.\n\te.MinHeight(float32(p.Rows)*t.Rem(1.4) + t.Space(3))\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "timeinput",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/timeinput/timeinput.go",
+          "content": "// Package timeinput provides a shadcn/ui-style TimeInput: a field of the\n// time of day, whose hours and minutes each take the focus, stepped by\n// the arrows and set by the digits typed.\n//\n//\ttimeinput.TimeInput(c, timeinput.Props{Value: \u0026alarm})\npackage timeinput\n\nimport (\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the time input to draw.\ntype Props struct {\n\t// Value is the time being edited; its date is kept.\n\tValue *time.Time\n\t// Disabled keeps the field from being edited.\n\tDisabled bool\n}\n\n// TimeInput draws a field editing the time of day of *Value and returns\n// it, so a view can chain more calls on it. The field keeps the width\n// its segments need; it does not stretch.\nfunc TimeInput(c *ui.Context, p Props) *ui.Element {\n\te := ui.TimeInput(c, p.Value)\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/toast/toast.go",
+          "content": "// Package toast provides shadcn/ui-style toasts for the MyGo native\n// toolkit: a viewport to draw them in, and a way to push them.\n//\n//\ttoast.Viewport(c)   // once in the view\n//\tif b.Clicked() {\n//\t\ttoast.Push(c, toast.Props{Title: \"Saved\", Type: toast.Success})\n//\t}\npackage toast\n\nimport (\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Type names the kind of a toast, which the viewport colors.\ntype Type string\n\nconst (\n\t// Info is a neutral note, in the accent color.\n\tInfo Type = \"info\"\n\t// Success is a good outcome, in the success color.\n\tSuccess Type = \"success\"\n\t// Warning is a caution, in the warning color.\n\tWarning Type = \"warning\"\n\t// Error is a failure, in the danger color.\n\tError Type = \"error\"\n)\n\n// Props describes a toast to push.\ntype Props struct {\n\t// Title is the one-line summary.\n\tTitle string\n\t// Description is the detail under it.\n\tDescription string\n\t// Type colors the toast; Info when empty.\n\tType Type\n\t// Action labels a button that runs OnAction, as \"Undo\".\n\tAction string\n\t// OnAction runs for the action button, which also closes the toast.\n\tOnAction func()\n\t// Timeout is how long the toast shows: 4 seconds when zero.\n\tTimeout time.Duration\n}\n\n// Push shows a toast of the given props, at the bottom right of the\n// window.\nfunc Push(c *ui.Context, p Props) {\n\ttyp := p.Type\n\tif typ == \"\" {\n\t\ttyp = Info\n\t}\n\tc.AddToast(ui.Toast{\n\t\tTitle:       p.Title,\n\t\tDescription: p.Description,\n\t\tType:        string(typ),\n\t\tAction:      p.Action,\n\t\tOnAction:    p.OnAction,\n\t\tTimeout:     p.Timeout,\n\t})\n}\n\n// Viewport draws the toasts of the window, bottom right, styled by the\n// theme. Call it once in the view, wherever; MyGo shows one viewport.\nfunc Viewport(c *ui.Context) *ui.Element {\n\tt := c.Theme()\n\treturn ui.ToastViewportBase(c, func(viewport *ui.Element, toasts []ui.Toast) {\n\t\tviewport.Padding(16).AlignItems(ui.End).Gap(t.Space(2))\n\t\tfor _, ts := range toasts {\n\t\t\ttp := ui.ToastBase(c, ts)\n\t\t\troot := tp.Root\n\t\t\troot.Row().Gap(t.Space(3)).Padding(t.Space(2), t.Space(3)).Radius(t.Radius).\n\t\t\t\tBackground(t.Background).Border(1, t.Border).MaxWidth(t.Space(72))\n\t\t\troot.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))\n\t\t\troot.Children(func() {\n\t\t\t\tui.Box(c).Size(t.Space(2.5), t.Space(2.5)).Radius(t.Space(1.25)).Background(toastColor(t, ts.Type)).Shrink(0)\n\t\t\t\tui.Column(c).Gap(t.Space(0.5)).Grow(1).Children(func() {\n\t\t\t\t\tui.Text(c, ts.Title).Bold().SingleLine()\n\t\t\t\t\tif ts.Description != \"\" {\n\t\t\t\t\t\tui.Text(c, ts.Description).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\tif ts.Action != \"\" {\n\t\t\t\t\ttp.ActionButton().Label(ts.Action).Children(func() { ui.Text(c, ts.Action).TextColor(t.Accent).Bold() })\n\t\t\t\t}\n\t\t\t\ttp.CloseButton().Label(\"Close\").Children(func() { ui.Text(c, \"✕\").TextColor(t.TextMuted) })\n\t\t\t})\n\t\t}\n\t})\n}\n\n// toastColor returns the dot color of a toast type.\nfunc toastColor(t *ui.Theme, typ string) ui.Color {\n\tswitch typ {\n\tcase \"success\":\n\t\treturn t.Success\n\tcase \"warning\":\n\t\treturn t.Warning\n\tcase \"error\":\n\t\treturn t.Danger\n\t}\n\treturn t.Accent\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/toggle/toggle.go",
+          "content": "// Package toggle provides a shadcn/ui-style Toggle: a button that stays\n// pressed while it is on, as Bold in an editor's toolbar, which a click\n// or Space while it has the focus turns over.\n//\n//\ttoggle.Toggle(c, toggle.Props{On: \u0026bold, Label: \"B\"})\npackage toggle\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the toggle to draw.\ntype Props struct {\n\t// On is whether the toggle is pressed.\n\tOn *bool\n\t// Label is the text the toggle shows, such as \"Bold\".\n\tLabel string\n\t// Disabled keeps the toggle from being pressed.\n\tDisabled bool\n}\n\n// Toggle draws a button that stays pressed while *On and returns it, so\n// a view can chain more calls on it.\nfunc Toggle(c *ui.Context, p Props) *ui.Element {\n\te := ui.Toggle(c, p.On, p.Label)\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "togglegroup",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/togglegroup/togglegroup.go",
+          "content": "// Package togglegroup provides a shadcn/ui-style ToggleGroup: a row of\n// toggle buttons drawn joined as the segments of one control, as Bold,\n// Italic and Underline in an editor's toolbar. Each toggle keeps its own\n// state, so several may be on at once; they are one stop of Tab, among\n// which the arrows move the focus.\n//\n//\ttogglegroup.ToggleGroup(c, togglegroup.Props{\n//\t\tItems: []togglegroup.Item{\n//\t\t\t{On: \u0026app.bold, Label: \"B\", Tip: \"Bold\"},\n//\t\t\t{On: \u0026app.italic, Label: \"I\", Tip: \"Italic\"},\n//\t\t},\n//\t})\npackage togglegroup\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Item is one toggle of the group: a button that stays pressed while\n// *On, showing Label.\ntype Item struct {\n\t// On is whether the toggle is pressed.\n\tOn *bool\n\t// Label is the text the toggle shows, such as \"B\" for Bold.\n\tLabel string\n\t// Tip is the tooltip of the toggle, shown as the pointer rests on\n\t// it; empty for none.\n\tTip string\n}\n\n// Props describes the toggle group to draw.\ntype Props struct {\n\t// Items are the toggles of the group, in order.\n\tItems []Item\n\t// Disabled keeps the toggles from being pressed.\n\tDisabled bool\n}\n\n// ToggleGroup draws the toggles joined as one control and returns it, so\n// a view can chain more calls on it.\nfunc ToggleGroup(c *ui.Context, p Props) *ui.Element {\n\te := ui.ToggleGroup(c, func() {\n\t\tfor _, it := range p.Items {\n\t\t\ttg := ui.Toggle(c, it.On, it.Label)\n\t\t\tif it.Tip != \"\" {\n\t\t\t\ttg.Tooltip(it.Tip)\n\t\t\t}\n\t\t}\n\t})\n\tif p.Disabled {\n\t\te.Disabled(true)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "tokenfield",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/tokenfield/tokenfield.go",
+          "content": "// Package tokenfield provides a field of tokens, as of tags or the\n// recipients of a mail, as a shadcn/ui component for the TokenField of\n// MyGo: the tokens show as chips, each with a button taking it out, and\n// typing adds one on Enter or a comma, the suggestions of what was typed\n// showing below it, of those not already chips.\n//\n//\ttokenfield.TokenField(c, tokenfield.Props{\n//\t\tTokens:      \u0026tags,\n//\t\tSuggestions: []string{\"urgent\", \"later\", \"work\"},\n//\t\tLabel:       \"Tags\",\n//\t})\npackage tokenfield\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the field to draw.\ntype Props struct {\n\t// Tokens are the chips of the field, which it changes in place.\n\tTokens *[]string\n\t// Suggestions are the texts offered, of those containing the text\n\t// typed, and not already chips.\n\tSuggestions []string\n\t// Label names the field for the assistive technology.\n\tLabel string\n}\n\n// TokenField draws the tokens as chips and the field adding them, and\n// returns it, so a view can chain more calls on it. A chip has a button\n// taking it out; typing adds a token on Enter or a comma, a suggestion\n// adds on Enter or a click, and Backspace in the empty field takes out\n// the last.\nfunc TokenField(c *ui.Context, p Props) *ui.Element {\n\te := ui.TokenField(c, p.Tokens, p.Suggestions)\n\tif p.Label != \"\" {\n\t\te.Label(p.Label)\n\t}\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "toolbar",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/toolbar/toolbar.go",
+          "content": "// Package toolbar provides a row of actions along the top of a window,\n// from the mygo Toolbar widget. The controls are one stop of Tab; those\n// that do not fit go, from the last, into a menu at the end.\npackage toolbar\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props configure the toolbar.\ntype Props struct {\n\t// Label names the toolbar for assistive technology.\n\tLabel string\n\t// Children builds the controls: buttons, toggles, toggle groups\n\t// and menu buttons, which take no face of their own until hovered.\n\t// A Spacer pushes the controls after it to the end.\n\tChildren func(c *ui.Context)\n\t// Disabled disables the controls of the toolbar.\n\tDisabled bool\n}\n\n// Toolbar draws the controls in a row, one stop of Tab, with Left and\n// Right moving the focus among them, and Home and End to the first and\n// the last.\nfunc Toolbar(c *ui.Context, p Props) *ui.Element {\n\ttb := ui.Toolbar(c, func() {\n\t\tif p.Children != nil {\n\t\t\tp.Children(c)\n\t\t}\n\t})\n\tif p.Label != \"\" {\n\t\ttb.Label(p.Label)\n\t}\n\tif p.Disabled {\n\t\ttb.Disabled(true)\n\t}\n\treturn tb\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/tooltip/tooltip.go",
+          "content": "// Package tooltip provides a shadcn/ui-style Tooltip: a hint that shows\n// once the pointer has rested on the anchor for a moment, and goes as\n// the pointer leaves it or presses it, and with Escape, until the pointer\n// or the focus comes back. The anchor is any element a view has already\n// built; Tooltip attaches the hint to it.\n//\n//\tsave := ui.Button(c, \"Save\")\n//\ttooltip.Tooltip(c, tooltip.Props{Anchor: save, Text: \"Save the file\"})\npackage tooltip\n\nimport \"github.com/egoist/mygo/ui\"\n\n// Props describes the tooltip to draw.\ntype Props struct {\n\t// Anchor is the element the tip belongs to.\n\tAnchor *ui.Element\n\t// Text is what the tip says.\n\tText string\n\t// Disabled keeps the tip away, even as the pointer rests.\n\tDisabled bool\n}\n\n// Tooltip attaches a hint to the anchor and returns it, so a view can\n// chain more calls on it.\nfunc Tooltip(c *ui.Context, p Props) *ui.Element {\n\tif p.Disabled {\n\t\treturn p.Anchor\n\t}\n\treturn p.Anchor.Tooltip(p.Text)\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "type": "components:ui",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/tree/tree.go",
+          "content": "// Package tree provides a hierarchical list whose branches open and\n// close, from the mygo Tree and TreeItem widgets. A node with Children\n// is a branch, one without them a leaf. Choosing a node highlights it\n// and runs its action.\npackage tree\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Item is one node of the tree.\ntype Item struct {\n\t// Label is the text of the node. Labels must differ, as the chosen\n\t// node is found by its label.\n\tLabel string\n\t// Open opens and closes a branch. A branch — an item with Children —\n\t// needs it; the tree flips it when the arrow is clicked.\n\tOpen *bool\n\t// Children are the nodes inside the branch.\n\tChildren []Item\n\t// Action runs when the node is chosen, by a click or Enter.\n\tAction func()\n}\n\n// Props configure the tree.\ntype Props struct {\n\t// Items are the nodes of the tree.\n\tItems []Item\n\t// Chosen is the label of the chosen node. The tree sets it when a\n\t// node is chosen and shows the node highlighted. nil keeps the tree\n\t// from highlighting.\n\tChosen *string\n\t// Disabled keeps the tree from opening or choosing nodes.\n\tDisabled bool\n}\n\n// Tree draws the items as a tree. A click on the arrow of a branch\n// opens or closes it; a click on a node, or Enter, chooses it. While a\n// node has the keyboard focus, Up and Down move around it, Right opens\n// it or moves to its first child, and Left closes it or moves to its\n// parent.\nfunc Tree(c *ui.Context, p Props) *ui.Element {\n\tt := ui.Tree(c, func() {\n\t\tfor _, it := range p.Items {\n\t\t\tbuild(c, it, p)\n\t\t}\n\t})\n\tif p.Disabled {\n\t\tt.Disabled(true)\n\t}\n\treturn t\n}\n\n// build draws a node, the nodes inside it, and applies the choice.\nfunc build(c *ui.Context, it Item, p Props) {\n\titem := ui.TreeItem(c, it.Label, it.Open, func() {\n\t\tfor _, child := range it.Children {\n\t\t\tbuild(c, child, p)\n\t\t}\n\t})\n\tif p.Chosen != nil {\n\t\titem.Selected(*p.Chosen == it.Label)\n\t}\n\tif item.Clicked() {\n\t\tif p.Chosen != nil {\n\t\t\t*p.Chosen = it.Label\n\t\t}\n\t\tif it.Action != nil {\n\t\t\tit.Action()\n\t\t}\n\t}\n}\n"
+        }
+      ]
+    }
+  ]
+}
