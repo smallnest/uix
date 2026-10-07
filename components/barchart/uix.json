@@ -1,0 +1,10 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/barchart",
+  "dependencies": [
+    "github.com/egoist/mygo"
+  ],
+  "registryDependencies": [
+    "base"
+  ]
+}
