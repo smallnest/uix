@@ -27,17 +27,22 @@ type manifest struct {
 // internal/ui/components/<name>. The files of an item are its non-test,
 // non-manifest files, with their contents, so the registry is
 // self-contained.
+//
+// Each item records where it installs and its import path in this module,
+// so Install can rewrite the imports of the copies to the consumer's
+// paths, as shadcn/ui rewrites its imports to the consumer's alias.
 func Build(dir, out string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return err
 	}
+	root, mod := moduleOf(dir)
 	var r Registry
 	for _, e := range entries {
 		if !e.IsDir() || strings.HasPrefix(e.Name(), ".") {
 			continue
 		}
-		item, err := buildItem(filepath.Join(dir, e.Name()), e.Name())
+		item, err := buildItem(filepath.Join(dir, e.Name()), e.Name(), root, mod)
 		if err != nil {
 			return err
 		}
@@ -51,7 +56,7 @@ func Build(dir, out string) error {
 	return os.WriteFile(out, append(data, '\n'), 0o644)
 }
 
-func buildItem(dir, name string) (*Item, error) {
+func buildItem(dir, name, root, mod string) (*Item, error) {
 	item := &Item{Name: name, Type: "components:ui"}
 	if name == "base" {
 		item.Type = "components:base"
@@ -72,6 +77,15 @@ func buildItem(dir, name string) (*Item, error) {
 		install = "internal/ui/tokens"
 		if item.Type != "components:base" {
 			install = "internal/ui/components/" + name
+		}
+	}
+	item.Install = install
+	// The import path of the item in this module, the path the copies of
+	// its siblings use to import it. Install rewrites those imports to
+	// the consumer's path, so the copies stay in the consumer's module.
+	if mod != "" {
+		if relpkg, err := filepath.Rel(root, dir); err == nil {
+			item.Import = mod + "/" + filepath.ToSlash(relpkg)
 		}
 	}
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
@@ -103,4 +117,26 @@ func buildItem(dir, name string) (*Item, error) {
 		return nil, err
 	}
 	return item, nil
+}
+
+// moduleOf finds the Go module that contains dir, by walking up to its
+// go.mod, and returns its root and its module path. Outside a module it
+// returns empty strings.
+func moduleOf(dir string) (root, mod string) {
+	for {
+		data, err := os.ReadFile(filepath.Join(dir, "go.mod"))
+		if err == nil {
+			for _, line := range strings.Split(string(data), "\n") {
+				if f := strings.Fields(line); len(f) == 2 && f[0] == "module" {
+					return dir, f[1]
+				}
+			}
+			return dir, ""
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return "", ""
+		}
+		dir = parent
+	}
 }

@@ -219,3 +219,47 @@ go run ./examples/studio                open the window
 go test ./examples/studio/...           render and check it headless
 go run ./examples/studio/cmd/snapshot   write studio.png, studio-liked.png and studio-dark.png
 ```
+
+## Agent
+
+The agent example shows the appshell, sidebar, thinking, log, chat,
+composer and notificationcenter components together in a copilot page.
+The composer asks a question, the thinking indicator spins while the
+model works, and the reply streams into the chat word by word; the log
+reveals its steps one at a time, and the bell opens the notifications
+in their tabs. The stream is simulated so the example runs anywhere.
+
+```
+go run ./examples/agent                open the window
+go test ./examples/agent/...           render and check it headless
+go run ./examples/agent/cmd/snapshot   write agent.png, agent-reply.png, agent-log.png, agent-notifications.png and agent-dark.png
+```
+
+## Dashboard
+
+The dashboard example shows the appshell, statcard, linechart and
+barchart components together in a store overview: the metric cards up
+top, the two charts side by side, and the display cards under them. The
+charts follow the pointer, swapping their headline for the month under
+it and what it was a year earlier.
+
+```
+go run ./examples/dashboard                open the window
+go test ./examples/dashboard/...           render and check it headless
+go run ./examples/dashboard/cmd/snapshot   write dashboard.png, dashboard-hover.png and dashboard-dark.png
+```
+
+## Navigation
+
+The navigation example shows the carousel, pagination and fileupload
+components together in one page. The carousel flips through slides with
+its buttons, dots or a trackpad; the pagination steps through pages; and
+the file zone uploads a picked file with its progress ring. The upload
+is simulated, so the zone needs no storage; the Upload sample button
+starts one without the dialog.
+
+```
+go run ./examples/navigation                open the window
+go test ./examples/navigation/...           render and check it headless
+go run ./examples/navigation/cmd/snapshot   write navigation.png and navigation-upload.png
+```

@@ -126,6 +126,24 @@ func main() {
 | `icon` | SVG shown as an icon, in the color of the text around it |
 | `image` | Bitmap or SVG shown as a picture, at its size or fitted into a box |
 | `colorwell` | Swatch that opens a color picker below it, as AppKit's color well |
+| `thinking` | "Thinking" indicator of an agent: a pulsing dot and steps that light up |
+| `log` | Scrolling list of an agent's steps that reveal one by one as they run |
+| `chat` | Message list with bubbles for the user and the assistant |
+| `composer` | Message box with a prompt and the send button for a chat |
+| `notificationcenter` | Panel of notifications in tabs, opened from a bell button |
+| `appshell` | App frame with a title, a sidebar and the page it switches |
+| `statcard` | Metric card with the delta against the previous period |
+| `linechart` | Line chart that follows the pointer, against a year earlier |
+| `barchart` | Paired bar chart that follows the pointer, against a year earlier |
+| `carousel` | Slides you flip with buttons, dots or a trackpad |
+| `pagination` | Page numbers with dots and the previous and next buttons |
+| `fileupload` | File zone that uploads a picked file with a progress ring |
+
+The last twelve rows are ports of [BoardUI](https://github.com/BoardUI/boardui)
+components to MyGo's native UI: the same roles and the same look, drawn
+without HTML. Where BoardUI leans on the browser (drag and drop, an input
+element), the port uses the closest native MyGo equivalent, such as the
+open dialog for a file pick.
 
 ## Examples
 
@@ -289,7 +307,7 @@ func TestClick(t *testing.T) {
 
 ## Rules
 
-- A component may import only `github.com/egoist/mygo`. The copy model has no path rewriting.
+- A component imports only `github.com/egoist/mygo` and the sibling components it composes. `uix add` rewrites the import of a sibling to the path the copy has in your module, so the copies never pull in the registry's module.
 - A component reads its colors from the theme of the `Context`. It does not hard-code colors.
 - Every component ships with a headless test that proves its behavior.
 

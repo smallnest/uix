@@ -3,6 +3,8 @@
     {
       "name": "accordion",
       "type": "components:ui",
+      "install": "internal/ui/components/accordion",
+      "import": "github.com/smallnest/uix/components/accordion",
       "registryDependencies": [
         "base"
       ],
@@ -19,6 +21,8 @@
     {
       "name": "alert",
       "type": "components:ui",
+      "install": "internal/ui/components/alert",
+      "import": "github.com/smallnest/uix/components/alert",
       "registryDependencies": [
         "base"
       ],
@@ -33,8 +37,30 @@
       ]
     },
     {
+      "name": "appshell",
+      "type": "components:ui",
+      "install": "internal/ui/components/appshell",
+      "import": "github.com/smallnest/uix/components/appshell",
+      "registryDependencies": [
+        "base",
+        "sidebar",
+        "breadcrumbs"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/appshell/appshell.go",
+          "content": "// Package appshell provides the AppShell of BoardUI for the MyGo native\n// toolkit: the page frame of a starter, with the sidebar, the breadcrumb\n// trail, the page heading and its actions, and the content below.\n//\n//\tappshell.AppShell(c, appshell.Props{\n//\t\tTitle:    \"Dashboard\",\n//\t\tTeam:     \"Board team\",\n//\t\tMember:   \"Mertcan\",\n//\t\tSelected: \u0026place,\n//\t\tSections: sections,\n//\t\tContent:  func(c *ui.Context) { ... },\n//\t})\n//\n// The shell builds on the sidebar and breadcrumbs components; install\n// them with it. It fills the window it is given, so a window can size\n// it with Grow.\npackage appshell\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n\n\t\"github.com/smallnest/uix/components/breadcrumbs\"\n\t\"github.com/smallnest/uix/components/sidebar\"\n)\n\n// Props describes the shell to draw.\ntype Props struct {\n\t// Title is the page's name: the last breadcrumb item and the\n\t// default heading.\n\tTitle string\n\t// Team and Member are the ancestors of the trail, such as the team\n\t// and the member of the app; empty ones are left out.\n\tTeam, Member string\n\t// Heading is the big text over the content; the Title when empty.\n\tHeading string\n\t// Selected is the sidebar's choice, by item ID, as the sidebar\n\t// sets it.\n\tSelected *string\n\t// Sections are the sidebar's sections.\n\tSections []sidebar.Section\n\t// Actions draw the header's buttons on the right; nil draws none.\n\tActions func(c *ui.Context)\n\t// Content is the page below the header; nil draws nothing.\n\tContent func(c *ui.Context)\n}\n\n// AppShell draws the page frame and returns it, so a view can chain more\n// calls on it.\nfunc AppShell(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Row(c).Fill().Gap(t.Space(4)).Padding(t.Space(3)).Children(func() {\n\t\tui.Box(c).Width(260).FillHeight().Shrink(0).Background(t.Surface).\n\t\t\tRadius(t.Radius * 3).Padding(t.Space(2)).Children(func() {\n\t\t\tsidebar.Sidebar(c, sidebar.Props{\n\t\t\t\tSelected: p.Selected,\n\t\t\t\tSections: p.Sections,\n\t\t\t})\n\t\t})\n\t\tui.Column(c).Grow(1).MinWidth(0).FillHeight().Gap(t.Space(2.5)).\n\t\t\tChildren(func() {\n\t\t\t\tbreadcrumbRow(c, t, p)\n\t\t\t\theadingRow(c, t, p)\n\t\t\t\tif p.Content != nil {\n\t\t\t\t\tui.Column(c).FillWidth().Grow(1).MinHeight(0).Gap(t.Space(4)).\n\t\t\t\t\t\tChildren(func() {\n\t\t\t\t\t\t\tp.Content(c)\n\t\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t})\n\t})\n}\n\n// breadcrumbRow is the trail to the page: the team, the member and the\n// page, the last one where the path is.\nfunc breadcrumbRow(c *ui.Context, t *ui.Theme, p Props) {\n\tvar items []string\n\tif p.Team != \"\" {\n\t\titems = append(items, p.Team)\n\t}\n\tif p.Member != \"\" {\n\t\titems = append(items, p.Member)\n\t}\n\titems = append(items, p.Title)\n\tchosen := len(items) - 1\n\tbreadcrumbs.Breadcrumbs(c, breadcrumbs.Props{Items: items, Chosen: \u0026chosen})\n}\n\n// headingRow is the page heading on the left, with the actions on the\n// right.\nfunc headingRow(c *ui.Context, t *ui.Theme, p Props) {\n\theading := p.Heading\n\tif heading == \"\" {\n\t\theading = p.Title\n\t}\n\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Center).\n\t\tGap(t.Space(4)).Children(func() {\n\t\tui.Text(c, heading).FontSize(t.FontSize * 1.5).FontWeight(600).TextColor(t.Text)\n\t\tif p.Actions != nil {\n\t\t\tui.Row(c).Gap(t.Space(2.5)).Children(func() { p.Actions(c) })\n\t\t}\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "autocomplete",
       "type": "components:ui",
+      "install": "internal/ui/components/autocomplete",
+      "import": "github.com/smallnest/uix/components/autocomplete",
       "registryDependencies": [
         "base"
       ],
@@ -51,6 +77,8 @@
     {
       "name": "avatar",
       "type": "components:ui",
+      "install": "internal/ui/components/avatar",
+      "import": "github.com/smallnest/uix/components/avatar",
       "registryDependencies": [
         "base"
       ],
@@ -67,6 +95,8 @@
     {
       "name": "badge",
       "type": "components:ui",
+      "install": "internal/ui/components/badge",
+      "import": "github.com/smallnest/uix/components/badge",
       "registryDependencies": [
         "base"
       ],
@@ -81,8 +111,28 @@
       ]
     },
     {
+      "name": "barchart",
+      "type": "components:ui",
+      "install": "internal/ui/components/barchart",
+      "import": "github.com/smallnest/uix/components/barchart",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/barchart/barchart.go",
+          "content": "// Package barchart provides the OrdersChartCard of BoardUI for the MyGo\n// native toolkit: a card of a year of monthly orders as paired bars, the\n// current year against the year before. The current year's bars are the\n// theme's accent, the year before's the muted gray behind them.\n//\n//\tbarchart.BarChart(c, barchart.Props{\n//\t\tData:     months,\n//\t\tSelected: \u0026active,\n//\t\tTitle:    \"Orders\",\n//\t})\n//\n// Resting the pointer on a month swaps the headline for that month,\n// shows its year-earlier figure, and puts a soft track behind the pair.\n// The card fills the height it is given, so a dashboard row can size it\n// with Grow.\npackage barchart\n\nimport (\n\t\"fmt\"\n\t\"math\"\n\t\"strconv\"\n\t\"strings\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Point is one month of the series.\ntype Point struct {\n\t// Label is the short month name, such as \"Jan\", on the axis.\n\tLabel string\n\t// Current is the value of the current year.\n\tCurrent float64\n\t// Previous is the value of the year before.\n\tPrevious float64\n}\n\n// Props describes the chart to draw.\ntype Props struct {\n\t// Data are the months, in order.\n\tData []Point\n\t// Selected is the month under the pointer, by index, -1 for none.\n\t// The chart keeps it as the pointer moves over the plot and clears\n\t// it as the pointer leaves; pass nil to draw a chart that does not\n\t// follow the pointer.\n\tSelected *int\n\t// Title is the headline's label when no month is under the pointer.\n\tTitle string\n}\n\n// months are the full names of the year, for the headline of the month\n// under the pointer.\nvar months = []string{\n\t\"January\", \"February\", \"March\", \"April\", \"May\", \"June\",\n\t\"July\", \"August\", \"September\", \"October\", \"November\", \"December\",\n}\n\n// BarChart draws the card and returns it, so a view can chain more\n// calls on it.\nfunc BarChart(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tselected := -1\n\tif p.Selected != nil {\n\t\tselected = *p.Selected\n\t}\n\ttitle := p.Title\n\tif title == \"\" {\n\t\ttitle = \"Orders\"\n\t}\n\tlabel, current, previous, delta, up := headline(t, p.Data, selected, title)\n\treturn ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius * 2).\n\t\tPadding(t.Space(4), t.Space(4), t.Space(3), t.Space(4)).\n\t\tGap(t.Space(4)).Children(func() {\n\t\tchartHeader(c, t, label, current, previous, delta, up)\n\t\tplot(c, t, p)\n\t})\n}\n\n// headline is what the header says: the total, or the month under the\n// pointer and its year-earlier figure.\nfunc headline(t *ui.Theme, data []Point, selected int, title string) (label, current, previous, delta string, up bool) {\n\tif selected \u003e= 0 \u0026\u0026 selected \u003c len(data) {\n\t\tpt := data[selected]\n\t\tlabel = pt.Label\n\t\tif len(pt.Label) \u003e= 3 {\n\t\t\tif i := strings.Index(\"JanFebMarAprMayJunJulAugSepOctNovDec\", pt.Label[:3]); i \u003e= 0 {\n\t\t\t\tlabel = months[i/3]\n\t\t\t}\n\t\t}\n\t\tcurrent, previous = grouped(int64(pt.Current)), grouped(int64(pt.Previous))\n\t\tdelta, up = deltaOf(pt.Current, pt.Previous)\n\t\treturn\n\t}\n\tvar sumCur, sumPrev float64\n\tfor _, pt := range data {\n\t\tsumCur += pt.Current\n\t\tsumPrev += pt.Previous\n\t}\n\tlabel = title\n\tcurrent, previous = grouped(int64(sumCur)), grouped(int64(sumPrev))\n\tdelta, up = deltaOf(sumCur, sumPrev)\n\treturn\n}\n\n// chartHeader is the headline over the plot: the label, the value with\n// its delta chip, the comparison under it, and the legend on the right.\nfunc chartHeader(c *ui.Context, t *ui.Theme, label, current, previous, delta string, up bool) {\n\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Start).\n\t\tGap(t.Space(3)).Children(func() {\n\t\tui.Column(c).Gap(3).Children(func() {\n\t\t\tui.Text(c, label).TextColor(t.TextMuted).SingleLine()\n\t\t\tui.Row(c).AlignItems(ui.Center).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, current).FontSize(t.FontSize * 1.2).FontWeight(600).\n\t\t\t\t\tTextColor(t.Text).SingleLine()\n\t\t\t\tdeltaChip(c, t, delta, up)\n\t\t\t})\n\t\t\tui.Text(c, previous+\" last year\").FontSize(t.FontSize * 0.8).\n\t\t\t\tTextColor(t.TextMuted).SingleLine()\n\t\t})\n\t\tui.Row(c).Gap(t.Space(4)).Children(func() {\n\t\t\tlegend(c, t, t.Accent, \"This year\")\n\t\t\tlegend(c, t, t.Text.Alpha(0.3), \"Last year\")\n\t\t})\n\t})\n}\n\n// legend is one named color dot.\nfunc legend(c *ui.Context, t *ui.Theme, color ui.Color, name string) {\n\tui.Row(c).Gap(t.Space(1)).AlignItems(ui.Center).Children(func() {\n\t\tui.Box(c).Size(8, 8).Radius(4).Background(color)\n\t\tui.Text(c, name).FontSize(t.FontSize * 0.8).TextColor(t.TextMuted).SingleLine()\n\t})\n}\n\n// plot is the chart itself: the grid, the bars, the hover track, and\n// the invisible columns that feel the pointer.\nfunc plot(c *ui.Context, t *ui.Theme, p Props) {\n\tplotBox := ui.Box(c).Grow(1).MinHeight(0)\n\tselected := -1\n\tif p.Selected != nil {\n\t\thovered := -1\n\t\t// The invisible columns, one per month, tile the plot: the\n\t\t// pointer over one picks the month, over the margins clears it.\n\t\tplotBox.Children(func() {\n\t\t\tui.Row(c).Fill().Padding(8, 8, 22, 40).Children(func() {\n\t\t\t\tfor i := range p.Data {\n\t\t\t\t\tcol := ui.Box(c).Grow(1).FillHeight()\n\t\t\t\t\tcol.Label(p.Data[i].Label)\n\t\t\t\t\tif col.Hovered() {\n\t\t\t\t\t\thovered = i\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t})\n\t\t})\n\t\tif plotBox.Hovered() {\n\t\t\t*p.Selected = hovered\n\t\t} else {\n\t\t\t*p.Selected = -1\n\t\t}\n\t\tselected = *p.Selected\n\t}\n\tplotBox.Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tdrawPlot(pt, t, p.Data, selected, r)\n\t})\n}\n\n// drawPlot paints the grid, the hover track, the paired bars and the\n// month names, rounded like the BoardUI bars at their tops.\nfunc drawPlot(pt *ui.Painter, t *ui.Theme, data []Point, selected int, r ui.Rect) {\n\tn := len(data)\n\tif n == 0 {\n\t\treturn\n\t}\n\tplot := ui.Rect{X: r.X + 40, Y: r.Y + 8, W: r.W - 48, H: r.H - 30}\n\tvar scale float64\n\tfor _, p := range data {\n\t\tif m := math.Max(p.Current, p.Previous); m \u003e scale {\n\t\t\tscale = m\n\t\t}\n\t}\n\tscale *= 1.1\n\tif scale == 0 {\n\t\tscale = 1\n\t}\n\tbottom := plot.Y + plot.H\n\t// The grid, four lines with their labels right-aligned on the left.\n\tfor i := 0; i \u003c 4; i++ {\n\t\tgy := plot.Y + plot.H*float32(i)/3\n\t\tpt.Line(plot.X, gy, plot.X+plot.W, gy, 1, t.Border)\n\t\tlabel := formatK(scale * float64(3-i) / 3)\n\t\tsize := t.FontSize * 0.75\n\t\tw := float32(len(label)) * size * 0.55\n\t\tpt.Text(plot.X-8-w, gy+size*0.35, label, size, t.TextMuted)\n\t}\n\t// The month under the pointer, a soft track behind its pair.\n\tif selected \u003e= 0 \u0026\u0026 selected \u003c n {\n\t\tband := plot.W / float32(n)\n\t\ttrackX := plot.X + band*float32(selected)\n\t\tpt.Fill(ui.Rect{X: trackX, Y: plot.Y, W: band, H: plot.H},\n\t\t\tt.Accent.Alpha(0.06), 0)\n\t}\n\t// The paired bars: the current year on the left of each pair, the\n\t// year before on the right, a gap between them.\n\tband := plot.W / float32(n)\n\tconst barArea = 0.72\n\tconst gap = 3\n\tbarW := (band*barArea - gap) / 2\n\tfor i, p := range data {\n\t\tx := plot.X + band*(float32(i)+0.5) - band*barArea/2\n\t\thCur := (plot.H * float32(p.Current/scale))\n\t\thPrev := (plot.H * float32(p.Previous/scale))\n\t\ttopRounded(pt, x, bottom-hCur, barW, hCur, 4, t.Accent)\n\t\ttopRounded(pt, x+barW+gap, bottom-hPrev, barW, hPrev, 4, t.Text.Alpha(0.3))\n\t}\n\t// The month names under the axis.\n\tsize := t.FontSize * 0.75\n\tfor i, p := range data {\n\t\tw := float32(len(p.Label)) * size * 0.55\n\t\tpt.Text(plot.X+band*(float32(i)+0.5)-w/2, plot.Y+plot.H+18, p.Label, size, t.TextMuted)\n\t}\n}\n\n// topRounded fills the rectangle with its top corners rounded, as the\n// BoardUI bars rise from the axis.\nfunc topRounded(pt *ui.Painter, x, y, w, h, r float32, c ui.Color) {\n\tif w \u003c= 0 || h \u003c= 0 {\n\t\treturn\n\t}\n\tr = min(r, w/2, h)\n\tbottom := y + h\n\tvar p ui.Path\n\tp.MoveTo(x, bottom)\n\tp.LineTo(x, y+r)\n\tp.QuadTo(x, y, x+r, y)\n\tp.LineTo(x+w-r, y)\n\tp.QuadTo(x+w, y, x+w, y+r)\n\tp.LineTo(x+w, bottom)\n\tp.Close()\n\tpt.FillPath(\u0026p, c)\n}\n\n// deltaChip is the pill of the change, green for a gain, red for a\n// loss, plain for a tie.\nfunc deltaChip(c *ui.Context, t *ui.Theme, delta string, up bool) {\n\tflat := delta == \"0%\" || delta == \"New\"\n\tbg, fg := t.SurfaceHover, t.TextMuted\n\tif up {\n\t\tbg, fg = t.Success.Alpha(0.15), t.Success\n\t} else if !flat {\n\t\tbg, fg = t.Danger.Alpha(0.15), t.Danger\n\t}\n\tui.Row(c).Shrink(0).Gap(3).Radius(9).Padding(2, 4).\n\t\tAlignItems(ui.Center).Background(bg).Children(func() {\n\t\tui.Box(c).Size(12, 12).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\t\tif up {\n\t\t\t\tpt.Line(cx, cy+2.5, cx, cy-2.5, 1.6, fg)\n\t\t\t\tvar p ui.Path\n\t\t\t\tp.MoveTo(cx-1.8, cy-0.5).LineTo(cx, cy-2.5).LineTo(cx+1.8, cy-0.5)\n\t\t\t\tpt.StrokePath(\u0026p, 1.6, fg)\n\t\t\t} else if flat {\n\t\t\t\tpt.Line(cx-2.5, cy, cx+2.5, cy, 1.6, fg)\n\t\t\t} else {\n\t\t\t\tpt.Line(cx, cy-2.5, cx, cy+2.5, 1.6, fg)\n\t\t\t\tvar p ui.Path\n\t\t\t\tp.MoveTo(cx-1.8, cy+0.5).LineTo(cx, cy+2.5).LineTo(cx+1.8, cy+0.5)\n\t\t\t\tpt.StrokePath(\u0026p, 1.6, fg)\n\t\t\t}\n\t\t})\n\t\tui.Text(c, delta).FontSize(t.FontSize * 0.8).TextColor(fg).SingleLine()\n\t})\n}\n\n// deltaOf is the change of current against previous: the label of the\n// chip and whether it reads as a gain.\nfunc deltaOf(current, previous float64) (label string, up bool) {\n\tif previous == 0 {\n\t\treturn \"New\", false\n\t}\n\tchange := (current - previous) / previous * 100\n\trounded := math.Round(change*10) / 10\n\tif rounded == 0 {\n\t\treturn \"0%\", false\n\t}\n\tif rounded \u003e 0 {\n\t\treturn fmt.Sprintf(\"+%s%%\", strconv.FormatFloat(rounded, 'f', -1, 64)), true\n\t}\n\treturn fmt.Sprintf(\"%s%%\", strconv.FormatFloat(rounded, 'f', -1, 64)), false\n}\n\n// formatK is the axis label: \"$14k\" for the thousands, \"$0\" below.\nfunc formatK(v float64) string {\n\tif v \u003e= 1000 {\n\t\treturn fmt.Sprintf(\"$%dk\", int(math.Round(v/1000)))\n\t}\n\treturn fmt.Sprintf(\"$%d\", int(v))\n}\n\n// grouped writes n with a comma before every third digit.\nfunc grouped(n int64) string {\n\ts := strconv.FormatInt(n, 10)\n\tstart := len(s) % 3\n\tif start == 0 \u0026\u0026 len(s) \u003e 3 {\n\t\tstart = 3\n\t}\n\tvar b strings.Builder\n\tfor i, r := range s {\n\t\tif i \u003e 0 \u0026\u0026 i == start {\n\t\t\tb.WriteByte(',')\n\t\t} else if i \u003e start \u0026\u0026 (i-start)%3 == 0 {\n\t\t\tb.WriteByte(',')\n\t\t}\n\t\tb.WriteRune(r)\n\t}\n\treturn b.String()\n}\n"
+        }
+      ]
+    },
+    {
       "name": "base",
       "type": "components:base",
+      "install": "internal/ui/tokens",
+      "import": "github.com/smallnest/uix/components/base",
       "dependencies": [
         "github.com/egoist/mygo"
       ],
@@ -96,6 +146,8 @@
     {
       "name": "breadcrumbs",
       "type": "components:ui",
+      "install": "internal/ui/components/breadcrumbs",
+      "import": "github.com/smallnest/uix/components/breadcrumbs",
       "registryDependencies": [
         "base"
       ],
@@ -112,6 +164,8 @@
     {
       "name": "button",
       "type": "components:ui",
+      "install": "internal/ui/components/button",
+      "import": "github.com/smallnest/uix/components/button",
       "registryDependencies": [
         "base"
       ],
@@ -128,6 +182,8 @@
     {
       "name": "calendar",
       "type": "components:ui",
+      "install": "internal/ui/components/calendar",
+      "import": "github.com/smallnest/uix/components/calendar",
       "registryDependencies": [
         "base"
       ],
@@ -144,6 +200,8 @@
     {
       "name": "card",
       "type": "components:ui",
+      "install": "internal/ui/components/card",
+      "import": "github.com/smallnest/uix/components/card",
       "registryDependencies": [
         "base"
       ],
@@ -158,8 +216,48 @@
       ]
     },
     {
+      "name": "carousel",
+      "type": "components:ui",
+      "install": "internal/ui/components/carousel",
+      "import": "github.com/smallnest/uix/components/carousel",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/carousel/carousel.go",
+          "content": "// Package carousel provides the gallery carousel of BoardUI for the MyGo\n// native toolkit: a horizontal run of slides you slide through with the\n// previous and next buttons or the position dots, or with a trackpad.\n//\n//\tcarousel.Carousel(c, carousel.Props{\n//\t\tCount:  len(shots),\n//\t\tSlide: func(c *ui.Context, i int) { shots[i].Show(c) },\n//\t\tScroll: \u0026state.Scroll,\n//\t\tState:  \u0026state.Carousel,\n//\t})\n//\n// The track is a horizontal scroll container, so the user scrolls it as\n// a native app scrolls. Each slide is as wide as the track, one slide a\n// view. The buttons sit above the track on the right and disable at the\n// ends; the dots below tell which slide is showing and jump to the\n// slide they name. The app keeps the ScrollState of the track and the\n// State of the carousel, as it keeps the scroll of a chat.\npackage carousel\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the carousel to draw.\ntype Props struct {\n\t// Count is the number of slides.\n\tCount int\n\t// Slide builds slide i into the track; nil draws empty slides.\n\tSlide func(c *ui.Context, i int)\n\t// Scroll is the scroll state of the track, for the app to keep.\n\t// Without it the carousel draws but does not move.\n\tScroll *ui.ScrollState\n\t// State is the carousel's own state, for the app to keep: which\n\t// slide is showing and whether either end is reached.\n\tState *State\n\t// HideArrows hides the previous and next buttons above the track.\n\tHideArrows bool\n\t// HideDots hides the position dots below the track.\n\tHideDots bool\n\t// Gap is the space between slides; 0 draws the theme's spacing.\n\tGap float32\n\t// Height is the height of the track; the slides size it when 0.\n\tHeight float32\n}\n\n// State is where the carousel is, kept by the app as the slides move.\ntype State struct {\n\t// Active is the slide showing, from 0.\n\tActive int\n\t// AtStart and AtEnd say whether either end of the track is reached.\n\tAtStart, AtEnd bool\n\t// viewport is how wide the track is, measured from its layout so the\n\t// slides can be as wide as the track a frame later.\n\tviewport float32\n\t// settling is true for one frame after the slide width changed, so\n\t// the width is not measured against the layout it has not had yet.\n\tsettling bool\n}\n\n// Carousel draws the carousel and returns it, so a view can chain more\n// calls on it.\nfunc Carousel(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tn := max(1, p.Count)\n\tgap := p.Gap\n\tif gap == 0 {\n\t\tgap = t.Space(4)\n\t}\n\t// The width of a slide is the width of the track. A scroll row\n\t// measures its children with no bound on their width, so the width\n\t// must be in points, not percents: the track's width of the last\n\t// frame is read back from how far it can scroll, with the width of\n\t// the window for the very first frame.\n\tslideW := float32(0)\n\tmeasuring := p.Scroll != nil \u0026\u0026 p.State != nil \u0026\u0026 n \u003e 1\n\tif measuring {\n\t\tst := p.State\n\t\tif st.viewport \u003e 0 {\n\t\t\tslideW = st.viewport\n\t\t} else {\n\t\t\tw, _ := c.Size()\n\t\t\tslideW = w\n\t\t\t// A second frame, to measure the track once it is laid out.\n\t\t\tc.Invalidate()\n\t\t}\n\t\tif st.settling {\n\t\t\t// The layout has not yet seen the new slide width; measure\n\t\t\t// it a frame from now, when it has.\n\t\t\tst.settling = false\n\t\t} else if p.Scroll.MaxX \u003e 0 {\n\t\t\t// The track shows slides and gaps, and can scroll the rest:\n\t\t\t// viewport = content - MaxX.\n\t\t\tv := float32(n)*slideW + float32(n-1)*gap - p.Scroll.MaxX\n\t\t\tif v != st.viewport {\n\t\t\t\tst.viewport = v\n\t\t\t\tst.settling = true\n\t\t\t\tc.Invalidate()\n\t\t\t}\n\t\t}\n\t}\n\tif p.Scroll != nil \u0026\u0026 p.State != nil {\n\t\tst := p.State\n\t\tif n \u003e 1 \u0026\u0026 p.Scroll.MaxX \u003e 0 {\n\t\t\tpitch := p.Scroll.MaxX / float32(n-1)\n\t\t\tst.Active = clamp(int((p.Scroll.X+pitch/2)/pitch), 0, n-1)\n\t\t} else {\n\t\t\tst.Active = 0\n\t\t}\n\t\tst.AtStart = p.Scroll.X \u003c= 1\n\t\tst.AtEnd = p.Scroll.MaxX \u003e 0 \u0026\u0026 p.Scroll.X \u003e= p.Scroll.MaxX-1\n\t}\n\treturn ui.Column(c).FillWidth().Gap(t.Space(4)).Children(func() {\n\t\tif !p.HideArrows \u0026\u0026 n \u003e 1 {\n\t\t\tarrowRow(c, t, p, n)\n\t\t}\n\t\tscroll := ui.ScrollHorizontal(c).FillWidth().Gap(gap).TrackScroll(p.Scroll)\n\t\tif p.Height \u003e 0 {\n\t\t\tscroll.Height(p.Height)\n\t\t}\n\t\tscroll.Children(func() {\n\t\t\tfor i := 0; i \u003c n; i++ {\n\t\t\t\t// The slide is as wide as the track and does not shrink,\n\t\t\t\t// so exactly one shows at a time.\n\t\t\t\tui.Box(c).Width(slideW).Shrink(0).Children(func() {\n\t\t\t\t\tif p.Slide != nil {\n\t\t\t\t\t\tp.Slide(c, i)\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t}\n\t\t})\n\t\tif !p.HideDots \u0026\u0026 n \u003e 1 {\n\t\t\tdots(c, t, p, n)\n\t\t}\n\t})\n}\n\n// arrowRow is the previous and next buttons above the track on the\n// right, as BoardUI draws them.\nfunc arrowRow(c *ui.Context, t *ui.Theme, p Props, n int) {\n\tui.Row(c).FillWidth().Justify(ui.End).Gap(t.Space(2)).Children(func() {\n\t\tarrow(c, t, p, \"Previous slide\", false, p.State.AtStart, n, p.State.Active-1)\n\t\tarrow(c, t, p, \"Next slide\", true, p.State.AtEnd, n, p.State.Active+1)\n\t})\n}\n\n// arrow is one of the previous and next buttons: a chevron in a round\n// box, disabled at its end of the track.\nfunc arrow(c *ui.Context, t *ui.Theme, p Props, label string, next bool, disabled bool, n, to int) {\n\tfg := t.Text\n\tif disabled {\n\t\tfg = t.TextMuted\n\t}\n\tb := ui.ButtonBase(c).Size(28, 28).Radius(t.Radius).Center()\n\tb.Label(label)\n\tb.Children(func() {\n\t\tui.Box(c).Size(16, 16).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\t\tvar p ui.Path\n\t\t\tif next {\n\t\t\t\tp.MoveTo(cx-3, cy-4).LineTo(cx+3, cy).LineTo(cx-3, cy+4)\n\t\t\t} else {\n\t\t\t\tp.MoveTo(cx+3, cy-4).LineTo(cx-3, cy).LineTo(cx+3, cy+4)\n\t\t\t}\n\t\t\tpt.StrokePath(\u0026p, 1.8, fg)\n\t\t})\n\t})\n\tif disabled {\n\t\tb.Disabled(true)\n\t}\n\tif b.Clicked() {\n\t\tgoTo(c, p, n, to)\n\t}\n}\n\n// dots is the position indicator below the track: a wide pill for the\n// slide showing, small dots for the others, each jumping to its slide.\nfunc dots(c *ui.Context, t *ui.Theme, p Props, n int) {\n\tui.Row(c).FillWidth().Justify(ui.Center).Gap(6).Children(func() {\n\t\tfor i := 0; i \u003c n; i++ {\n\t\t\tactive := p.State != nil \u0026\u0026 p.State.Active == i\n\t\t\tw := float32(6)\n\t\t\tbg := t.SurfaceHover\n\t\t\tif active {\n\t\t\t\tw, bg = 16, t.Text\n\t\t\t}\n\t\t\tdot := ui.ButtonBase(c).Width(w).Height(6).Radius(3).Background(bg)\n\t\t\tdot.Label(fmt.Sprintf(\"Go to slide %d\", i+1))\n\t\t\tif dot.Clicked() {\n\t\t\t\tgoTo(c, p, n, i)\n\t\t\t}\n\t\t}\n\t})\n}\n\n// goTo scrolls the track to slide i, keeping it within the slides.\nfunc goTo(c *ui.Context, p Props, n, i int) {\n\tif p.Scroll == nil {\n\t\treturn\n\t}\n\ti = clamp(i, 0, n-1)\n\tif n \u003e 1 \u0026\u0026 p.Scroll.MaxX \u003e 0 {\n\t\tp.Scroll.X = float32(i) * (p.Scroll.MaxX / float32(n-1))\n\t}\n}\n\n// clamp keeps i within [lo, hi].\nfunc clamp(i, lo, hi int) int {\n\tif i \u003c lo {\n\t\treturn lo\n\t}\n\tif i \u003e hi {\n\t\treturn hi\n\t}\n\treturn i\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "chat",
+      "type": "components:ui",
+      "install": "internal/ui/components/chat",
+      "import": "github.com/smallnest/uix/components/chat",
+      "registryDependencies": [
+        "base",
+        "thinking",
+        "composer"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/chat/chat.go",
+          "content": "// Package chat provides a working chat surface for the MyGo native\n// toolkit, built from the agent components: a transcript that scrolls,\n// the thinking indicator while the model works, and the composer at the\n// bottom. It is the AgentChat of BoardUI without the backend: the app\n// owns the messages and sends them however it likes.\n//\n//\tchat.Chat(c, chat.Props{\n//\t\tMessages: msgs,\n//\t\tValue:    \u0026input,\n//\t\tBusy:     busy,\n//\t\tOnSubmit: send,\n//\t})\n//\n// The surface is a rounded card on the theme's Surface, one step darker\n// than the window, with the composer's pill on the Background over it.\n// A chat spans the width it is given and grows to the height it is\n// given, so a window can size it with Grow.\npackage chat\n\nimport (\n\t\"math\"\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n\n\t\"github.com/smallnest/uix/components/composer\"\n\t\"github.com/smallnest/uix/components/thinking\"\n)\n\n// Role is who a message speaks for.\ntype Role int\n\nconst (\n\t// User is the person at the keyboard; their words go in a bubble.\n\tUser Role = iota\n\t// Assistant is the model; its words read plain on the surface.\n\tAssistant\n)\n\n// Message is one line of the transcript.\ntype Message struct {\n\t// Role is who speaks.\n\tRole Role\n\t// Text is what they said. The assistant's message the model is\n\t// still writing grows as the app appends to it.\n\tText string\n\t// Streaming marks the assistant's message as the one being written,\n\t// which draws a blinking caret after the text.\n\tStreaming bool\n}\n\n// Props describes the chat to draw.\ntype Props struct {\n\t// Messages are the lines of the transcript, oldest first. While the\n\t// model works the app keeps an empty assistant message at the end\n\t// and sets Thinking.\n\tMessages []Message\n\t// Value is the text being typed in the composer.\n\tValue *string\n\t// Busy keeps the composer's send a stop button.\n\tBusy bool\n\t// Thinking shows the thinking indicator where the reply will land;\n\t// set while the model works and nothing has been written yet.\n\tThinking bool\n\t// OnSubmit runs when the composer sends, with the text as typed.\n\tOnSubmit func(text string)\n\t// OnStop runs when the stop button is clicked while Busy.\n\tOnStop func()\n\t// Model and Provider feed the composer's chip and status row.\n\tModel    string\n\tProvider string\n\t// Suggestions are the chips of the empty state, each sending itself.\n\tSuggestions []string\n\t// Scroll keeps the transcript's place, as TrackScroll does. Pass\n\t// one you keep, and the transcript follows the end when it is\n\t// already there. Nil scrolls without keeping the place.\n\tScroll *ui.ScrollState\n}\n\n// Chat draws the chat surface and returns it, so a view can chain more\n// calls on it.\nfunc Chat(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius * 3).Clip().\n\t\tChildren(func() {\n\t\t\tif len(p.Messages) == 0 {\n\t\t\t\tempty(c, t, p)\n\t\t\t} else {\n\t\t\t\ttranscript(c, t, p)\n\t\t\t}\n\t\t\tcomposerWrap(c, t, p)\n\t\t})\n}\n\n// transcript is the scrollable column of messages, with the thinking\n// indicator where a reply will land.\nfunc transcript(c *ui.Context, t *ui.Theme, p Props) {\n\tsc := ui.Scroll(c).Grow(1).MinHeight(0)\n\tif p.Scroll != nil {\n\t\tsc.TrackScroll(p.Scroll)\n\t\t// A log that follows its end, unless the user scrolled up from\n\t\t// it, as MyGo's Scroll describes.\n\t\tif p.Scroll.Y \u003e= p.Scroll.MaxY-t.Space(2) \u0026\u0026 p.Scroll.MaxY \u003e 0 {\n\t\t\tp.Scroll.Y = math.MaxFloat32\n\t\t}\n\t}\n\tsc.Children(func() {\n\t\tui.Column(c).FillWidth().Gap(t.Space(5)).\n\t\t\tPadding(t.Space(6), t.Space(4), t.Space(2), t.Space(4)).\n\t\t\tChildren(func() {\n\t\t\t\tfor _, m := range p.Messages {\n\t\t\t\t\tmessage(c, t, m)\n\t\t\t\t}\n\t\t\t\tif p.Thinking {\n\t\t\t\t\tui.Row(c).Padding(0, t.Space(1)).Children(func() {\n\t\t\t\t\t\tthinking.Thinking(c, thinking.Props{\n\t\t\t\t\t\t\tLabel:   \"Thinking\",\n\t\t\t\t\t\t\tVariant: thinking.Wave,\n\t\t\t\t\t\t})\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t})\n\t})\n}\n\n// empty is the centered prompt and suggestion chips of a new thread.\nfunc empty(c *ui.Context, t *ui.Theme, p Props) {\n\tui.Column(c).Grow(1).FillWidth().Center().Gap(t.Space(4)).\n\t\tPadding(0, t.Space(4)).Children(func() {\n\t\t\tui.Column(c).Center().Gap(t.Space(1)).Children(func() {\n\t\t\t\tui.Text(c, \"What can I help with?\").\n\t\t\t\t\tFontSize(t.FontSize * 1.4).FontWeight(600).TextColor(t.Text)\n\t\t\t\tui.Text(c, \"The chat runs against your own model key. \"+\n\t\t\t\t\t\"History stays in this app.\").\n\t\t\t\t\tTextColor(t.TextMuted).TextAlign(ui.Center)\n\t\t\t})\n\t\t\tif len(p.Suggestions) \u003e 0 {\n\t\t\t\tui.Row(c).Wrap().Justify(ui.Center).Gap(t.Space(2)).Children(func() {\n\t\t\t\t\tfor _, s := range p.Suggestions {\n\t\t\t\t\t\tchip(c, t, p, s)\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t}\n\t\t\tif p.Thinking {\n\t\t\t\tui.Row(c).Children(func() {\n\t\t\t\t\tthinking.Thinking(c, thinking.Props{\n\t\t\t\t\t\tLabel:   \"Thinking\",\n\t\t\t\t\t\tVariant: thinking.Wave,\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t}\n\t\t})\n}\n\n// chip is one suggestion, a pill that sends itself when clicked.\nfunc chip(c *ui.Context, t *ui.Theme, p Props, s string) {\n\tb := ui.ButtonBase(c).Radius(t.Radius + 12).Background(t.Background).\n\t\tPadding(t.Space(2), t.Space(3.5))\n\tif b.Clicked() \u0026\u0026 p.OnSubmit != nil {\n\t\tp.OnSubmit(s)\n\t}\n\tb.Children(func() {\n\t\tui.Text(c, s).TextColor(t.TextMuted).SingleLine()\n\t})\n}\n\n// message draws one line of the transcript, in its role's own voice.\nfunc message(c *ui.Context, t *ui.Theme, m Message) {\n\tswitch m.Role {\n\tcase User:\n\t\tui.Row(c).FillWidth().Justify(ui.End).Children(func() {\n\t\t\tui.Box(c).MaxWidthPercent(75).Padding(t.Space(2.5), t.Space(3.5)).\n\t\t\t\tRadius(t.Radius + 4).Background(t.Accent).Children(func() {\n\t\t\t\tui.Text(c, m.Text).TextColor(t.AccentText)\n\t\t\t})\n\t\t})\n\tdefault:\n\t\tui.Row(c).FillWidth().Justify(ui.Start).AlignItems(ui.End).\n\t\t\tGap(t.Space(1)).Children(func() {\n\t\t\t\tui.Text(c, m.Text).MaxWidthPercent(85).TextColor(t.Text)\n\t\t\t\tif m.Streaming {\n\t\t\t\t\tcaret(c, t)\n\t\t\t\t}\n\t\t\t})\n\t}\n}\n\n// caret is the blinking block that marks the line the model is writing.\nfunc caret(c *ui.Context, t *ui.Theme) *ui.Element {\n\tsize := t.FontSize\n\treturn ui.Box(c).Size(2, size).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tphase := float64(pt.Now().UnixMilli()%800) / 800\n\t\t// A triangle wave of opacity: fade out then snap back, as a\n\t\t// caret does.\n\t\ta := float32(math.Abs(1 - 2*phase))\n\t\tpt.Fill(ui.Rect{X: r.X, Y: r.Y, W: r.W, H: r.H}, t.Text.Alpha(a), 1)\n\t\tpt.After(80 * time.Millisecond)\n\t})\n}\n\n// composerWrap is the composer with the room it keeps from the edge of\n// the card.\nfunc composerWrap(c *ui.Context, t *ui.Theme, p Props) {\n\tui.Column(c).Padding(0, t.Space(3)).Shrink(0).Children(func() {\n\t\tcomposer.Composer(c, composer.Props{\n\t\t\tValue:        p.Value,\n\t\t\tBusy:         p.Busy,\n\t\t\tOnSubmit:     p.OnSubmit,\n\t\t\tOnStop:       p.OnStop,\n\t\t\tModel:        p.Model,\n\t\t\tProvider:     p.Provider,\n\t\t\tMessageCount: len(p.Messages),\n\t\t})\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "components:ui",
+      "install": "internal/ui/components/checkbox",
+      "import": "github.com/smallnest/uix/components/checkbox",
       "registryDependencies": [
         "base"
       ],
@@ -176,6 +274,8 @@
     {
       "name": "checkboxgroup",
       "type": "components:ui",
+      "install": "internal/ui/components/checkboxgroup",
+      "import": "github.com/smallnest/uix/components/checkboxgroup",
       "registryDependencies": [
         "base"
       ],
@@ -192,6 +292,8 @@
     {
       "name": "collapsible",
       "type": "components:ui",
+      "install": "internal/ui/components/collapsible",
+      "import": "github.com/smallnest/uix/components/collapsible",
       "registryDependencies": [
         "base"
       ],
@@ -208,6 +310,8 @@
     {
       "name": "colorpicker",
       "type": "components:ui",
+      "install": "internal/ui/components/colorpicker",
+      "import": "github.com/smallnest/uix/components/colorpicker",
       "registryDependencies": [
         "base"
       ],
@@ -224,6 +328,8 @@
     {
       "name": "colorwell",
       "type": "components:ui",
+      "install": "internal/ui/components/colorwell",
+      "import": "github.com/smallnest/uix/components/colorwell",
       "registryDependencies": [
         "base"
       ],
@@ -240,6 +346,8 @@
     {
       "name": "combobox",
       "type": "components:ui",
+      "install": "internal/ui/components/combobox",
+      "import": "github.com/smallnest/uix/components/combobox",
       "registryDependencies": [
         "base"
       ],
@@ -254,8 +362,28 @@
       ]
     },
     {
+      "name": "composer",
+      "type": "components:ui",
+      "install": "internal/ui/components/composer",
+      "import": "github.com/smallnest/uix/components/composer",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/composer/composer.go",
+          "content": "// Package composer provides the free AgentComposer of BoardUI for the\n// MyGo native toolkit: a pill with a text field and circular controls,\n// and the thin status row beneath it.\n//\n//\tcomposer.Composer(c, composer.Props{\n//\t\tValue:    \u0026message,\n//\t\tOnSubmit: send,\n//\t\tProvider: \"Anthropic\",\n//\t\tModel:    \"openai/gpt-5-nano\",\n//\t})\n//\n// The pill is 52 points tall with 36-point circles flush inside it, like\n// the Pro composer's, so a starter reads as the same product. What the\n// free composer leaves out are the Pro surfaces: the model and effort\n// menus, the attachment plugin panel and the voice equalizer. The\n// attachment slot stays, plain. The status row shows what is actually\n// true of the running app — which provider answered, which model, how\n// many messages are in the thread — rather than decorative chrome.\npackage composer\n\nimport (\n\t\"fmt\"\n\t\"math\"\n\t\"strings\"\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Props describes the composer to draw.\ntype Props struct {\n\t// Value is the text being typed; the composer clears it when it\n\t// submits.\n\tValue *string\n\t// Busy keeps the send button a stop button, and lights the pill.\n\tBusy bool\n\t// OnSubmit runs when Enter is pressed or the send button is clicked,\n\t// with the text as typed, trimmed. The view sends it to the model.\n\tOnSubmit func(text string)\n\t// OnStop runs when the stop button is clicked while Busy.\n\tOnStop func()\n\t// OnAttachment runs when the attachment button is clicked; nil\n\t// leaves the slot inert, as the free composer's is.\n\tOnAttachment func()\n\t// Model is the model id answering, such as \"openai/gpt-5-nano\"; the\n\t// chip shows the name after the last slash. Empty draws no chip.\n\tModel string\n\t// Provider is the name of the provider, for the status row.\n\tProvider string\n\t// MessageCount is the number of messages in the thread, for the\n\t// status row; 0 reads \"New chat\".\n\tMessageCount int\n}\n\n// Composer draws the pill and the status row and returns them, so a view\n// can chain more calls on the column.\nfunc Composer(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Column(c).FillWidth().Gap(t.Space(2.5)).Children(func() {\n\t\tpill(c, t, p)\n\t\tstatusRow(c, t, p)\n\t})\n}\n\n// pill is the 52-point form: an attachment slot, the text field, the\n// model chip and the send or stop control, all inside the pill.\nfunc pill(c *ui.Context, t *ui.Theme, p Props) {\n\te := ui.Row(c).FillWidth().Height(52).Radius(26).Padding(8).\n\t\tGap(t.Space(2.5)).AlignItems(ui.Center).Background(t.Background)\n\tif p.Busy {\n\t\t// The light sweeps the pill while the model works, the native\n\t\t// stand-in for the liquid-glass loader of the Pro composer.\n\t\te.Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tms := float64(pt.Now().UnixMilli() % 1400)\n\t\t\tpos := ms / 1400\n\t\t\tcx := r.X + r.W*float32(pos)\n\t\t\tpt.Clip(r, 26, func() {\n\t\t\t\t// Thin bars, fading each side of the sweep, cheaply a\n\t\t\t\t// moving gradient.\n\t\t\t\tfor i := -40; i \u003c= 40; i++ {\n\t\t\t\t\td := math.Abs(float64(i)) / 12.0\n\t\t\t\t\ta := float32(math.Max(0, 1-d)) * 0.3\n\t\t\t\t\tif a \u003c= 0 {\n\t\t\t\t\t\tcontinue\n\t\t\t\t\t}\n\t\t\t\t\tx := cx + float32(i)*3\n\t\t\t\t\tif x \u003c r.X || x \u003e r.X+r.W {\n\t\t\t\t\t\tcontinue\n\t\t\t\t\t}\n\t\t\t\t\tpt.Fill(ui.Rect{X: x, Y: r.Y, W: 3, H: r.H}, t.Accent.Alpha(a), 0)\n\t\t\t\t}\n\t\t\t\tpt.After(50 * time.Millisecond)\n\t\t\t})\n\t\t})\n\t}\n\te.Children(func() {\n\t\t// The attachment slot, with the add-button tokens of the Pro\n\t\t// composer so the two read as the same control.\n\t\tslot := circleButton(c, t, t.SurfaceHover)\n\t\tif p.OnAttachment != nil \u0026\u0026 slot.Clicked() {\n\t\t\tp.OnAttachment()\n\t\t}\n\t\tslot.Label(\"Add attachment\")\n\t\tslot.Children(func() { paperclip(c, t.TextMuted) })\n\n\t\tin := ui.TextInput(c, p.Value).Grow(1).MinWidth(0).Padding(0).\n\t\t\tBorder(0, ui.Color{}).Background(ui.Color{}).\n\t\t\tPlaceholder(\"Ask me anything\").Label(\"Message\")\n\t\tif in.Submitted() {\n\t\t\tsubmit(c, p)\n\t\t}\n\n\t\tif p.Model != \"\" {\n\t\t\tmodelChip(c, t, p.Model)\n\t\t}\n\n\t\tif p.Busy {\n\t\t\tstop := circleButton(c, t, t.Surface)\n\t\t\tstop.Label(\"Stop generating\")\n\t\t\tif stop.Clicked() \u0026\u0026 p.OnStop != nil {\n\t\t\t\tp.OnStop()\n\t\t\t}\n\t\t\tstop.Children(func() {\n\t\t\t\tui.Box(c).Size(10, 10).Radius(2).Background(t.TextMuted)\n\t\t\t})\n\t\t} else {\n\t\t\tsend := circleButton(c, t, t.Accent)\n\t\t\tdisabled := p.Value == nil || strings.TrimSpace(*p.Value) == \"\"\n\t\t\tsend.Disabled(disabled)\n\t\t\tsend.Label(\"Send message\")\n\t\t\tif send.Clicked() {\n\t\t\t\tsubmit(c, p)\n\t\t\t}\n\t\t\tsend.Children(func() { arrowUp(c, t.AccentText) })\n\t\t}\n\t})\n}\n\n// circleButton is a 36-point round button, as the composer's controls\n// sit flush inside the pill.\nfunc circleButton(c *ui.Context, t *ui.Theme, bg ui.Color) *ui.Element {\n\treturn ui.ButtonBase(c).Size(36, 36).Radius(18).Background(bg).Center()\n}\n\n// submit runs OnSubmit with the trimmed text and clears the field, as\n// the composer does when a message goes out.\nfunc submit(c *ui.Context, p Props) {\n\tif p.OnSubmit == nil || p.Value == nil {\n\t\treturn\n\t}\n\ttext := strings.TrimSpace(*p.Value)\n\tif text == \"\" {\n\t\treturn\n\t}\n\t*p.Value = \"\"\n\tp.OnSubmit(text)\n}\n\n// modelChip shows which model answers, the name after the last slash:\n// \"openai/gpt-5-nano\" reads better in a short slot as \"gpt-5-nano\".\nfunc modelChip(c *ui.Context, t *ui.Theme, model string) {\n\tui.Row(c).Height(32).Gap(t.Space(1)).Radius(12).\n\t\tPadding(0, t.Space(2)).AlignItems(ui.Center).Children(func() {\n\t\tsparkle(c, 14, t.TextMuted)\n\t\tui.Text(c, shortModel(model)).FontSize(t.FontSize * 0.85).\n\t\t\tTextColor(t.TextMuted).SingleLine()\n\t})\n}\n\n// statusRow is the thin row under the pill: the provider on the left,\n// the message count on the right.\nfunc statusRow(c *ui.Context, t *ui.Theme, p Props) {\n\tui.Row(c).FillWidth().Height(26).Justify(ui.SpaceBetween).\n\t\tAlignItems(ui.Center).Children(func() {\n\t\tprovider := p.Provider\n\t\tif provider == \"\" {\n\t\t\tprovider = \"Not configured\"\n\t\t}\n\t\tstatusItem(c, t, func() { infinity(c, t.TextMuted) }, provider)\n\t\tcount := plural(p.MessageCount)\n\t\tif p.MessageCount == 0 {\n\t\t\tcount = \"New chat\"\n\t\t}\n\t\tstatusItem(c, t, func() { sparkle(c, 14, t.TextMuted) }, count)\n\t})\n}\n\n// statusItem is one label with a small icon before it.\nfunc statusItem(c *ui.Context, t *ui.Theme, icon func(), label string) {\n\tui.Row(c).Gap(t.Space(1)).AlignItems(ui.Center).Children(func() {\n\t\ticon()\n\t\tui.Text(c, label).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted).SingleLine()\n\t})\n}\n\nfunc plural(n int) string {\n\tif n == 1 {\n\t\treturn \"1 message\"\n\t}\n\treturn fmt.Sprintf(\"%d messages\", n)\n}\n\n// shortModel returns model without the provider prefix: the text after\n// the last slash, or the whole string when there is none.\nfunc shortModel(model string) string {\n\tif i := strings.LastIndex(model, \"/\"); i \u003e= 0 {\n\t\treturn model[i+1:]\n\t}\n\treturn model\n}\n\n// arrowUp draws the send arrow, a shaft with a head.\nfunc arrowUp(c *ui.Context, color ui.Color) {\n\tui.Box(c).Size(36, 36).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx, cy-8).LineTo(cx-5, cy-3)\n\t\tp.MoveTo(cx, cy-8).LineTo(cx+5, cy-3)\n\t\tp.MoveTo(cx, cy-8).LineTo(cx, cy+9)\n\t\tpt.StrokePath(\u0026p, 2, color)\n\t})\n}\n\n// paperclip draws the attachment slot's clip.\nfunc paperclip(c *ui.Context, color ui.Color) {\n\tui.Box(c).Size(36, 36).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tx0, y0, s := r.X, r.Y, r.W\n\t\tvar p ui.Path\n\t\tp.MoveTo(x0+s*0.36, y0+s*0.6)\n\t\tp.LineTo(x0+s*0.36, y0+s*0.4)\n\t\tp.QuadTo(x0+s*0.36, y0+s*0.28, x0+s*0.5, y0+s*0.28)\n\t\tp.QuadTo(x0+s*0.64, y0+s*0.28, x0+s*0.64, y0+s*0.42)\n\t\tp.LineTo(x0+s*0.64, y0+s*0.62)\n\t\tp.QuadTo(x0+s*0.64, y0+s*0.74, x0+s*0.5, y0+s*0.74)\n\t\tp.QuadTo(x0+s*0.38, y0+s*0.74, x0+s*0.38, y0+s*0.62)\n\t\tp.QuadTo(x0+s*0.38, y0+s*0.55, x0+s*0.47, y0+s*0.55)\n\t\tp.QuadTo(x0+s*0.55, y0+s*0.55, x0+s*0.55, y0+s*0.62)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// sparkle draws a four-point star, the mark of an AI model.\nfunc sparkle(c *ui.Context, size float32, color ui.Color) *ui.Element {\n\treturn ui.Box(c).Size(size, size).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\tarm := r.W / 2\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx, cy-arm)\n\t\tp.QuadTo(cx+arm*0.3, cy-arm*0.3, cx+arm, cy)\n\t\tp.QuadTo(cx+arm*0.3, cy+arm*0.3, cx, cy+arm)\n\t\tp.QuadTo(cx-arm*0.3, cy+arm*0.3, cx-arm, cy)\n\t\tp.QuadTo(cx-arm*0.3, cy-arm*0.3, cx, cy-arm)\n\t\tp.Close()\n\t\tpt.FillPath(\u0026p, color)\n\t})\n}\n\n// infinity draws two tangent circles that read as the loop of a run.\nfunc infinity(c *ui.Context, color ui.Color) *ui.Element {\n\treturn ui.Box(c).Size(14, 14).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\trad := r.H / 4\n\t\tvar p ui.Path\n\t\tp.Circle(cx-rad, cy, rad)\n\t\tp.Circle(cx+rad, cy, rad)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "datepicker",
       "type": "components:ui",
+      "install": "internal/ui/components/datepicker",
+      "import": "github.com/smallnest/uix/components/datepicker",
       "registryDependencies": [
         "base"
       ],
@@ -272,6 +400,8 @@
     {
       "name": "dialog",
       "type": "components:ui",
+      "install": "internal/ui/components/dialog",
+      "import": "github.com/smallnest/uix/components/dialog",
       "registryDependencies": [
         "base"
       ],
@@ -288,6 +418,8 @@
     {
       "name": "dropdown",
       "type": "components:ui",
+      "install": "internal/ui/components/dropdown",
+      "import": "github.com/smallnest/uix/components/dropdown",
       "registryDependencies": [
         "base"
       ],
@@ -304,6 +436,8 @@
     {
       "name": "editabletext",
       "type": "components:ui",
+      "install": "internal/ui/components/editabletext",
+      "import": "github.com/smallnest/uix/components/editabletext",
       "registryDependencies": [
         "base"
       ],
@@ -320,6 +454,8 @@
     {
       "name": "field",
       "type": "components:ui",
+      "install": "internal/ui/components/field",
+      "import": "github.com/smallnest/uix/components/field",
       "registryDependencies": [
         "base"
       ],
@@ -336,6 +472,8 @@
     {
       "name": "fieldset",
       "type": "components:ui",
+      "install": "internal/ui/components/fieldset",
+      "import": "github.com/smallnest/uix/components/fieldset",
       "registryDependencies": [
         "base"
       ],
@@ -350,8 +488,22 @@
       ]
     },
     {
+      "name": "fileupload",
+      "type": "components:ui",
+      "install": "internal/ui/components/fileupload",
+      "import": "github.com/smallnest/uix/components/fileupload",
+      "files": [
+        {
+          "path": "internal/ui/components/fileupload/fileupload.go",
+          "content": "// Package fileupload provides the file upload of BoardUI for the MyGo\n// native toolkit: a drop zone you click to pick a file, which then\n// uploads with a progress ring and a percentage until it is done.\n//\n//\tfileupload.FileUpload(c, fileupload.Props{\n//\t\tState: \u0026state.Upload,\n//\t})\n//\n// The zone names the accepted kinds and the size limit, picks a file\n// through the native open dialog, rejects files outside them with the\n// reason, and simulates the upload, so the component needs no storage\n// layer: connect OnComplete to your upload/storage layer. The app owns\n// the State, as it owns the scroll of a chat. Drag and drop of BoardUI\n// has no native file counterpart in MyGo, so the zone selects with a\n// click instead; Pick can replace the dialog with any picker.\npackage fileupload\n\nimport (\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"path/filepath\"\n\t\"strings\"\n\t\"time\"\n\n\t\"github.com/egoist/mygo\"\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Phase is where the upload is.\ntype Phase int\n\n// The phases of the zone.\nconst (\n\t// Idle invites a file.\n\tIdle Phase = iota\n\t// Uploading shows the file and its progress.\n\tUploading\n\t// Complete announces the finished upload before returning to Idle.\n\tComplete\n)\n\n// The timings of the simulated upload. Tests shorten them to run the\n// simulation in a few frames.\nvar (\n\t// UploadDuration is how long a simulated upload takes.\n\tUploadDuration = 2200 * time.Millisecond\n\t// CompleteHold is how long the complete state shows before it resets.\n\tCompleteHold = 1600 * time.Millisecond\n\t// RejectionHold is how long a rejection message shows.\n\tRejectionHold = 2600 * time.Millisecond\n\t// progressTick is how often the ring repaints while uploading.\n\tprogressTick = 100 * time.Millisecond\n)\n\n// State is where the upload is, kept by the app.\ntype State struct {\n\t// Phase of the zone.\n\tPhase Phase\n\t// Name and Size of the file uploading or uploaded.\n\tName string\n\tSize int64\n\t// Progress is the upload in percent, 0 to 100.\n\tProgress int\n\t// Rejection is why the last file was not accepted, \"\" when none.\n\tRejection string\n\n\t// started is when the upload began, next when it moves on, and\n\t// rejectionUntil when the rejection clears; the simulation reads\n\t// them as time passes.\n\tstarted        time.Time\n\tnext           time.Time\n\trejectionUntil time.Time\n}\n\n// Start begins the simulated upload of a valid file at the time now, as\n// picking it would: pass time.Now to start now, or an earlier time to\n// show progress already made. Examples and tests use it without a\n// dialog.\nfunc (s *State) Start(name string, size int64, now time.Time) {\n\ts.Phase = Uploading\n\ts.Name = name\n\ts.Size = size\n\ts.Progress = 0\n\ts.Rejection = \"\"\n\ts.started = now\n\ts.next = time.Time{}\n}\n\n// Picked is a file the picker chose.\ntype Picked struct {\n\tName string\n\tSize int64\n}\n\n// Props describes the upload zone to draw.\ntype Props struct {\n\t// State is where the upload is, for the app to keep.\n\tState *State\n\t// Pick chooses a file when the zone is clicked; nil opens the native\n\t// dialog filtered to the allowed kinds.\n\tPick func() (Picked, error)\n\t// AllowedExtensions are the accepted file extensions without dots;\n\t// pdf, jpg, jpeg, png and xlsx when nil.\n\tAllowedExtensions []string\n\t// MaxBytes is the largest accepted file; 8 MB when zero.\n\tMaxBytes int64\n\t// Height is the height of the zone; 164 when zero.\n\tHeight float32\n\t// OnComplete reports the file when the simulated upload finishes.\n\tOnComplete func(name string, size int64)\n}\n\n// The kinds and the limit BoardUI accepts.\nvar defaultExtensions = []string{\"pdf\", \"jpg\", \"jpeg\", \"png\", \"xlsx\"}\n\nconst defaultMaxBytes int64 = 8 \u003c\u003c 20\n\n// FileUpload draws the upload zone and returns it, so a view can chain\n// more calls on it.\nfunc FileUpload(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tst := p.State\n\tif st == nil {\n\t\tst = \u0026State{}\n\t}\n\texts := p.AllowedExtensions\n\tif len(exts) == 0 {\n\t\texts = defaultExtensions\n\t}\n\tmaxBytes := p.MaxBytes\n\tif maxBytes \u003c= 0 {\n\t\tmaxBytes = defaultMaxBytes\n\t}\n\th := p.Height\n\tif h \u003c= 0 {\n\t\th = 164\n\t}\n\tradius := t.Radius * 2\n\n\t// The simulation advances with the clock, so the ring moves whether\n\t// or not the view changes otherwise.\n\ttick(c, st, p)\n\n\tz := ui.ButtonBase(c).FillWidth().Height(h).Radius(radius).Background(t.Surface)\n\tz.Label(\"Upload a file\")\n\tif st.Phase != Idle {\n\t\tz.Disabled(true)\n\t\t// The ring around the zone and the percent badge above its middle,\n\t\t// drawn each frame as the progress advances.\n\t\tz.Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tring := ui.Rect{X: r.X + 1, Y: r.Y + 1, W: r.W - 2, H: r.H - 2}\n\t\t\tpt.Stroke(ring, t.Border, radius, 2)\n\t\t\tfrac := float32(st.Progress) / 100\n\t\t\tif frac \u003e 0 {\n\t\t\t\tpt.StrokePath(ringPath(ring, radius, frac), 2, t.Accent)\n\t\t\t}\n\t\t\tbadge := fmt.Sprintf(\"%d%%\", st.Progress)\n\t\t\tsize := t.FontSize * 0.8\n\t\t\tw := float32(len(badge))*size*0.55 + 12\n\t\t\tbr := ui.Rect{X: r.X + r.W/2 - w/2, Y: r.Y + 8, W: w, H: 18}\n\t\t\tpt.Fill(br, t.Accent, 9)\n\t\t\ttw := float32(len(badge)) * size * 0.55\n\t\t\tpt.Text(br.X+(br.W-tw)/2, br.Y+br.H/2+size*0.35, badge, size, t.AccentText)\n\t\t})\n\t} else {\n\t\t// The dashed outline of the invite, darker while the pointer\n\t\t// rests on the zone.\n\t\tz.Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tdash := t.Border\n\t\t\tif z.Hovered() {\n\t\t\t\tdash = t.Text.Alpha(0.35)\n\t\t\t}\n\t\t\tpt.StrokeDashed(ui.Rect{X: r.X + 1, Y: r.Y + 1, W: r.W - 2, H: r.H - 2}, dash, radius, 2)\n\t\t})\n\t}\n\tz.Children(func() {\n\t\tui.Column(c).FillWidth().Children(func() {\n\t\t\tif st.Phase == Idle {\n\t\t\t\tidle(c, t, st, exts, maxBytes)\n\t\t\t} else {\n\t\t\t\tbusy(c, t, st)\n\t\t\t}\n\t\t})\n\t})\n\tif st.Phase == Idle \u0026\u0026 z.Clicked() {\n\t\tpick := p.Pick\n\t\tif pick == nil {\n\t\t\tpick = defaultPick(exts)\n\t\t}\n\t\tif f, err := pick(); err == nil \u0026\u0026 f.Name != \"\" {\n\t\t\tstartUpload(st, c.Now(), f, exts, maxBytes)\n\t\t}\n\t}\n\treturn z\n}\n\n// idle is the invite: the cloud icon, the tagline, and the kinds with\n// the size limit, or the rejection instead of the tagline.\nfunc idle(c *ui.Context, t *ui.Theme, st *State, exts []string, maxBytes int64) {\n\tui.Column(c).FillWidth().Grow(1).Center().Gap(t.Space(1.5)).Children(func() {\n\t\tui.Box(c).Size(40, 40).Background(t.SurfaceHover).Radius(20).Center().Children(func() {\n\t\t\tcloudIcon(c, t)\n\t\t})\n\t\tif st.Rejection == \"\" {\n\t\t\tui.Row(c).Center().Gap(2).Children(func() {\n\t\t\t\tui.Text(c, \"Drag and drop to upload or \").TextColor(t.TextMuted).SingleLine()\n\t\t\t\tui.Text(c, \"select\").TextColor(t.Accent).SingleLine()\n\t\t\t})\n\t\t} else {\n\t\t\tui.Text(c, st.Rejection).TextColor(t.Danger).SingleLine()\n\t\t}\n\t\tui.Text(c, fmt.Sprintf(\"%s (max %s)\", allowedLabel(exts), formatFileSize(maxBytes))).\n\t\t\tFontSize(t.FontSize * 0.85).TextColor(t.TextMuted.Alpha(0.7)).SingleLine()\n\t})\n}\n\n// busy is the upload: the file icon, its name, and the line that moves\n// from uploading to done.\nfunc busy(c *ui.Context, t *ui.Theme, st *State) {\n\tui.Column(c).FillWidth().Grow(1).Center().Gap(t.Space(1)).Children(func() {\n\t\tui.Box(c).Size(40, 40).Radius(20).Border(1, t.Border).Center().Children(func() {\n\t\t\tfileIcon(c, t, t.Text)\n\t\t})\n\t\tui.Text(c, st.Name).TextColor(t.Text).SingleLine()\n\t\tif st.Phase == Uploading {\n\t\t\tui.Text(c, fmt.Sprintf(\"Uploading %s…\", formatFileSize(st.Size))).TextColor(t.TextMuted).SingleLine()\n\t\t} else {\n\t\t\tui.Text(c, \"Uploaded successfully!\").TextColor(t.Success).SingleLine()\n\t\t}\n\t})\n}\n\n// tick advances the simulation: the progress with the clock while\n// uploading, the return to idle after the complete hold, and the\n// clearing of a rejection. It asks for the frames those take.\nfunc tick(c *ui.Context, st *State, p Props) {\n\tnow := c.Now()\n\tswitch st.Phase {\n\tcase Uploading:\n\t\telapsed := now.Sub(st.started)\n\t\tst.Progress = int(float64(elapsed) * 100 / float64(UploadDuration))\n\t\tif st.Progress \u003e= 100 {\n\t\t\tst.Progress = 100\n\t\t\tst.Phase = Complete\n\t\t\tst.next = now.Add(CompleteHold)\n\t\t\tc.After(CompleteHold)\n\t\t\treturn\n\t\t}\n\t\t// A frame in a tick keeps the ring moving; the completion timer\n\t\t// wakes it at the end.\n\t\tc.After(progressTick)\n\t\tc.After(UploadDuration - elapsed)\n\tcase Complete:\n\t\tif st.next.IsZero() {\n\t\t\t// Set only now, so a preset complete state holds from here.\n\t\t\tst.next = now.Add(CompleteHold)\n\t\t\tc.After(CompleteHold)\n\t\t\treturn\n\t\t}\n\t\tif now.Before(st.next) {\n\t\t\tc.After(st.next.Sub(now))\n\t\t\treturn\n\t\t}\n\t\tif p.OnComplete != nil {\n\t\t\tp.OnComplete(st.Name, st.Size)\n\t\t}\n\t\tst.Phase = Idle\n\t\tst.Name, st.Size, st.Progress = \"\", 0, 0\n\t}\n\tif st.Rejection != \"\" {\n\t\tif now.Before(st.rejectionUntil) {\n\t\t\tc.After(st.rejectionUntil.Sub(now))\n\t\t} else {\n\t\t\tst.Rejection = \"\"\n\t\t}\n\t}\n}\n\n// startUpload validates the picked file and begins its upload, or\n// rejects it with the reason, as BoardUI does.\nfunc startUpload(st *State, now time.Time, f Picked, exts []string, maxBytes int64) {\n\tif !accepted(f.Name, exts) {\n\t\tst.Rejection = fmt.Sprintf(\"Only %s files are supported\", upperAll(exts))\n\t\tst.rejectionUntil = now.Add(RejectionHold)\n\t\treturn\n\t}\n\tif f.Size \u003e maxBytes {\n\t\tst.Rejection = fmt.Sprintf(\"That file is larger than %s\", formatFileSize(maxBytes))\n\t\tst.rejectionUntil = now.Add(RejectionHold)\n\t\treturn\n\t}\n\tst.Start(f.Name, f.Size, now)\n}\n\n// defaultPick is the native open dialog, filtered to the allowed kinds.\nfunc defaultPick(exts []string) func() (Picked, error) {\n\treturn func() (Picked, error) {\n\t\tpaths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{\n\t\t\tTitle:       \"Upload a file\",\n\t\t\tButtonLabel: \"Upload\",\n\t\t\tFilters:     []mygo.FileFilter{{Name: \"Supported files\", Extensions: exts}},\n\t\t})\n\t\tif err != nil || len(paths) == 0 {\n\t\t\treturn Picked{}, err\n\t\t}\n\t\tst, err := os.Stat(paths[0])\n\t\tif err != nil {\n\t\t\treturn Picked{}, err\n\t\t}\n\t\treturn Picked{Name: filepath.Base(paths[0]), Size: st.Size()}, nil\n\t}\n}\n\n// accepted reports whether the file's extension is among the kinds.\nfunc accepted(name string, exts []string) bool {\n\te := strings.ToLower(extensionFor(name))\n\tfor _, x := range exts {\n\t\tif strings.ToLower(x) == e {\n\t\t\treturn true\n\t\t}\n\t}\n\treturn false\n}\n\n// extensionFor is the suffix after the last dot, \"\" without one.\nfunc extensionFor(name string) string {\n\tif i := strings.LastIndexByte(name, '.'); i \u003e= 0 {\n\t\treturn name[i+1:]\n\t}\n\treturn \"\"\n}\n\n// allowedLabel is the kinds the tagline names, without the duplicate\n// jpeg, as BoardUI names them.\nfunc allowedLabel(exts []string) string {\n\tvar kept []string\n\tfor _, e := range exts {\n\t\tif e != \"jpeg\" {\n\t\t\tkept = append(kept, strings.ToUpper(e))\n\t\t}\n\t}\n\treturn strings.Join(kept, \", \")\n}\n\n// upperAll is the kinds a rejection names.\nfunc upperAll(exts []string) string {\n\tup := make([]string, len(exts))\n\tfor i, e := range exts {\n\t\tup[i] = strings.ToUpper(e)\n\t}\n\treturn strings.Join(up, \", \")\n}\n\n// formatFileSize names a size in bytes the way BoardUI does: whole MB\n// from ten up, one decimal below, whole KB below a MB and at least one.\nfunc formatFileSize(bytes int64) string {\n\tif bytes \u003e= 1024*1024 {\n\t\tmb := float64(bytes) / (1024 * 1024)\n\t\tif mb \u003e= 10 {\n\t\t\treturn fmt.Sprintf(\"%d MB\", int64(math.Round(mb)))\n\t\t}\n\t\t// One decimal, and a whole number drops it, as BoardUI shows it.\n\t\tv := math.Round(mb*10) / 10\n\t\tif v == float64(int64(v)) {\n\t\t\treturn fmt.Sprintf(\"%d MB\", int64(v))\n\t\t}\n\t\treturn fmt.Sprintf(\"%.1f MB\", v)\n\t}\n\treturn fmt.Sprintf(\"%d KB\", max(1, bytes/1024))\n}\n\n// cloudIcon is the cloud with the up arrow of the invite, punched out\n// of the cloud with the circle's color.\nfunc cloudIcon(c *ui.Context, t *ui.Theme) {\n\tui.Box(c).Size(24, 24).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\tfg := t.TextMuted\n\t\thole := t.SurfaceHover\n\t\t// The cloud: a band under three bumps.\n\t\tpt.Fill(ui.Rect{X: cx - 11, Y: cy + 1, W: 22, H: 7}, fg, 3.5)\n\t\tfor _, b := range []struct{ x, y, rad float32 }{\n\t\t\t{cx - 6.5, cy - 1, 4.5},\n\t\t\t{cx, cy - 3.5, 6},\n\t\t\t{cx + 6.5, cy - 1, 4.5},\n\t\t} {\n\t\t\tpt.Fill(ui.Rect{X: b.x - b.rad, Y: b.y - b.rad, W: 2 * b.rad, H: 2 * b.rad}, fg, b.rad)\n\t\t}\n\t\t// The up arrow, cut out of the cloud.\n\t\tpt.Fill(ui.Rect{X: cx - 1.5, Y: cy - 2, W: 3, H: 8}, hole, 1.5)\n\t\tvar head ui.Path\n\t\thead.MoveTo(cx-5, cy-1).LineTo(cx, cy-7).LineTo(cx+5, cy-1).LineTo(cx+2.5, cy-1).\n\t\t\tLineTo(cx+2.5, cy+2).LineTo(cx-2.5, cy+2).LineTo(cx-2.5, cy-1).Close()\n\t\tpt.FillPath(\u0026head, hole)\n\t})\n}\n\n// fileIcon is the document with the folded corner and two lines of the\n// busy view, as a line icon.\nfunc fileIcon(c *ui.Context, t *ui.Theme, fg ui.Color) {\n\tui.Box(c).Size(24, 24).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\tvar doc ui.Path\n\t\tdoc.MoveTo(cx-9, cy-12).LineTo(cx+3, cy-12).LineTo(cx+10, cy-5).LineTo(cx+10, cy+12).\n\t\t\tLineTo(cx-9, cy+12).Close()\n\t\tpt.StrokePath(\u0026doc, 1.8, fg)\n\t\tpt.Fill(ui.Rect{X: cx - 6, Y: cy - 1, W: 9, H: 2}, fg, 1)\n\t\tpt.Fill(ui.Rect{X: cx - 6, Y: cy + 4, W: 12, H: 2}, fg, 1)\n\t})\n}\n\n// ringPath is the perimeter of the rounded rectangle from the top\n// center clockwise, up to the given fraction of it: the progress arc of\n// the ring.\nfunc ringPath(r ui.Rect, radius float32, frac float32) *ui.Path {\n\tradius = min(radius, r.W/2, r.H/2)\n\tx0, y0, x1, y1 := r.X, r.Y, r.X+r.W, r.Y+r.H\n\ttype piece struct {\n\t\tlength float32\n\t\tat     func(a float32) xy\n\t}\n\tarc := func(cx, cy, from, to float32) piece {\n\t\treturn piece{math.Pi / 2 * radius, func(a float32) xy {\n\t\t\tang := from + (to-from)*a\n\t\t\treturn xy{cx + radius*float32(math.Cos(float64(ang))), cy + radius*float32(math.Sin(float64(ang)))}\n\t\t}}\n\t}\n\t// The eight pieces of the perimeter: the four straight edges and the\n\t// four quarter arcs at the corners.\n\tpieces := []piece{\n\t\t{r.W/2 - radius, func(a float32) xy { return xy{x0 + r.W/2 + (r.W/2-radius)*a, y0} }},\n\t\tarc(x1-radius, y0+radius, -math.Pi/2, 0),\n\t\t{r.H - 2*radius, func(a float32) xy { return xy{x1, y0 + radius + (r.H-2*radius)*a} }},\n\t\tarc(x1-radius, y1-radius, 0, math.Pi/2),\n\t\t{r.W - 2*radius, func(a float32) xy { return xy{x1 - (r.W-2*radius)*a, y1} }},\n\t\tarc(x0+radius, y1-radius, math.Pi/2, math.Pi),\n\t\t{r.H - 2*radius, func(a float32) xy { return xy{x0, y1 - (r.H-2*radius)*a} }},\n\t\tarc(x0+radius, y0+radius, math.Pi, 3*math.Pi/2),\n\t}\n\ttotal := float32(0)\n\tfor i := range pieces {\n\t\ttotal += pieces[i].length\n\t}\n\t// Walk the pieces up to the target, a point about every 1.5 points.\n\ttarget := frac * total\n\tvar path ui.Path\n\tstarted := false\n\tcum := float32(0)\n\tfor _, pc := range pieces {\n\t\tif target \u003c= cum {\n\t\t\tbreak\n\t\t}\n\t\tavail := target - cum\n\t\tpartial := avail \u003c pc.length\n\t\tn := int(min(avail, pc.length)/1.5) + 1\n\t\tto := float32(1)\n\t\tif partial {\n\t\t\tto = avail / pc.length\n\t\t}\n\t\tfor k := 0; k \u003c= n; k++ {\n\t\t\tq := pc.at(float32(k) / float32(n) * to)\n\t\t\tif !started {\n\t\t\t\tpath.MoveTo(q.X, q.Y)\n\t\t\t\tstarted = true\n\t\t\t} else {\n\t\t\t\tpath.LineTo(q.X, q.Y)\n\t\t\t}\n\t\t}\n\t\tcum += pc.length\n\t}\n\treturn \u0026path\n}\n\n// xy is a point on the ring.\ntype xy struct{ X, Y float32 }\n"
+        }
+      ]
+    },
+    {
       "name": "findbar",
       "type": "components:ui",
+      "install": "internal/ui/components/findbar",
+      "import": "github.com/smallnest/uix/components/findbar",
       "registryDependencies": [
         "base"
       ],
@@ -368,6 +520,8 @@
     {
       "name": "form",
       "type": "components:ui",
+      "install": "internal/ui/components/form",
+      "import": "github.com/smallnest/uix/components/form",
       "registryDependencies": [
         "base"
       ],
@@ -384,6 +538,8 @@
     {
       "name": "grid",
       "type": "components:ui",
+      "install": "internal/ui/components/grid",
+      "import": "github.com/smallnest/uix/components/grid",
       "registryDependencies": [
         "base"
       ],
@@ -400,6 +556,8 @@
     {
       "name": "gridview",
       "type": "components:ui",
+      "install": "internal/ui/components/gridview",
+      "import": "github.com/smallnest/uix/components/gridview",
       "registryDependencies": [
         "base"
       ],
@@ -416,6 +574,8 @@
     {
       "name": "icon",
       "type": "components:ui",
+      "install": "internal/ui/components/icon",
+      "import": "github.com/smallnest/uix/components/icon",
       "registryDependencies": [
         "base"
       ],
@@ -432,6 +592,8 @@
     {
       "name": "image",
       "type": "components:ui",
+      "install": "internal/ui/components/image",
+      "import": "github.com/smallnest/uix/components/image",
       "registryDependencies": [
         "base"
       ],
@@ -448,6 +610,8 @@
     {
       "name": "input",
       "type": "components:ui",
+      "install": "internal/ui/components/input",
+      "import": "github.com/smallnest/uix/components/input",
       "registryDependencies": [
         "base"
       ],
@@ -462,8 +626,28 @@
       ]
     },
     {
+      "name": "linechart",
+      "type": "components:ui",
+      "install": "internal/ui/components/linechart",
+      "import": "github.com/smallnest/uix/components/linechart",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/linechart/linechart.go",
+          "content": "// Package linechart provides the RevenueChartCard of BoardUI for the\n// MyGo native toolkit: a card of a year of monthly values drawn against\n// the year before. The current year is the filled area and the solid\n// line, the year before the dashed line behind it, so the gap between\n// them is the story. Resting the pointer on a month swaps the headline\n// for that month and shows what it was a year earlier.\n//\n//\tlinechart.LineChart(c, linechart.Props{\n//\t\tData:     months,\n//\t\tSelected: \u0026active,\n//\t\tTitle:    \"Revenue\",\n//\t})\n//\n// The card is a rounded panel on the theme's Surface with the headline\n// and legend above the plot. The chart needs no legend text of its own\n// — the two series read by color — but the legend names them. The card\n// fills the height it is given, so a dashboard row can size it with\n// Grow.\npackage linechart\n\nimport (\n\t\"fmt\"\n\t\"math\"\n\t\"strconv\"\n\t\"strings\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Point is one month of the series.\ntype Point struct {\n\t// Label is the short month name, such as \"Jan\", on the axis.\n\tLabel string\n\t// Current is the value of the current year.\n\tCurrent float64\n\t// Previous is the value of the year before.\n\tPrevious float64\n}\n\n// Props describes the chart to draw.\ntype Props struct {\n\t// Data are the months, in order.\n\tData []Point\n\t// Selected is the month under the pointer, by index, -1 for none.\n\t// The chart keeps it as the pointer moves over the plot and clears\n\t// it as the pointer leaves; pass nil to draw a chart that does not\n\t// follow the pointer.\n\tSelected *int\n\t// Title is the headline's label when no month is under the pointer.\n\tTitle string\n}\n\n// months are the full names of the year, for the headline of the month\n// under the pointer.\nvar months = []string{\n\t\"January\", \"February\", \"March\", \"April\", \"May\", \"June\",\n\t\"July\", \"August\", \"September\", \"October\", \"November\", \"December\",\n}\n\n// LineChart draws the card and returns it, so a view can chain more\n// calls on it.\nfunc LineChart(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tselected := -1\n\tif p.Selected != nil {\n\t\tselected = *p.Selected\n\t}\n\ttitle := p.Title\n\tif title == \"\" {\n\t\ttitle = \"Revenue\"\n\t}\n\tlabel, current, previous, delta, up := headline(t, p.Data, selected, title)\n\treturn ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius * 2).\n\t\tPadding(t.Space(4), t.Space(4), t.Space(3), t.Space(4)).\n\t\tGap(t.Space(4)).Children(func() {\n\t\tchartHeader(c, t, label, current, previous, delta, up)\n\t\tplot(c, t, p)\n\t})\n}\n\n// headline is what the header says: the total, or the month under the\n// pointer and its year-earlier figure.\nfunc headline(t *ui.Theme, data []Point, selected int, title string) (label, current, previous, delta string, up bool) {\n\tif selected \u003e= 0 \u0026\u0026 selected \u003c len(data) {\n\t\tpt := data[selected]\n\t\tlabel = pt.Label\n\t\tif len(pt.Label) \u003e= 3 {\n\t\t\tif i := strings.Index(\"JanFebMarAprMayJunJulAugSepOctNovDec\", pt.Label[:3]); i \u003e= 0 {\n\t\t\t\tlabel = months[i/3]\n\t\t\t}\n\t\t}\n\t\tcurrent, previous = formatMoney(pt.Current), formatMoney(pt.Previous)\n\t\tdelta, up = deltaOf(pt.Current, pt.Previous)\n\t\treturn\n\t}\n\tvar sumCur, sumPrev float64\n\tfor _, pt := range data {\n\t\tsumCur += pt.Current\n\t\tsumPrev += pt.Previous\n\t}\n\tlabel = title\n\tcurrent, previous = formatMoney(sumCur), formatMoney(sumPrev)\n\tdelta, up = deltaOf(sumCur, sumPrev)\n\treturn\n}\n\n// chartHeader is the headline over the plot: the label, the value with\n// its delta chip, the comparison under it, and the legend on the right.\nfunc chartHeader(c *ui.Context, t *ui.Theme, label, current, previous, delta string, up bool) {\n\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Start).\n\t\tGap(t.Space(3)).Children(func() {\n\t\tui.Column(c).Gap(3).Children(func() {\n\t\t\tui.Text(c, label).TextColor(t.TextMuted).SingleLine()\n\t\t\tui.Row(c).AlignItems(ui.Center).Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, current).FontSize(t.FontSize * 1.2).FontWeight(600).\n\t\t\t\t\tTextColor(t.Text).SingleLine()\n\t\t\t\tdeltaChip(c, t, delta, up)\n\t\t\t})\n\t\t\tui.Text(c, previous+\" last year\").FontSize(t.FontSize * 0.8).\n\t\t\t\tTextColor(t.TextMuted).SingleLine()\n\t\t})\n\t\tui.Row(c).Gap(t.Space(4)).Children(func() {\n\t\t\tlegend(c, t, t.Success, \"This year\")\n\t\t\tlegend(c, t, t.Text.Alpha(0.3), \"Last year\")\n\t\t})\n\t})\n}\n\n// legend is one named color dot.\nfunc legend(c *ui.Context, t *ui.Theme, color ui.Color, name string) {\n\tui.Row(c).Gap(t.Space(1)).AlignItems(ui.Center).Children(func() {\n\t\tui.Box(c).Size(8, 8).Radius(4).Background(color)\n\t\tui.Text(c, name).FontSize(t.FontSize * 0.8).TextColor(t.TextMuted).SingleLine()\n\t})\n}\n\n// plot is the chart itself: the grid, the series, the markers, and the\n// invisible columns that feel the pointer.\nfunc plot(c *ui.Context, t *ui.Theme, p Props) {\n\tplotBox := ui.Box(c).Grow(1).MinHeight(0)\n\tselected := -1\n\tif p.Selected != nil {\n\t\thovered := -1\n\t\t// The invisible columns, one per month, tile the plot: the\n\t\t// pointer over one picks the month, over the margins clears it.\n\t\tplotBox.Children(func() {\n\t\t\tui.Row(c).Fill().Padding(8, 8, 22, 40).Children(func() {\n\t\t\t\tfor i := range p.Data {\n\t\t\t\t\tcol := ui.Box(c).Grow(1).FillHeight()\n\t\t\t\t\tcol.Label(p.Data[i].Label)\n\t\t\t\t\tif col.Hovered() {\n\t\t\t\t\t\thovered = i\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t})\n\t\t})\n\t\tif plotBox.Hovered() {\n\t\t\t*p.Selected = hovered\n\t\t} else {\n\t\t\t*p.Selected = -1\n\t\t}\n\t\tselected = *p.Selected\n\t}\n\tplotBox.Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tdrawPlot(pt, t, p.Data, selected, r)\n\t})\n}\n\n// drawPlot paints the grid, the year before as a dashed line, the\n// current year as the filled area and the solid line, and the marker of\n// the month under the pointer.\nfunc drawPlot(pt *ui.Painter, t *ui.Theme, data []Point, selected int, r ui.Rect) {\n\tn := len(data)\n\tif n == 0 {\n\t\treturn\n\t}\n\tplot := ui.Rect{X: r.X + 40, Y: r.Y + 8, W: r.W - 48, H: r.H - 30}\n\tvar scale float64\n\tfor _, p := range data {\n\t\tif m := math.Max(p.Current, p.Previous); m \u003e scale {\n\t\t\tscale = m\n\t\t}\n\t}\n\tscale *= 1.1\n\tif scale == 0 {\n\t\tscale = 1\n\t}\n\ty := func(v float64) float32 {\n\t\treturn plot.Y + plot.H*float32(1-v/scale)\n\t}\n\t// The grid, four lines with their labels right-aligned on the left.\n\tfor i := 0; i \u003c 4; i++ {\n\t\tgy := plot.Y + plot.H*float32(i)/3\n\t\tpt.Line(plot.X, gy, plot.X+plot.W, gy, 1, t.Border)\n\t\tlabel := formatK(scale * float64(3-i) / 3)\n\t\tsize := t.FontSize * 0.75\n\t\tw := float32(len(label)) * size * 0.55\n\t\tpt.Text(plot.X-8-w, gy+size*0.35, label, size, t.TextMuted)\n\t}\n\t// The band the plot has, so every column reads its center.\n\tband := plot.W / float32(n)\n\tprev := make([]xy, n)\n\tcur := make([]xy, n)\n\tfor i, p := range data {\n\t\tx := plot.X + band*(float32(i)+0.5)\n\t\tprev[i] = xy{x, y(p.Previous)}\n\t\tcur[i] = xy{x, y(p.Current)}\n\t}\n\t// The year before, dashed, as the story behind the area.\n\tdashLine(pt, prev, 5, 5, 2, t.Text.Alpha(0.3))\n\t// The current year's area, fading down from the line.\n\tarea(pt, t, cur, plot)\n\t// The current year's line.\n\tstroke(pt, cur, 2.5, t.Success)\n\t// The month under the pointer, marked with a bright dot and a halo.\n\tif selected \u003e= 0 \u0026\u0026 selected \u003c n {\n\t\tp := cur[selected]\n\t\tvar halo ui.Path\n\t\thalo.Circle(p.X, p.Y, 7)\n\t\tpt.FillPath(\u0026halo, t.Success.Alpha(0.25))\n\t\tvar dot ui.Path\n\t\tdot.Circle(p.X, p.Y, 4)\n\t\tpt.FillPath(\u0026dot, t.Success)\n\t}\n\t// The month names under the axis.\n\tsize := t.FontSize * 0.75\n\tfor i, p := range data {\n\t\tw := float32(len(p.Label)) * size * 0.55\n\t\tpt.Text(cur[i].X-w/2, plot.Y+plot.H+18, p.Label, size, t.TextMuted)\n\t}\n}\n\n// area fills the space under the current line, fading down: thin bands\n// at every step of x, each a little fainter, so the fill reads as a\n// vertical gradient.\nfunc area(pt *ui.Painter, t *ui.Theme, pts []xy, plot ui.Rect) {\n\tconst bands = 4\n\tbottom := plot.Y + plot.H\n\tfor x := plot.X; x \u003c= plot.X+plot.W; x += 2 {\n\t\ttop := lineY(pts, x)\n\t\tfor b := 0; b \u003c bands; b++ {\n\t\t\tbTop := top + float32(b)*(plot.H/bands)\n\t\t\tif bTop \u003e= bottom {\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tbBottom := min(bTop+plot.H/bands, bottom)\n\t\t\ta := float32(0.3) * (1 - float32(b)/bands)\n\t\t\tpt.Fill(ui.Rect{X: x, Y: bTop, W: 2, H: bBottom - bTop}, t.Success.Alpha(a), 0)\n\t\t}\n\t}\n}\n\n// lineY is the height of the line at x, between its points.\nfunc lineY(pts []xy, x float32) float32 {\n\tif x \u003c= pts[0].X {\n\t\treturn pts[0].Y\n\t}\n\tfor i := 1; i \u003c len(pts); i++ {\n\t\tif x \u003c= pts[i].X {\n\t\t\tt := (x - pts[i-1].X) / (pts[i].X - pts[i-1].X)\n\t\t\treturn pts[i-1].Y + (pts[i].Y-pts[i-1].Y)*t\n\t\t}\n\t}\n\treturn pts[len(pts)-1].Y\n}\n\n// stroke joins the points with a line.\nfunc stroke(pt *ui.Painter, pts []xy, width float32, c ui.Color) {\n\tvar p ui.Path\n\tp.MoveTo(pts[0].X, pts[0].Y)\n\tfor i := 1; i \u003c len(pts); i++ {\n\t\tp.LineTo(pts[i].X, pts[i].Y)\n\t}\n\tpt.StrokePath(\u0026p, width, c)\n}\n\n// dashLine draws the points as a dashed line, the dashes running\n// continuously across the points rather than restarting at each one.\nfunc dashLine(pt *ui.Painter, pts []xy, dash, gap, width float32, c ui.Color) {\n\tvar carry float32\n\ton := true\n\tfor i := 1; i \u003c len(pts); i++ {\n\t\tax, ay := pts[i-1].X, pts[i-1].Y\n\t\tbx, by := pts[i].X, pts[i].Y\n\t\tseg := float32(math.Hypot(float64(bx-ax), float64(by-ay)))\n\t\tif seg == 0 {\n\t\t\tcontinue\n\t\t}\n\t\tfor t := float32(0); t \u003c seg; {\n\t\t\tstep := dash\n\t\t\tif !on {\n\t\t\t\tstep = gap\n\t\t\t}\n\t\t\trun := min(step-carry, seg-t)\n\t\t\tif on {\n\t\t\t\tx0 := ax + (bx-ax)*(t/seg)\n\t\t\t\ty0 := ay + (by-ay)*(t/seg)\n\t\t\t\tx1 := ax + (bx-ax)*((t+run)/seg)\n\t\t\t\ty1 := ay + (by-ay)*((t+run)/seg)\n\t\t\t\tpt.Line(x0, y0, x1, y1, width, c)\n\t\t\t}\n\t\t\tt += run\n\t\t\tcarry += run\n\t\t\tif carry \u003e= step {\n\t\t\t\tcarry = 0\n\t\t\t\ton = !on\n\t\t\t}\n\t\t}\n\t}\n}\n\n// deltaChip is the pill of the change, green for a gain, red for a\n// loss, plain for a tie.\nfunc deltaChip(c *ui.Context, t *ui.Theme, delta string, up bool) {\n\tflat := delta == \"0%\" || delta == \"New\"\n\tbg, fg := t.SurfaceHover, t.TextMuted\n\tif up {\n\t\tbg, fg = t.Success.Alpha(0.15), t.Success\n\t} else if !flat {\n\t\tbg, fg = t.Danger.Alpha(0.15), t.Danger\n\t}\n\tui.Row(c).Shrink(0).Gap(3).Radius(9).Padding(2, 4).\n\t\tAlignItems(ui.Center).Background(bg).Children(func() {\n\t\tui.Box(c).Size(12, 12).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\t\tif up {\n\t\t\t\tpt.Line(cx, cy+2.5, cx, cy-2.5, 1.6, fg)\n\t\t\t\tvar p ui.Path\n\t\t\t\tp.MoveTo(cx-1.8, cy-0.5).LineTo(cx, cy-2.5).LineTo(cx+1.8, cy-0.5)\n\t\t\t\tpt.StrokePath(\u0026p, 1.6, fg)\n\t\t\t} else if flat {\n\t\t\t\tpt.Line(cx-2.5, cy, cx+2.5, cy, 1.6, fg)\n\t\t\t} else {\n\t\t\t\tpt.Line(cx, cy-2.5, cx, cy+2.5, 1.6, fg)\n\t\t\t\tvar p ui.Path\n\t\t\t\tp.MoveTo(cx-1.8, cy+0.5).LineTo(cx, cy+2.5).LineTo(cx+1.8, cy+0.5)\n\t\t\t\tpt.StrokePath(\u0026p, 1.6, fg)\n\t\t\t}\n\t\t})\n\t\tui.Text(c, delta).FontSize(t.FontSize * 0.8).TextColor(fg).SingleLine()\n\t})\n}\n\n// deltaOf is the change of current against previous: the label of the\n// chip and whether it reads as a gain.\nfunc deltaOf(current, previous float64) (label string, up bool) {\n\tif previous == 0 {\n\t\treturn \"New\", false\n\t}\n\tchange := (current - previous) / previous * 100\n\trounded := math.Round(change*10) / 10\n\tif rounded == 0 {\n\t\treturn \"0%\", false\n\t}\n\tif rounded \u003e 0 {\n\t\treturn fmt.Sprintf(\"+%s%%\", strconv.FormatFloat(rounded, 'f', -1, 64)), true\n\t}\n\treturn fmt.Sprintf(\"%s%%\", strconv.FormatFloat(rounded, 'f', -1, 64)), false\n}\n\n// formatK is the axis label: \"$14k\" for the thousands, \"$0\" below.\nfunc formatK(v float64) string {\n\tif v \u003e= 1000 {\n\t\treturn fmt.Sprintf(\"$%dk\", int(math.Round(v/1000)))\n\t}\n\treturn fmt.Sprintf(\"$%d\", int(v))\n}\n\n// formatMoney is the headline figure as currency, rounded to the dollar\n// with thousands separators: \"$14,392\".\nfunc formatMoney(v float64) string {\n\treturn \"$\" + grouped(int64(math.Round(v)))\n}\n\n// grouped writes n with a comma before every third digit.\nfunc grouped(n int64) string {\n\ts := strconv.FormatInt(n, 10)\n\tstart := len(s) % 3\n\tif start == 0 \u0026\u0026 len(s) \u003e 3 {\n\t\tstart = 3\n\t}\n\tvar b strings.Builder\n\tfor i, r := range s {\n\t\tif i \u003e 0 \u0026\u0026 i == start {\n\t\t\tb.WriteByte(',')\n\t\t} else if i \u003e start \u0026\u0026 (i-start)%3 == 0 {\n\t\t\tb.WriteByte(',')\n\t\t}\n\t\tb.WriteRune(r)\n\t}\n\treturn b.String()\n}\n\n// xy is a point of the plot.\ntype xy struct{ X, Y float32 }\n"
+        }
+      ]
+    },
+    {
       "name": "link",
       "type": "components:ui",
+      "install": "internal/ui/components/link",
+      "import": "github.com/smallnest/uix/components/link",
       "registryDependencies": [
         "base"
       ],
@@ -480,6 +664,8 @@
     {
       "name": "list",
       "type": "components:ui",
+      "install": "internal/ui/components/list",
+      "import": "github.com/smallnest/uix/components/list",
       "registryDependencies": [
         "base"
       ],
@@ -494,8 +680,29 @@
       ]
     },
     {
+      "name": "log",
+      "type": "components:ui",
+      "install": "internal/ui/components/log",
+      "import": "github.com/smallnest/uix/components/log",
+      "registryDependencies": [
+        "base",
+        "thinking"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/log/log.go",
+          "content": "// Package log provides the AgentLog of BoardUI for the MyGo native\n// toolkit: a transcript of an agent's work, each line joined to the next\n// by a curved tree guide, with a working row of stars while the agent is\n// still going. It is the machinery of a streaming transcript; what a row\n// says is the app's own business.\n//\n//\tlog.Log(c, log.Props{\n//\t\tItems:    steps,\n//\t\tRevealed: revealed,\n//\t\tRunning:  working,\n//\t\tWorking:  \"Searching the docs\",\n//\t})\n//\n// The reveal is the app's own pacing, not the component's: pass how many\n// items are shown, and the app advances it with a timer or with the real\n// events of the work, so the log never pretends steps take equal time.\npackage log\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n\n\t\"github.com/smallnest/uix/components/thinking\"\n)\n\n// Props describes the log to draw.\ntype Props struct {\n\t// Items are the lines of the work, in order.\n\tItems []string\n\t// Revealed is how many items are shown, as the app has paced them;\n\t// it is clamped to the length of Items. 0 shows none.\n\tRevealed int\n\t// Running shows the working row below the revealed items, with the\n\t// stars indicator, while the log is still going.\n\tRunning bool\n\t// Working is the label of the working row, such as \"Searching the\n\t// docs\".\n\tWorking string\n}\n\n// Log draws the transcript and returns it, so a view can chain more\n// calls on it.\nfunc Log(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tn := min(p.Revealed, len(p.Items))\n\treturn ui.Column(c).FillWidth().Gap(t.Space(1)).Children(func() {\n\t\tfor i := 0; i \u003c n; i++ {\n\t\t\trow(c, t, p.Items[i], i == n-1)\n\t\t}\n\t\tif p.Running {\n\t\t\tworkingRow(c, t, p.Working)\n\t\t}\n\t})\n}\n\n// row is one completed line of work, with the stretch of guide that\n// belongs to it: a branch at the top and a trunk running to the next\n// row, which the last row omits so the guide finishes on the corner.\nfunc row(c *ui.Context, t *ui.Theme, label string, last bool) {\n\tguide := t.TextMuted.Alpha(0.45)\n\tui.Row(c).FillWidth().AlignItems(ui.Stretch).Children(func() {\n\t\t// The branch geometry, as the docs sidebar draws it: down the\n\t\t// trunk, round a corner at 14px, out to the label.\n\t\tui.Box(c).Width(12).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\tvar branch ui.Path\n\t\t\tbranch.MoveTo(r.X+0.5, r.Y)\n\t\t\tbranch.LineTo(r.X+0.5, r.Y+8)\n\t\t\tbranch.QuadTo(r.X+0.5, r.Y+14, r.X+6.5, r.Y+14)\n\t\t\tbranch.LineTo(r.X+11.5, r.Y+14)\n\t\t\tpt.StrokePath(\u0026branch, 1, guide)\n\t\t\tif !last {\n\t\t\t\tpt.Line(r.X+0.5, r.Y+14, r.X+0.5, r.Y+r.H, 1, guide)\n\t\t\t}\n\t\t})\n\t\tui.Text(c, label).TextColor(t.Text).Padding(0, t.Space(1))\n\t})\n}\n\n// workingRow is the line the agent is on now, with the stars indicator.\n// It deliberately sits off the guide: the tree records what the agent\n// did, and this line has not happened yet, so hanging it on the tree\n// would file it alongside the findings.\nfunc workingRow(c *ui.Context, t *ui.Theme, label string) {\n\tui.Row(c).Padding(0, t.Space(1)).Children(func() {\n\t\tthinking.Thinking(c, thinking.Props{\n\t\t\tVariant: thinking.Stars,\n\t\t\tLabel:   label,\n\t\t\tTone:    thinking.Subtle,\n\t\t})\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "menu",
       "type": "components:ui",
+      "install": "internal/ui/components/menu",
+      "import": "github.com/smallnest/uix/components/menu",
       "registryDependencies": [
         "base"
       ],
@@ -512,6 +719,8 @@
     {
       "name": "meter",
       "type": "components:ui",
+      "install": "internal/ui/components/meter",
+      "import": "github.com/smallnest/uix/components/meter",
       "registryDependencies": [
         "base"
       ],
@@ -526,8 +735,29 @@
       ]
     },
     {
+      "name": "notificationcenter",
+      "type": "components:ui",
+      "install": "internal/ui/components/notificationcenter",
+      "import": "github.com/smallnest/uix/components/notificationcenter",
+      "registryDependencies": [
+        "base",
+        "segmented"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/notificationcenter/notificationcenter.go",
+          "content": "// Package notificationcenter provides the NotificationCenter of BoardUI\n// for the MyGo native toolkit: a panel of notifications with a title, an\n// unread count, a mark-all-read control, and tabs that filter the list.\n//\n//\tnotificationcenter.NotificationCenter(c, notificationcenter.Props{\n//\t\tItems: items,\n//\t\tTab:   \u0026tab,\n//\t})\n//\n// The panel is a rounded card on the theme's Background. The list sits\n// on a recessed band; each notification is a card with a status icon,\n// the title and timestamp, the description, and its actions. The app\n// owns the list: it sets the unread flags, and Mark all read asks it to\n// clear them.\npackage notificationcenter\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n\n\t\"github.com/smallnest/uix/components/segmented\"\n)\n\n// Status is the tone of a notification's icon.\ntype Status int\n\nconst (\n\t// Neutral is a general notice, the bell.\n\tNeutral Status = iota\n\t// Info is an informational notice, the i.\n\tInfo\n\t// Success is a notice of something that went well, the check.\n\tSuccess\n\t// Error is a notice of something that went wrong, the bang.\n\tError\n)\n\n// Action is a button a notification carries, such as \"View\".\ntype Action struct {\n\t// ID names the action for OnAction.\n\tID string\n\t// Label is the text of the button.\n\tLabel string\n\t// OnClick runs when the button is clicked.\n\tOnClick func()\n}\n\n// Item is one notification.\ntype Item struct {\n\t// ID names the notification for OnAction.\n\tID string\n\t// Category is \"mentions\" or \"system\"; anything else is general\n\t// activity, shown on the All tab.\n\tCategory string\n\t// Title is the headline of the notification.\n\tTitle string\n\t// Description is the detail under it.\n\tDescription string\n\t// Timestamp is the time, as the app formats it, such as \"2m\".\n\tTimestamp string\n\t// Unread draws the accent dot and counts toward the unread total.\n\tUnread bool\n\t// Status tones the icon; the zero value is Neutral.\n\tStatus Status\n\t// Actions are the buttons of the notification, in order.\n\tActions []Action\n}\n\n// Props describes the panel to draw.\ntype Props struct {\n\t// Items are the notifications, in order.\n\tItems []Item\n\t// Tab is the chosen tab: 0 All, 1 Mentions, 2 System.\n\tTab *int\n\t// OnTabChange runs when a tab is chosen.\n\tOnTabChange func(i int)\n\t// OnMarkAllRead runs when Mark all read is clicked; the app clears\n\t// the unread flags of its items.\n\tOnMarkAllRead func()\n\t// OnAction runs when a notification's action is clicked, with the\n\t// notification and the action, and then the action's own OnClick.\n\tOnAction func(itemID, actionID string)\n\t// Title is the heading of the panel; \"Notifications\" when empty.\n\tTitle string\n\t// EmptyMessage is shown for an empty tab; \"You're all caught up.\"\n\t// when empty.\n\tEmptyMessage string\n\t// Height, when set, caps the list and scrolls it; 0 grows the panel\n\t// to its items.\n\tHeight float32\n}\n\n// NotificationCenter draws the panel and returns it, so a view can chain\n// more calls on it.\nfunc NotificationCenter(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\ttitle := p.Title\n\tif title == \"\" {\n\t\ttitle = \"Notifications\"\n\t}\n\tempty := p.EmptyMessage\n\tif empty == \"\" {\n\t\tempty = \"You're all caught up.\"\n\t}\n\tunread := 0\n\tfor _, it := range p.Items {\n\t\tif it.Unread {\n\t\t\tunread++\n\t\t}\n\t}\n\treturn ui.Column(c).FillWidth().Background(t.Background).Radius(t.Radius * 3).\n\t\tBorder(1, t.Border).Children(func() {\n\t\tui.Column(c).Padding(t.Space(4), t.Space(4), t.Space(1.5), t.Space(4)).\n\t\t\tGap(t.Space(3)).Children(func() {\n\t\t\theader(c, t, p, title, unread)\n\t\t\ttabs(c, t, p)\n\t\t})\n\t\tlist(c, t, p, empty)\n\t})\n}\n\n// header is the title, the unread count and the mark-all-read control.\nfunc header(c *ui.Context, t *ui.Theme, p Props, title string, unread int) {\n\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Start).\n\t\tGap(t.Space(4)).Children(func() {\n\t\tui.Column(c).Gap(2).Children(func() {\n\t\t\tui.Text(c, title).FontSize(t.FontSize * 1.1).FontWeight(600).TextColor(t.Text)\n\t\t\tsub := \"No unread notifications\"\n\t\t\tif unread \u003e 0 {\n\t\t\t\tsub = fmt.Sprintf(\"%d unread\", unread)\n\t\t\t}\n\t\t\tui.Text(c, sub).TextColor(t.TextMuted)\n\t\t})\n\t\tmarkAll(c, t, p, unread)\n\t})\n}\n\n// markAll is the ghost control that clears the unread flags, disabled\n// when there is nothing unread.\nfunc markAll(c *ui.Context, t *ui.Theme, p Props, unread int) {\n\tb := ui.ButtonBase(c).Radius(t.Radius).Padding(t.Space(1.5), t.Space(2.5))\n\tb.Disabled(unread == 0)\n\tb.Label(\"Mark all read\")\n\tif b.Clicked() \u0026\u0026 p.OnMarkAllRead != nil {\n\t\tp.OnMarkAllRead()\n\t}\n\tb.Children(func() {\n\t\tui.Text(c, \"Mark all read\").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted).SingleLine()\n\t})\n}\n\n// tabs is the segmented control with the per-tab counts.\nfunc tabs(c *ui.Context, t *ui.Theme, p Props) {\n\tvar all, mentions, system int\n\tfor _, it := range p.Items {\n\t\tall++\n\t\tswitch it.Category {\n\t\tcase \"mentions\":\n\t\t\tmentions++\n\t\tcase \"system\":\n\t\t\tsystem++\n\t\t}\n\t}\n\tsegmented.Segmented(c, segmented.Props{\n\t\tSelected: p.Tab,\n\t\tLabels: []string{\n\t\t\tfmt.Sprintf(\"All %d\", all),\n\t\t\tfmt.Sprintf(\"Mentions %d\", mentions),\n\t\t\tfmt.Sprintf(\"System %d\", system),\n\t\t},\n\t\tOnChange: p.OnTabChange,\n\t\tLabel:    \"Notification category\",\n\t})\n}\n\n// list is the recessed band of notifications, or the empty message.\nfunc list(c *ui.Context, t *ui.Theme, p Props, empty string) {\n\tvisible := p.Items\n\ttab := 0\n\tif p.Tab != nil {\n\t\ttab = *p.Tab\n\t}\n\tswitch tab {\n\tcase 1:\n\t\tvisible = filterCategory(p.Items, \"mentions\")\n\tcase 2:\n\t\tvisible = filterCategory(p.Items, \"system\")\n\t}\n\tband := func() {\n\t\tui.Column(c).Gap(t.Space(2)).Children(func() {\n\t\t\tif len(visible) == 0 {\n\t\t\t\temptyState(c, t, empty)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tfor _, it := range visible {\n\t\t\t\titemRow(c, t, p, it)\n\t\t\t}\n\t\t})\n\t}\n\tif p.Height \u003e 0 {\n\t\tui.Scroll(c).Height(p.Height).Children(band).Padding(t.Space(1.5)).\n\t\t\tBackground(t.SurfaceHover).Radius(t.Radius * 2)\n\t} else {\n\t\tui.Column(c).Padding(t.Space(1.5)).Background(t.SurfaceHover).\n\t\t\tRadius(t.Radius * 2).Children(band)\n\t}\n}\n\n// filterCategory keeps the notifications of one category.\nfunc filterCategory(items []Item, category string) []Item {\n\tout := make([]Item, 0, len(items))\n\tfor _, it := range items {\n\t\tif it.Category == category {\n\t\t\tout = append(out, it)\n\t\t}\n\t}\n\treturn out\n}\n\n// itemRow is one notification card.\nfunc itemRow(c *ui.Context, t *ui.Theme, p Props, it Item) {\n\tui.Row(c).FillWidth().Gap(t.Space(3)).Padding(t.Space(3)).\n\t\tBackground(t.Background).Radius(t.Radius * 2).Children(func() {\n\t\tstatusCircle(c, t, it.Status)\n\t\tui.Column(c).Grow(1).Gap(2).Children(func() {\n\t\t\tui.Row(c).FillWidth().Gap(t.Space(2)).Children(func() {\n\t\t\t\tui.Text(c, it.Title).Grow(1).TextColor(t.Text).SingleLine()\n\t\t\t\tui.Text(c, it.Timestamp).FontSize(t.FontSize * 0.8).\n\t\t\t\t\tTextColor(t.TextMuted).SingleLine()\n\t\t\t\tif it.Unread {\n\t\t\t\t\tui.Box(c).Size(8, 8).Radius(4).Background(t.Accent).\n\t\t\t\t\t\tLabel(\"Unread\")\n\t\t\t\t}\n\t\t\t})\n\t\t\tui.Text(c, it.Description).TextColor(t.TextMuted)\n\t\t\tif len(it.Actions) \u003e 0 {\n\t\t\t\tui.Row(c).Gap(t.Space(2)).Children(func() {\n\t\t\t\t\tfor _, a := range it.Actions {\n\t\t\t\t\t\tactionButton(c, t, p, it, a)\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t}\n\t\t})\n\t})\n}\n\n// actionButton is one action of a notification.\nfunc actionButton(c *ui.Context, t *ui.Theme, p Props, it Item, a Action) {\n\tb := ui.ButtonBase(c).Radius(t.Radius).Background(t.Surface).\n\t\tPadding(t.Space(1.5), t.Space(2.5))\n\tif b.Clicked() {\n\t\tif p.OnAction != nil {\n\t\t\tp.OnAction(it.ID, a.ID)\n\t\t}\n\t\tif a.OnClick != nil {\n\t\t\ta.OnClick()\n\t\t}\n\t}\n\tb.Children(func() {\n\t\tui.Text(c, a.Label).FontSize(t.FontSize * 0.85).TextColor(t.Text).SingleLine()\n\t})\n}\n\n// statusCircle is the round tile with the status icon.\nfunc statusCircle(c *ui.Context, t *ui.Theme, status Status) {\n\tbg, fg := t.SurfaceHover, t.TextMuted\n\tswitch status {\n\tcase Info:\n\t\tbg, fg = t.Accent.Alpha(0.12), t.Accent\n\tcase Success:\n\t\tbg, fg = t.Success.Alpha(0.15), t.Success\n\tcase Error:\n\t\tbg, fg = t.Danger.Alpha(0.12), t.Danger\n\t}\n\tui.Box(c).Size(40, 40).Radius(20).Background(bg).Shrink(0).Center().\n\t\tChildren(func() {\n\t\t\tswitch status {\n\t\t\tcase Info:\n\t\t\t\tinfo(c, fg)\n\t\t\tcase Success:\n\t\t\t\tcheck(c, fg)\n\t\t\tcase Error:\n\t\t\t\tbang(c, fg)\n\t\t\tdefault:\n\t\t\t\tbell(c, fg)\n\t\t\t}\n\t\t})\n}\n\n// emptyState is the message of an empty tab.\nfunc emptyState(c *ui.Context, t *ui.Theme, message string) {\n\tui.Column(c).FillWidth().Center().Gap(t.Space(2)).\n\t\tPadding(0, t.Space(6)).Children(func() {\n\t\tui.Box(c).Size(44, 44).Radius(22).Background(t.Surface).Center().\n\t\t\tChildren(func() { bellOff(c, t.TextMuted) })\n\t\tui.Text(c, message).TextColor(t.Text)\n\t\tui.Text(c, \"New activity will appear here when it arrives.\").\n\t\t\tTextColor(t.TextMuted).TextAlign(ui.Center)\n\t})\n}\n\n// bell draws the neutral bell: a dome, a base, a clapper.\nfunc bell(c *ui.Context, color ui.Color) {\n\ticon(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar dome ui.Path\n\t\tdome.MoveTo(cx-6, cy+2.5)\n\t\tdome.QuadTo(cx-6.5, cy-2.5, cx-3, cy-5.5)\n\t\tdome.QuadTo(cx-1, cy-6.5, cx, cy-6.5)\n\t\tdome.QuadTo(cx+1, cy-6.5, cx+3, cy-5.5)\n\t\tdome.QuadTo(cx+6.5, cy-2.5, cx+6, cy+2.5)\n\t\tpt.StrokePath(\u0026dome, 1.6, color)\n\t\tvar base ui.Path\n\t\tbase.MoveTo(cx-5.5, cy+2.5).LineTo(cx+5.5, cy+2.5)\n\t\tpt.StrokePath(\u0026base, 1.6, color)\n\t\tvar clapper ui.Path\n\t\tclapper.Circle(cx, cy+4.5, 1.3)\n\t\tpt.FillPath(\u0026clapper, color)\n\t})\n}\n\n// bellOff draws the bell with a slash over it, for an empty tab.\nfunc bellOff(c *ui.Context, color ui.Color) {\n\ticon(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar dome ui.Path\n\t\tdome.MoveTo(cx-6, cy+2.5)\n\t\tdome.QuadTo(cx-6.5, cy-2.5, cx-3, cy-5.5)\n\t\tdome.QuadTo(cx-1, cy-6.5, cx, cy-6.5)\n\t\tdome.QuadTo(cx+1, cy-6.5, cx+3, cy-5.5)\n\t\tdome.QuadTo(cx+6.5, cy-2.5, cx+6, cy+2.5)\n\t\tpt.StrokePath(\u0026dome, 1.6, color)\n\t\tvar slash ui.Path\n\t\tslash.MoveTo(cx-7, cy-7).LineTo(cx+7, cy+7)\n\t\tpt.StrokePath(\u0026slash, 1.6, color)\n\t})\n}\n\n// info draws the i of an informational notice.\nfunc info(c *ui.Context, color ui.Color) {\n\ticon(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar ring ui.Path\n\t\tring.Circle(cx, cy, 8)\n\t\tpt.StrokePath(\u0026ring, 1.6, color)\n\t\tvar dot ui.Path\n\t\tdot.Circle(cx, cy-3.5, 1.2)\n\t\tpt.FillPath(\u0026dot, color)\n\t\tpt.Line(cx, cy-1, cx, cy+4.5, 1.6, color)\n\t})\n}\n\n// check draws the check of a success notice.\nfunc check(c *ui.Context, color ui.Color) {\n\ticon(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx-5, cy).LineTo(cx-1.5, cy+3.5).LineTo(cx+5.5, cy-3.5)\n\t\tpt.StrokePath(\u0026p, 2, color)\n\t})\n}\n\n// bang draws the bang of an error notice.\nfunc bang(c *ui.Context, color ui.Color) {\n\ticon(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar ring ui.Path\n\t\tring.Circle(cx, cy, 8)\n\t\tpt.StrokePath(\u0026ring, 1.6, color)\n\t\tpt.Line(cx, cy-4.5, cx, cy+0.5, 1.8, color)\n\t\tvar dot ui.Path\n\t\tdot.Circle(cx, cy+3.8, 1.2)\n\t\tpt.FillPath(\u0026dot, color)\n\t})\n}\n\n// icon runs fn over a 20-point icon centered in the box.\nfunc icon(c *ui.Context, fn func(pt *ui.Painter, cx, cy float32)) {\n\tui.Box(c).Size(20, 20).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tfn(pt, r.X+r.W/2, r.Y+r.H/2)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "numberinput",
       "type": "components:ui",
+      "install": "internal/ui/components/numberinput",
+      "import": "github.com/smallnest/uix/components/numberinput",
       "registryDependencies": [
         "base"
       ],
@@ -542,8 +772,28 @@
       ]
     },
     {
+      "name": "pagination",
+      "type": "components:ui",
+      "install": "internal/ui/components/pagination",
+      "import": "github.com/smallnest/uix/components/pagination",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/pagination/pagination.go",
+          "content": "// Package pagination provides the pagination of BoardUI for the MyGo\n// native toolkit: previous and next buttons and the page numbers, with\n// the overflow of a long list of pages collapsing into dots around the\n// current page.\n//\n//\tpagination.Pagination(c, pagination.Props{\n//\t\tPage:       state.Page,\n//\t\tTotalPages: state.Pages,\n//\t\tOnChange:   func(p int) { state.Page = p },\n//\t})\n//\n// The previous and next buttons sit at the ends, disable at the first\n// and last page, and read \"Previous\" and \"Next\" unless the app says\n// otherwise. The page cells are 32 by 32; the current page is a cell\n// with a face, the others fill on hover, and the dots are not buttons.\n// The component is controlled: it shows what the app passes and reports\n// a click through OnChange, so the app owns the page.\npackage pagination\n\nimport (\n\t\"fmt\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// DOTS marks a gap in the page numbers, drawn as an ellipsis.\nconst DOTS = -1\n\n// Props describes the pagination to draw.\ntype Props struct {\n\t// Page is the page shown, from 1.\n\tPage int\n\t// TotalPages is how many pages there are.\n\tTotalPages int\n\t// OnChange reports the page a button or cell chose.\n\tOnChange func(page int)\n\t// SiblingCount is how many pages show on each side of the current\n\t// page; 1 when zero.\n\tSiblingCount int\n\t// PreviousLabel and NextLabel name the end buttons; \"Previous\" and\n\t// \"Next\" when empty.\n\tPreviousLabel, NextLabel string\n}\n\n// Pagination draws the pagination and returns it, so a view can chain\n// more calls on it. Nothing is drawn for one page, as BoardUI hides it.\nfunc Pagination(c *ui.Context, p Props) *ui.Element {\n\tif p.TotalPages \u003c= 1 {\n\t\treturn ui.Box(c)\n\t}\n\tt := c.Theme()\n\tsibling := p.SiblingCount\n\tif sibling == 0 {\n\t\tsibling = 1\n\t}\n\tprev, next := p.PreviousLabel, p.NextLabel\n\tif prev == \"\" {\n\t\tprev = \"Previous\"\n\t}\n\tif next == \"\" {\n\t\tnext = \"Next\"\n\t}\n\treturn ui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Center).\n\t\tGap(t.Space(2)).Children(func() {\n\t\tpagerButton(c, t, prev, false, p.Page \u003c= 1, func() { p.OnChange(p.Page - 1) })\n\t\tui.Row(c).Gap(2).Children(func() {\n\t\t\tfor _, item := range pageRange(p.Page, p.TotalPages, sibling) {\n\t\t\t\tif item == DOTS {\n\t\t\t\t\tui.Box(c).Size(32, 32).Center().Children(func() {\n\t\t\t\t\t\tui.Text(c, \"…\").TextColor(t.TextMuted).SingleLine()\n\t\t\t\t\t})\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tcell(c, t, item, item == p.Page, func() { p.OnChange(item) })\n\t\t\t}\n\t\t})\n\t\tpagerButton(c, t, next, true, p.Page \u003e= p.TotalPages, func() { p.OnChange(p.Page + 1) })\n\t})\n}\n\n// cell is one page number: 32 by 32 with rounded corners, the current\n// page a raised cell and the others a ghost that fills on hover.\nfunc cell(c *ui.Context, t *ui.Theme, page int, active bool, on func()) {\n\tb := ui.ButtonBase(c).Size(32, 32).Radius(t.Radius).Center()\n\tb.Label(fmt.Sprintf(\"Go to page %d\", page))\n\tfg := t.Text\n\tif active {\n\t\tb.Background(t.Surface).Border(1, t.Border)\n\t} else {\n\t\t// The ghost fills as the pointer rests on it, read each frame so\n\t\t// the hover works without a rebuild.\n\t\tb.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\t\tif b.Hovered() {\n\t\t\t\tpp.Fill(r, t.SurfaceHover, t.Radius)\n\t\t\t}\n\t\t})\n\t}\n\tb.Children(func() {\n\t\tui.Text(c, fmt.Sprintf(\"%d\", page)).TextColor(fg).SingleLine()\n\t})\n\tif b.Clicked() {\n\t\ton()\n\t}\n}\n\n// pagerButton is the previous or next button: a chevron with the label,\n// a face that follows the pointer, disabled at its end of the pages.\nfunc pagerButton(c *ui.Context, t *ui.Theme, label string, next bool, disabled bool, on func()) {\n\tb := ui.ButtonBase(c)\n\tb.Label(label)\n\tfg := t.Text\n\tif disabled {\n\t\tfg = t.TextMuted\n\t}\n\tb.TextColor(fg).Padding(t.Space(1), t.Space(2.5)).Gap(t.Space(1.5)).\n\t\tRadius(t.Radius).Border(1, t.Border)\n\tb.Draw(func(pp *ui.Painter, r ui.Rect) {\n\t\tif b.IsDisabled() {\n\t\t\treturn\n\t\t}\n\t\tbg := t.Surface\n\t\tswitch {\n\t\tcase b.Pressed():\n\t\t\tbg = t.SurfacePressed\n\t\tcase b.Hovered():\n\t\t\tbg = t.SurfaceHover\n\t\t}\n\t\tpp.Fill(r, bg, t.Radius)\n\t})\n\tb.Children(func() {\n\t\tui.Row(c).AlignItems(ui.Center).Gap(t.Space(1)).Children(func() {\n\t\t\tif next {\n\t\t\t\tui.Text(c, label).SingleLine()\n\t\t\t\tchevron(c, t, fg, true)\n\t\t\t} else {\n\t\t\t\tchevron(c, t, fg, false)\n\t\t\t\tui.Text(c, label).SingleLine()\n\t\t\t}\n\t\t})\n\t})\n\tif disabled {\n\t\tb.Disabled(true)\n\t}\n\tif b.Clicked() {\n\t\ton()\n\t}\n}\n\n// chevron is the arrow of the previous and next buttons.\nfunc chevron(c *ui.Context, t *ui.Theme, color ui.Color, right bool) {\n\tui.Box(c).Size(16, 16).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\tvar p ui.Path\n\t\tif right {\n\t\t\tp.MoveTo(cx-3, cy-3.5).LineTo(cx+3, cy).LineTo(cx-3, cy+3.5)\n\t\t} else {\n\t\t\tp.MoveTo(cx+3, cy-3.5).LineTo(cx-3, cy).LineTo(cx+3, cy+3.5)\n\t\t}\n\t\tpt.StrokePath(\u0026p, 1.8, color)\n\t})\n}\n\n// pageRange is the pages to show: the first, the last, the current with\n// its siblings, and dots where the rest collapsed, as BoardUI collapses\n// them.\nfunc pageRange(current, total, sibling int) []int {\n\tif sibling*2+5 \u003e= total {\n\t\tout := make([]int, total)\n\t\tfor i := range out {\n\t\t\tout[i] = i + 1\n\t\t}\n\t\treturn out\n\t}\n\tleft := max(current-sibling, 1)\n\tright := min(current+sibling, total)\n\tshowLeft := left \u003e 2\n\tshowRight := right \u003c total-2\n\tswitch {\n\tcase !showLeft \u0026\u0026 showRight:\n\t\treturn append(inclusive(1, 3+2*sibling), DOTS, total)\n\tcase showLeft \u0026\u0026 !showRight:\n\t\tout := []int{1, DOTS}\n\t\treturn append(out, inclusive(total-(2+2*sibling), total)...)\n\tdefault:\n\t\tout := []int{1, DOTS}\n\t\tout = append(out, inclusive(left, right)...)\n\t\treturn append(out, DOTS, total)\n\t}\n}\n\n// inclusive is the pages from lo to hi, both ends in.\nfunc inclusive(lo, hi int) []int {\n\tout := make([]int, hi-lo+1)\n\tfor i := range out {\n\t\tout[i] = lo + i\n\t}\n\treturn out\n}\n"
+        }
+      ]
+    },
+    {
       "name": "popover",
       "type": "components:ui",
+      "install": "internal/ui/components/popover",
+      "import": "github.com/smallnest/uix/components/popover",
       "registryDependencies": [
         "base"
       ],
@@ -560,6 +810,8 @@
     {
       "name": "progress",
       "type": "components:ui",
+      "install": "internal/ui/components/progress",
+      "import": "github.com/smallnest/uix/components/progress",
       "registryDependencies": [
         "base"
       ],
@@ -576,6 +828,8 @@
     {
       "name": "radio",
       "type": "components:ui",
+      "install": "internal/ui/components/radio",
+      "import": "github.com/smallnest/uix/components/radio",
       "registryDependencies": [
         "base"
       ],
@@ -592,6 +846,8 @@
     {
       "name": "rangeslider",
       "type": "components:ui",
+      "install": "internal/ui/components/rangeslider",
+      "import": "github.com/smallnest/uix/components/rangeslider",
       "registryDependencies": [
         "base"
       ],
@@ -608,6 +864,8 @@
     {
       "name": "rating",
       "type": "components:ui",
+      "install": "internal/ui/components/rating",
+      "import": "github.com/smallnest/uix/components/rating",
       "registryDependencies": [
         "base"
       ],
@@ -624,6 +882,8 @@
     {
       "name": "richtext",
       "type": "components:ui",
+      "install": "internal/ui/components/richtext",
+      "import": "github.com/smallnest/uix/components/richtext",
       "registryDependencies": [
         "base"
       ],
@@ -640,6 +900,8 @@
     {
       "name": "scroll",
       "type": "components:ui",
+      "install": "internal/ui/components/scroll",
+      "import": "github.com/smallnest/uix/components/scroll",
       "registryDependencies": [
         "base"
       ],
@@ -656,6 +918,8 @@
     {
       "name": "scrollboth",
       "type": "components:ui",
+      "install": "internal/ui/components/scrollboth",
+      "import": "github.com/smallnest/uix/components/scrollboth",
       "registryDependencies": [
         "base"
       ],
@@ -672,6 +936,8 @@
     {
       "name": "scrollhorizontal",
       "type": "components:ui",
+      "install": "internal/ui/components/scrollhorizontal",
+      "import": "github.com/smallnest/uix/components/scrollhorizontal",
       "registryDependencies": [
         "base"
       ],
@@ -688,6 +954,8 @@
     {
       "name": "searchfield",
       "type": "components:ui",
+      "install": "internal/ui/components/searchfield",
+      "import": "github.com/smallnest/uix/components/searchfield",
       "registryDependencies": [
         "base"
       ],
@@ -704,6 +972,8 @@
     {
       "name": "segmented",
       "type": "components:ui",
+      "install": "internal/ui/components/segmented",
+      "import": "github.com/smallnest/uix/components/segmented",
       "registryDependencies": [
         "base"
       ],
@@ -720,6 +990,8 @@
     {
       "name": "select",
       "type": "components:ui",
+      "install": "internal/ui/components/select",
+      "import": "github.com/smallnest/uix/components/select",
       "registryDependencies": [
         "base"
       ],
@@ -736,6 +1008,8 @@
     {
       "name": "separator",
       "type": "components:ui",
+      "install": "internal/ui/components/separator",
+      "import": "github.com/smallnest/uix/components/separator",
       "registryDependencies": [
         "base"
       ],
@@ -752,6 +1026,8 @@
     {
       "name": "sidebar",
       "type": "components:ui",
+      "install": "internal/ui/components/sidebar",
+      "import": "github.com/smallnest/uix/components/sidebar",
       "registryDependencies": [
         "base"
       ],
@@ -768,6 +1044,8 @@
     {
       "name": "slider",
       "type": "components:ui",
+      "install": "internal/ui/components/slider",
+      "import": "github.com/smallnest/uix/components/slider",
       "registryDependencies": [
         "base"
       ],
@@ -784,6 +1062,8 @@
     {
       "name": "spinner",
       "type": "components:ui",
+      "install": "internal/ui/components/spinner",
+      "import": "github.com/smallnest/uix/components/spinner",
       "registryDependencies": [
         "base"
       ],
@@ -800,6 +1080,8 @@
     {
       "name": "split",
       "type": "components:ui",
+      "install": "internal/ui/components/split",
+      "import": "github.com/smallnest/uix/components/split",
       "registryDependencies": [
         "base"
       ],
@@ -814,8 +1096,29 @@
       ]
     },
     {
+      "name": "statcard",
+      "type": "components:ui",
+      "install": "internal/ui/components/statcard",
+      "import": "github.com/smallnest/uix/components/statcard",
+      "registryDependencies": [
+        "base",
+        "tooltip"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/statcard/statcard.go",
+          "content": "// Package statcard provides the KPI stat cards of BoardUI for the MyGo\n// native toolkit: a grid of metric cards in two looks, the compact plain\n// card and the display-size footer card.\n//\n//\tstatcard.StatCards(c, statcard.Props{\n//\t\tVariant: statcard.Footer,\n//\t\tStats: []statcard.Stat{\n//\t\t\t{Icon: statcard.IconCoins, Label: \"Total revenue\",\n//\t\t\t\tValue: \"$152,313.92\", Delta: \"16%\", DeltaColor: statcard.Up,\n//\t\t\t\tTone: statcard.Blue, Hint: \"Gross revenue, before refunds.\"},\n//\t\t},\n//\t})\n//\n// The cards sit on the theme's Surface, so a row of them reads as a\n// dashboard. Each card is a component of its own; the grid is a row of\n// equal cards that wraps when it must. The delta chip tones the change\n// by direction, the footer variant tones its icon tile, and the hint\n// glyph carries a tooltip.\npackage statcard\n\nimport (\n\t\"github.com/egoist/mygo/ui\"\n\n\t\"github.com/smallnest/uix/components/tooltip\"\n)\n\n// Variant is the look of a card.\ntype Variant int\n\nconst (\n\t// Plain is the compact card: an icon tile, the label, the value and\n\t// the delta chip.\n\tPlain Variant = iota\n\t// Footer adds a tinted icon tile, a display-size value and a footer\n\t// band that carries the comparison caption and the delta pill.\n\tFooter\n)\n\n// DeltaColor is the tone of the delta chip, by the direction of the\n// change.\ntype DeltaColor int\n\nconst (\n\t// Up is a change for the better, the lime chip.\n\tUp DeltaColor = iota\n\t// Down is a change for the worse, the rose chip.\n\tDown\n\t// Flat is a change without a direction, the neutral chip.\n\tFlat\n)\n\n// Tone tints the footer variant's icon tile.\ntype Tone int\n\nconst (\n\t// The tones, from BoardUI's StatTone, as the theme has a color for\n\t// them: Blue is the Accent, Orange the Warning, Pink the Danger,\n\t// Emerald the Success; Purple and Sky share the Accent, as the theme\n\t// has no violet or sky of its own.\n\tBlue Tone = iota\n\tOrange\n\tPurple\n\tPink\n\tSky\n\tEmerald\n)\n\n// Icon is a card icon, drawn in a box of the card's icon size. The\n// exported icons (IconUsers, IconBox, IconBasket, IconChat, IconCoins,\n// IconRefund) fit the box; a card can draw its own instead.\ntype Icon func(c *ui.Context, color ui.Color)\n\n// Stat is one metric card.\ntype Stat struct {\n\t// Icon is the mark of the metric, on the plain tile or the footer\n\t// tile.\n\tIcon Icon\n\t// Label is the name of the metric.\n\tLabel string\n\t// Value is the metric itself, as the app formats it.\n\tValue string\n\t// Delta is the change, such as \"+5.3%\".\n\tDelta string\n\t// DeltaColor tones the chip.\n\tDeltaColor DeltaColor\n\t// Tone tints the footer variant's icon tile; Blue when zero.\n\tTone Tone\n\t// Caption is the footer band's comparison, \"From last month\" when\n\t// empty.\n\tCaption string\n\t// Hint shows the info glyph with this text in a tooltip; empty hides\n\t// the glyph.\n\tHint string\n}\n\n// Props describes the grid to draw.\ntype Props struct {\n\t// Stats are the cards, in order, one per column.\n\tStats []Stat\n\t// Variant is the look of every card.\n\tVariant Variant\n}\n\n// StatCards draws the grid of cards and returns it, so a view can chain\n// more calls on it.\nfunc StatCards(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\treturn ui.Row(c).FillWidth().Wrap().Gap(t.Space(4)).Children(func() {\n\t\tfor _, s := range p.Stats {\n\t\t\tcard(c, t, p.Variant, s)\n\t\t}\n\t})\n}\n\n// card is one metric card, in its variant's look.\nfunc card(c *ui.Context, t *ui.Theme, v Variant, s Stat) {\n\tif v == Footer {\n\t\tfooterCard(c, t, s)\n\t\treturn\n\t}\n\tplainCard(c, t, s)\n}\n\n// plainCard is the compact card: the icon tile on top, the label and the\n// value with its delta below, 132 points tall as the BoardUI cards are.\nfunc plainCard(c *ui.Context, t *ui.Theme, s Stat) {\n\tui.Box(c).Height(132).Grow(1).Shrink(0).Background(t.Surface).\n\t\tRadius(t.Radius * 2).Padding(t.Space(4)).Children(func() {\n\t\ttile(c, t, s.Icon, 30, t.SurfaceHover, t.Text)\n\t\tui.Column(c).FillWidth().Gap(2).Children(func() {\n\t\t\tui.Text(c, s.Label).TextColor(t.TextMuted).SingleLine()\n\t\t\tui.Row(c).FillWidth().AlignItems(ui.Center).Gap(t.Space(2)).\n\t\t\t\tChildren(func() {\n\t\t\t\t\tui.Text(c, s.Value).FontSize(t.FontSize * 1.15).\n\t\t\t\t\t\tFontWeight(600).TextColor(t.Text).SingleLine()\n\t\t\t\t\tdeltaChip(c, t, s.Delta, s.DeltaColor)\n\t\t\t\t})\n\t\t})\n\t})\n}\n\n// footerCard is the display card: the tinted icon tile with the hint\n// glyph above the label and value, and the footer band with the\n// comparison and the delta pill.\nfunc footerCard(c *ui.Context, t *ui.Theme, s Stat) {\n\tui.Box(c).Grow(1).Shrink(0).Background(t.Surface).\n\t\tRadius(t.Radius * 2).Padding(t.Space(2)).Children(func() {\n\t\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Start).\n\t\t\tGap(t.Space(2.5)).Padding(t.Space(2)).Children(func() {\n\t\t\ttile(c, t, s.Icon, 40, toneColor(t, s.Tone), t.InverseText)\n\t\t\tif s.Hint != \"\" {\n\t\t\t\thintGlyph(c, t, s)\n\t\t\t}\n\t\t})\n\t\tui.Column(c).Gap(2).Padding(t.Space(2), t.Space(2), t.Space(3.5), t.Space(2)).\n\t\t\tChildren(func() {\n\t\t\t\tui.Text(c, s.Label).TextColor(t.TextMuted).SingleLine()\n\t\t\t\tui.Text(c, s.Value).FontSize(t.FontSize * 1.6).\n\t\t\t\t\tFontWeight(600).TextColor(t.Text).SingleLine()\n\t\t\t})\n\t\tcaption := s.Caption\n\t\tif caption == \"\" {\n\t\t\tcaption = \"From last month\"\n\t\t}\n\t\tui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Center).\n\t\t\tGap(t.Space(2)).Background(t.Background).Radius(t.Radius + 2).\n\t\t\tPadding(t.Space(2.5), t.Space(1.5), t.Space(2.5), t.Space(2.5)).\n\t\t\tChildren(func() {\n\t\t\t\tui.Text(c, caption).TextColor(t.TextMuted).Grow(1).SingleLine()\n\t\t\t\tdeltaChip(c, t, s.Delta, s.DeltaColor)\n\t\t\t})\n\t})\n}\n\n// tile is the rounded box the icon sits in: a plain tile on a muted\n// ground, or a footer tile tinted with the tone.\nfunc tile(c *ui.Context, t *ui.Theme, icon Icon, size float32, bg, fg ui.Color) {\n\tif icon == nil {\n\t\ticon = IconSparkle\n\t}\n\tui.Box(c).Size(size, size).Radius(size / 3).Background(bg).Center().\n\t\tChildren(func() {\n\t\t\ticon(c, fg)\n\t\t})\n}\n\n// toneColor is the fill of a footer tile for its tone.\nfunc toneColor(t *ui.Theme, tone Tone) ui.Color {\n\tswitch tone {\n\tcase Orange:\n\t\treturn t.Warning\n\tcase Pink:\n\t\treturn t.Danger\n\tcase Emerald:\n\t\treturn t.Success\n\t}\n\treturn t.Accent\n}\n\n// hintGlyph is the info mark with the hint as a tooltip, as the footer\n// cards explain themselves.\nfunc hintGlyph(c *ui.Context, t *ui.Theme, s Stat) {\n\tb := ui.ButtonBase(c).Size(20, 20).Radius(10).Center()\n\tb.Label(\"About \" + s.Label)\n\tb.Children(func() {\n\t\tinfo(c, t.TextMuted)\n\t})\n\ttooltip.Tooltip(c, tooltip.Props{Anchor: b, Text: s.Hint})\n}\n\n// deltaChip is the pill of the change, tinted by its direction with an\n// arrow that says the same.\nfunc deltaChip(c *ui.Context, t *ui.Theme, delta string, d DeltaColor) {\n\tbg, fg := t.SurfaceHover, t.TextMuted\n\tarrow := arrowFlat\n\tswitch d {\n\tcase Up:\n\t\tbg, fg = t.Success.Alpha(0.15), t.Success\n\t\tarrow = arrowUp\n\tcase Down:\n\t\tbg, fg = t.Danger.Alpha(0.15), t.Danger\n\t\tarrow = arrowDown\n\t}\n\tui.Row(c).Shrink(0).Gap(3).Radius(9).Padding(2, 4).\n\t\tAlignItems(ui.Center).Background(bg).Children(func() {\n\t\tarrow(c, fg)\n\t\tui.Text(c, delta).FontSize(t.FontSize * 0.8).TextColor(fg).SingleLine()\n\t})\n}\n\n// IconUsers draws two people, the customers of a metric.\nfunc IconUsers(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.Circle(cx-4.5, cy-5.5, 2.4)\n\t\tp.Circle(cx+4.5, cy-5.5, 2.4)\n\t\tpt.FillPath(\u0026p, color)\n\t\tvar s ui.Path\n\t\ts.MoveTo(cx-7.5, cy+3).QuadTo(cx-4.5, cy+0.5, cx-1.5, cy+3)\n\t\ts.MoveTo(cx+1.5, cy+3).QuadTo(cx+4.5, cy+0.5, cx+7.5, cy+3)\n\t\tpt.StrokePath(\u0026s, 1.6, color)\n\t})\n}\n\n// IconBox draws a package, the units sold of a metric.\nfunc IconBox(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx-5, cy-1).LineTo(cx+5, cy-1).LineTo(cx+5, cy+6).\n\t\t\tLineTo(cx-5, cy+6).Close()\n\t\tp.MoveTo(cx-5, cy-1).LineTo(cx-5, cy-4).LineTo(cx+5, cy-4).LineTo(cx+5, cy-1)\n\t\tp.MoveTo(cx, cy-1).LineTo(cx, cy+6)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// IconBasket draws a shopping basket, the orders of a metric.\nfunc IconBasket(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx-3.5, cy-1.5).QuadTo(cx-3.5, cy-6, cx, cy-6).\n\t\t\tQuadTo(cx+3.5, cy-6, cx+3.5, cy-1.5)\n\t\tp.MoveTo(cx-6, cy-1.5).LineTo(cx+6, cy-1.5).LineTo(cx+4, cy+6).\n\t\t\tLineTo(cx-4, cy+6).Close()\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// IconChat draws a smiling bubble, the support tickets of a metric.\nfunc IconChat(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.Circle(cx, cy-1.5, 6.5)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t\tvar eyes ui.Path\n\t\teyes.Circle(cx-2.5, cy-2.5, 1.1)\n\t\teyes.Circle(cx+2.5, cy-2.5, 1.1)\n\t\tpt.FillPath(\u0026eyes, color)\n\t\tvar smile ui.Path\n\t\tsmile.MoveTo(cx-3.5, cy+0.5).QuadTo(cx, cy+3, cx+3.5, cy+0.5)\n\t\tpt.StrokePath(\u0026smile, 1.6, color)\n\t})\n}\n\n// IconCoins draws a coin, the money of a metric.\nfunc IconCoins(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.Circle(cx, cy, 6.5)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t\tpt.Line(cx, cy-4.5, cx, cy+4.5, 1.6, color)\n\t\tpt.Line(cx-2.5, cy-1.5, cx+2.5, cy-1.5, 1.6, color)\n\t\tpt.Line(cx-2.5, cy+1.5, cx+2.5, cy+1.5, 1.6, color)\n\t})\n}\n\n// IconRefund draws a return arrow, the refunds of a metric.\nfunc IconRefund(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx+5.5, cy-2).LineTo(cx+5.5, cy+3).\n\t\t\tQuadTo(cx+5.5, cy+6, cx+2.5, cy+6).LineTo(cx-3.5, cy+6)\n\t\tp.QuadTo(cx-6.5, cy+6, cx-6.5, cy+3).LineTo(cx-6.5, cy+1)\n\t\tp.MoveTo(cx-4, cy+3.5).LineTo(cx-6.5, cy+1).LineTo(cx-9, cy+3.5)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// IconSparkle is the fallback mark of a card without an icon, the\n// four-point star.\nfunc IconSparkle(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx, cy-6).QuadTo(cx+2, cy-2, cx+6, cy).\n\t\t\tQuadTo(cx+2, cy+2, cx, cy+6).QuadTo(cx-2, cy+2, cx-6, cy).\n\t\t\tQuadTo(cx-2, cy-2, cx, cy-6).Close()\n\t\tpt.FillPath(\u0026p, color)\n\t})\n}\n\n// info draws the i of the hint glyph.\nfunc info(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tvar ring ui.Path\n\t\tring.Circle(cx, cy, 5.5)\n\t\tpt.StrokePath(\u0026ring, 1.2, color)\n\t\tpt.Line(cx, cy-2, cx, cy+1, 1.4, color)\n\t\tvar dot ui.Path\n\t\tdot.Circle(cx, cy+3.2, 0.9)\n\t\tpt.FillPath(\u0026dot, color)\n\t})\n}\n\n// arrowUp is the chip's arrow for a better change.\nfunc arrowUp(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tpt.Line(cx, cy+3.5, cx, cy-3.5, 1.6, color)\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx-2.5, cy-1).LineTo(cx, cy-3.5).LineTo(cx+2.5, cy-1)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// arrowDown is the chip's arrow for a worse change.\nfunc arrowDown(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tpt.Line(cx, cy-3.5, cx, cy+3.5, 1.6, color)\n\t\tvar p ui.Path\n\t\tp.MoveTo(cx-2.5, cy+1).LineTo(cx, cy+3.5).LineTo(cx+2.5, cy+1)\n\t\tpt.StrokePath(\u0026p, 1.6, color)\n\t})\n}\n\n// arrowFlat is the chip's bar for a change without a direction.\nfunc arrowFlat(c *ui.Context, color ui.Color) {\n\tglyph(c, func(pt *ui.Painter, cx, cy float32) {\n\t\tpt.Line(cx-3.5, cy, cx+3.5, cy, 1.6, color)\n\t})\n}\n\n// glyph runs fn over a 20-point drawing centered in its box.\nfunc glyph(c *ui.Context, fn func(pt *ui.Painter, cx, cy float32)) {\n\tui.Box(c).Size(20, 20).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\tfn(pt, r.X+r.W/2, r.Y+r.H/2)\n\t})\n}\n"
+        }
+      ]
+    },
+    {
       "name": "stepper",
       "type": "components:ui",
+      "install": "internal/ui/components/stepper",
+      "import": "github.com/smallnest/uix/components/stepper",
       "registryDependencies": [
         "base"
       ],
@@ -832,6 +1135,8 @@
     {
       "name": "switch",
       "type": "components:ui",
+      "install": "internal/ui/components/switch",
+      "import": "github.com/smallnest/uix/components/switch",
       "registryDependencies": [
         "base"
       ],
@@ -848,6 +1153,8 @@
     {
       "name": "table",
       "type": "components:ui",
+      "install": "internal/ui/components/table",
+      "import": "github.com/smallnest/uix/components/table",
       "registryDependencies": [
         "base"
       ],
@@ -864,6 +1171,8 @@
     {
       "name": "tabs",
       "type": "components:ui",
+      "install": "internal/ui/components/tabs",
+      "import": "github.com/smallnest/uix/components/tabs",
       "registryDependencies": [
         "base"
       ],
@@ -880,6 +1189,8 @@
     {
       "name": "textarea",
       "type": "components:ui",
+      "install": "internal/ui/components/textarea",
+      "import": "github.com/smallnest/uix/components/textarea",
       "registryDependencies": [
         "base"
       ],
@@ -894,8 +1205,28 @@
       ]
     },
     {
+      "name": "thinking",
+      "type": "components:ui",
+      "install": "internal/ui/components/thinking",
+      "import": "github.com/smallnest/uix/components/thinking",
+      "registryDependencies": [
+        "base"
+      ],
+      "dependencies": [
+        "github.com/egoist/mygo"
+      ],
+      "files": [
+        {
+          "path": "internal/ui/components/thinking/thinking.go",
+          "content": "// Package thinking provides the AgentThinking indicator of BoardUI for\n// the MyGo native toolkit: a row of a working indicator, a label and an\n// elapsed timer, drawn while an agent works on a response. The indicator\n// animates by itself, repainting without rebuilding the view.\n//\n//\tthinking.Thinking(c, thinking.Props{Label: \"Thinking\"})\npackage thinking\n\nimport (\n\t\"fmt\"\n\t\"math\"\n\t\"time\"\n\n\t\"github.com/egoist/mygo/ui\"\n)\n\n// Variant is the pattern of the working indicator.\ntype Variant string\n\n// The variants of the indicator, from BoardUI's AgentThinking.\nconst (\n\t// Wave sweeps a diagonal wavefront across a dot grid.\n\tWave Variant = \"wave\"\n\t// Spin orbits a bright head around a dot grid.\n\tSpin Variant = \"spin\"\n\t// Stars twinkles a few sparkles.\n\tStars Variant = \"stars\"\n\t// Infinity sweeps a comet along a figure-eight.\n\tInfinity Variant = \"infinity\"\n)\n\n// Tone is the color of the indicator and the label.\ntype Tone string\n\n// The tones of the indicator and the label.\nconst (\n\tSubtle  Tone = \"subtle\"\n\tDefault Tone = \"default\"\n\tPrimary Tone = \"primary\"\n\tAccent  Tone = \"accent\"\n)\n\n// Props describes the indicator to draw.\ntype Props struct {\n\t// Variant is the pattern of the indicator; the zero value is Wave.\n\tVariant Variant\n\t// Label is the status text, such as \"Thinking\" or \"Searching the docs\".\n\tLabel string\n\t// Tone colors the indicator and the label. The zero value picks the\n\t// default tone of the variant, which is Subtle for Stars and Default\n\t// for the rest.\n\tTone Tone\n\t// ShowTimer draws the time since Started after the label.\n\tShowTimer bool\n\t// Started is when the work began, for the timer. The zero value\n\t// draws 0.0s.\n\tStarted time.Time\n}\n\n// Thinking draws the indicator and returns it.\nfunc Thinking(c *ui.Context, p Props) *ui.Element {\n\tt := c.Theme()\n\tcolor := toneColor(t, p.Tone)\n\tsize := t.FontSize\n\treturn ui.Row(c).AlignItems(ui.Center).Gap(10).Children(func() {\n\t\tindicator(c, p.Variant, color)\n\t\tui.Text(c, p.Label).FontSize(size).TextColor(color)\n\t\tif p.ShowTimer {\n\t\t\tui.Box(c).Shrink(0).Width(48).Draw(func(pt *ui.Painter, r ui.Rect) {\n\t\t\t\tbase := p.Started\n\t\t\t\tif base.IsZero() {\n\t\t\t\t\tbase = pt.Now()\n\t\t\t\t}\n\t\t\t\telapsed := pt.Now().Sub(base)\n\t\t\t\ts := fmt.Sprintf(\"%.1fs\", elapsed.Seconds())\n\t\t\t\tpt.After(100 * time.Millisecond)\n\t\t\t\tpt.Text(r.X, r.Y+r.H/2+size*0.35, s, size*0.85, t.TextMuted)\n\t\t\t})\n\t\t}\n\t})\n}\n\n// toneColor maps a tone to a theme color; the two muted tones share the\n// muted text color, as the theme has no secondary text color.\nfunc toneColor(t *ui.Theme, tone Tone) ui.Color {\n\tswitch tone {\n\tcase Primary:\n\t\treturn t.Text\n\tcase Accent:\n\t\treturn t.Accent\n\t}\n\treturn t.TextMuted\n}\n\n// indicator draws the animated mark of the variant.\nfunc indicator(c *ui.Context, v Variant, color ui.Color) *ui.Element {\n\tswitch v {\n\tcase Spin:\n\t\treturn dotGrid(c, true, color)\n\tcase Stars:\n\t\treturn stars(c, color)\n\tcase Infinity:\n\t\treturn infinity(c, color)\n\tdefault: // Wave\n\t\treturn dotGrid(c, false, color)\n\t}\n}\n\n// dotGrid draws the wave or spin pattern: a 3x3 grid of dots whose\n// opacities follow a phase front across the grid, in a wave along the\n// diagonals or a head orbiting the centre.\nfunc dotGrid(c *ui.Context, spin bool, color ui.Color) *ui.Element {\n\tconst size, gap = 4, 2\n\te := ui.Box(c).Size(20, 20).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {\n\t\tphase := float64(p.Now().UnixMilli()%80) / 80\n\t\t// The 16px grid sits centred in the 20px box, with a 2px margin.\n\t\tcx, cy := r.X+2, r.Y+2\n\t\tfor row := 0; row \u003c 3; row++ {\n\t\t\tfor col := 0; col \u003c 3; col++ {\n\t\t\t\ts := waveScalar(col, row)\n\t\t\t\tif spin {\n\t\t\t\t\ts = spinScalar(col, row)\n\t\t\t\t}\n\t\t\t\tbehind := math.Mod(phase-s+1, 1)\n\t\t\t\tlit := math.Pow(math.Max(0, 1-behind/0.3), 1.5)\n\t\t\t\talpha := float32(0.12 + 0.88*lit)\n\t\t\t\tx := cx + float32(col)*(size+gap)\n\t\t\t\ty := cy + float32(row)*(size+gap)\n\t\t\t\tvar dot ui.Path\n\t\t\t\tdot.Circle(x+size/2, y+size/2, size/2)\n\t\t\t\tp.FillPath(\u0026dot, color.Alpha(alpha))\n\t\t\t}\n\t\t}\n\t\tp.After(80 * time.Millisecond)\n\t})\n\treturn e\n}\n\n// waveScalar is how far along the wave's travel direction a cell sits:\n// the front walks the diagonals from top-left to bottom-right. The scalar\n// is compressed below 1 so the wrap reads as the front leaving and\n// re-entering the grid.\nfunc waveScalar(col, row int) float64 {\n\treturn float64(col+row) / (2 * 2) * (3.0 / 4.0)\n}\n\n// spinScalar is the angle of a cell around the grid centre, as a phase\n// in [0, 1), so the bright head orbits clockwise.\nfunc spinScalar(col, row int) float64 {\n\treturn math.Mod(math.Atan2(float64(row-1), float64(col-1))/(2*math.Pi)+1, 1)\n}\n\n// stars twinkles five four-point sparkles, each on its own phase, so the\n// sky does not pulse in unison.\nfunc stars(c *ui.Context, color ui.Color) *ui.Element {\n\t// Positions as percentages of the box, like BoardUI's STAR_LAYOUT.\n\tlayout := []struct{ x, y, scale float64 }{\n\t\t{50, 46, 1}, {18, 22, 0.55}, {82, 26, 0.45}, {78, 76, 0.55}, {22, 78, 0.4},\n\t}\n\tconst period = 1400.0 // ms per twinkle\n\te := ui.Box(c).Size(21, 21).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {\n\t\tms := float64(p.Now().UnixMilli())\n\t\tfor i, s := range layout {\n\t\t\tphase := math.Mod(ms/period+float64(i)*0.7/5, 1)\n\t\t\talpha := float32(0.25 + 0.75*math.Pow(math.Sin(2*math.Pi*phase), 2))\n\t\t\tarm := float32(3.5 * s.scale)\n\t\t\tx := r.X + float32(s.x/100)*r.W\n\t\t\ty := r.Y + float32(s.y/100)*r.H\n\t\t\tvar spark ui.Path\n\t\t\tspark.MoveTo(x-arm, y).LineTo(x+arm, y)\n\t\t\tspark.MoveTo(x, y-arm).LineTo(x, y+arm)\n\t\t\tp.StrokePath(\u0026spark, 1.2, color.Alpha(alpha))\n\t\t\tvar core ui.Path\n\t\t\tcore.Circle(x, y, 0.8)\n\t\t\tp.FillPath(\u0026core, color.Alpha(alpha))\n\t\t}\n\t\tp.After(100 * time.Millisecond)\n\t})\n\treturn e\n}\n\n// infinity draws a figure-eight faintly and sweeps a comet along it: the\n// head and the fading dots of its trail, on the curve x = A sin t,\n// y = B sin 2t, so the loop reads as a horizontal eight.\nfunc infinity(c *ui.Context, color ui.Color) *ui.Element {\n\tconst lap = 1200.0 // ms per lap\n\te := ui.Box(c).Size(24, 16).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {\n\t\tcx, cy := r.X+r.W/2, r.Y+r.H/2\n\t\ta, b := r.W/2-2, r.H/2-2\n\t\tat := func(t float64) (float32, float32) {\n\t\t\treturn cx + float32(float64(a)*math.Sin(t)), cy + float32(float64(b)*math.Sin(2*t))\n\t\t}\n\t\t// The faint whole, one sampled path.\n\t\tvar eight ui.Path\n\t\tfirst := true\n\t\tfor i := 0; i \u003c= 128; i++ {\n\t\t\tx, y := at(2 * math.Pi * float64(i) / 128)\n\t\t\tif first {\n\t\t\t\teight.MoveTo(x, y)\n\t\t\t\tfirst = false\n\t\t\t} else {\n\t\t\t\teight.LineTo(x, y)\n\t\t\t}\n\t\t}\n\t\tp.StrokePath(\u0026eight, 2, color.Alpha(0.15))\n\t\t// The comet: a bright head and fading dots behind it along the path.\n\t\tph := math.Mod(float64(p.Now().UnixMilli())/lap, 1)\n\t\tfor i := 3; i \u003e= 0; i-- {\n\t\t\tt := 2*math.Pi*ph - float64(i)*0.18\n\t\t\tx, y := at(t)\n\t\t\tvar dot ui.Path\n\t\t\tdot.Circle(x, y, float32(2-0.45*float64(i)))\n\t\t\tp.FillPath(\u0026dot, color.Alpha(float32(0.55-0.14*float64(i))))\n\t\t}\n\t\tp.After(40 * time.Millisecond)\n\t})\n\treturn e\n}\n"
+        }
+      ]
+    },
+    {
       "name": "timeinput",
       "type": "components:ui",
+      "install": "internal/ui/components/timeinput",
+      "import": "github.com/smallnest/uix/components/timeinput",
       "registryDependencies": [
         "base"
       ],
@@ -912,6 +1243,8 @@
     {
       "name": "toast",
       "type": "components:ui",
+      "install": "internal/ui/components/toast",
+      "import": "github.com/smallnest/uix/components/toast",
       "registryDependencies": [
         "base"
       ],
@@ -928,6 +1261,8 @@
     {
       "name": "toggle",
       "type": "components:ui",
+      "install": "internal/ui/components/toggle",
+      "import": "github.com/smallnest/uix/components/toggle",
       "registryDependencies": [
         "base"
       ],
@@ -944,6 +1279,8 @@
     {
       "name": "togglegroup",
       "type": "components:ui",
+      "install": "internal/ui/components/togglegroup",
+      "import": "github.com/smallnest/uix/components/togglegroup",
       "registryDependencies": [
         "base"
       ],
@@ -960,6 +1297,8 @@
     {
       "name": "tokenfield",
       "type": "components:ui",
+      "install": "internal/ui/components/tokenfield",
+      "import": "github.com/smallnest/uix/components/tokenfield",
       "registryDependencies": [
         "base"
       ],
@@ -976,6 +1315,8 @@
     {
       "name": "toolbar",
       "type": "components:ui",
+      "install": "internal/ui/components/toolbar",
+      "import": "github.com/smallnest/uix/components/toolbar",
       "registryDependencies": [
         "base"
       ],
@@ -992,6 +1333,8 @@
     {
       "name": "tooltip",
       "type": "components:ui",
+      "install": "internal/ui/components/tooltip",
+      "import": "github.com/smallnest/uix/components/tooltip",
       "registryDependencies": [
         "base"
       ],
@@ -1008,6 +1351,8 @@
     {
       "name": "tree",
       "type": "components:ui",
+      "install": "internal/ui/components/tree",
+      "import": "github.com/smallnest/uix/components/tree",
       "registryDependencies": [
         "base"
       ],

@@ -6,9 +6,11 @@
 // carries each file with its content, so the uix binary is standalone
 // and the registry can later be served over HTTP.
 //
-// Components may import only github.com/egoist/mygo. The copy model has
-// no path rewriting, so a component must not import other packages of
-// this module or of the consumer project.
+// A component imports only github.com/egoist/mygo and the sibling
+// components it composes, such as the tooltip a stat card shows. The
+// copy model has no path rewriting in the consumer, so Install rewrites
+// the import of a sibling to the path the copy has in the consumer's
+// module, as shadcn/ui rewrites its imports to the consumer's alias.
 package registry
 
 import (
@@ -34,6 +36,8 @@ type File struct {
 type Item struct {
 	Name                 string   `json:"name"`
 	Type                 string   `json:"type"` // components:base or components:ui
+	Install              string   `json:"install,omitempty"` // where it installs in the consumer
+	Import               string   `json:"import,omitempty"`  // its import path in this module
 	RegistryDependencies []string `json:"registryDependencies,omitempty"`
 	Dependencies         []string `json:"dependencies,omitempty"` // Go modules to fetch
 	Files                []File   `json:"files"`
@@ -115,17 +119,51 @@ func (r *Registry) Install(dir, name string, seen map[string]bool) error {
 			return err
 		}
 	}
+	// Rewrite the imports of the copies so the components that compose
+	// one another point at the copy in the consumer's module, not at the
+	// registry's module. Each copy keeps the path it had in the registry,
+	// under the consumer's module path, as shadcn/ui rewrites its
+	// imports to the consumer's alias.
+	rewrites := map[string]string{}
+	if mod := consumerModule(dir); mod != "" {
+		for i := range r.Items {
+			it := &r.Items[i]
+			if it.Import != "" && it.Install != "" {
+				rewrites[it.Import] = mod + "/" + it.Install
+			}
+		}
+	}
 	for _, f := range item.Files {
 		target := filepath.Join(dir, filepath.FromSlash(f.Path))
 		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
 			return err
 		}
-		if err := os.WriteFile(target, []byte(f.Content), 0o644); err != nil {
+		content := f.Content
+		for from, to := range rewrites {
+			content = strings.ReplaceAll(content, `"`+from+`"`, `"`+to+`"`)
+		}
+		if err := os.WriteFile(target, []byte(content), 0o644); err != nil {
 			return err
 		}
 		fmt.Printf("uix: wrote %s\n", f.Path)
 	}
 	return GoGet(dir, item.Dependencies...)
+}
+
+// consumerModule returns the module path of the Go module in dir, or ""
+// if dir has no go.mod. Install rewrites the imports of the copies to
+// this path, so they compose one another in the consumer's module.
+func consumerModule(dir string) string {
+	data, err := os.ReadFile(filepath.Join(dir, "go.mod"))
+	if err != nil {
+		return ""
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if f := strings.Fields(line); len(f) == 2 && f[0] == "module" {
+			return f[1]
+		}
+	}
+	return ""
 }
 
 // GoGet fetches the Go modules a component needs, from dir.

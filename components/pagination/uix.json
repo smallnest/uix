@@ -1,0 +1,10 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/pagination",
+  "dependencies": [
+    "github.com/egoist/mygo"
+  ],
+  "registryDependencies": [
+    "base"
+  ]
+}
