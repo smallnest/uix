@@ -61,7 +61,7 @@ type State struct {
 
 // Carousel draws the carousel and returns it, so a view can chain more
 // calls on it.
-func Carousel(c *ui.Context, p Props) *ui.Element {
+func Carousel(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	n := max(1, p.Count)
 	gap := p.Gap

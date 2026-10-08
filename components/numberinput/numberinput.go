@@ -28,7 +28,7 @@ type Props struct {
 // Hi, stepped by Step, and returns it, so a view can chain more calls on
 // it. What is typed applies as soon as it is a number in range, and
 // shows rounded to the decimals of Step once the field loses the focus.
-func NumberInput(c *ui.Context, p Props) *ui.Element {
+func NumberInput(c *ui.Context, p Props) ui.Element {
 	e := ui.NumberInput(c, p.Value, p.Lo, p.Hi, p.Step)
 	if p.Disabled {
 		e.Disabled(true)

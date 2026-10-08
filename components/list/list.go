@@ -32,7 +32,7 @@ type Props struct {
 // List draws the items as a scrolling list. A click chooses a row, as
 // the arrow keys and Home and End do while the list has the keyboard
 // focus; a double click or Enter submits it.
-func List(c *ui.Context, p Props) *ui.Element {
+func List(c *ui.Context, p Props) ui.Element {
 	e := ui.List(c, p.State, len(p.Items), func(i int) {
 		if p.Row != nil {
 			p.Row(c, i)

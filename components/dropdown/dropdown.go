@@ -48,7 +48,7 @@ type Props struct {
 // modal popover is not exposed by PopoverBase, and without one the press
 // that closes the menu goes on to what is under it, as with the web's
 // dropdown menus.
-func Dropdown(c *ui.Context, p Props) *ui.Element {
+func Dropdown(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	b := ui.ButtonBase(c).Padding(t.Space(1.5), t.Space(3.5)).Radius(t.Radius).
 		Background(t.Surface).TextColor(t.Text).Border(1, t.Border)
@@ -65,7 +65,7 @@ func Dropdown(c *ui.Context, p Props) *ui.Element {
 	if b.Clicked() {
 		*p.Open = !*p.Open
 	}
-	ui.PopoverBase(c, b, p.Open, func(panel *ui.Element) {
+	ui.PopoverBase(c, b, p.Open, func(panel ui.Element) {
 		panel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)).Radius(t.Radius+2).
 			Background(t.Background).Border(1, t.Border).MinWidth(t.Space(36))
 		panel.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))

@@ -20,7 +20,7 @@ type Props struct {
 }
 
 // Checkbox draws a check box for props, the whole row being clickable.
-func Checkbox(c *ui.Context, p Props) *ui.Element {
+func Checkbox(c *ui.Context, p Props) ui.Element {
 	b := ui.Checkbox(c, p.Checked, p.Label)
 	if p.Disabled {
 		b.Disabled(true)

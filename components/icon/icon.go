@@ -35,7 +35,7 @@ type Props struct {
 
 // Icon draws the SVG as an icon and returns it, so a view can chain more
 // calls on it.
-func Icon(c *ui.Context, p Props) *ui.Element {
+func Icon(c *ui.Context, p Props) ui.Element {
 	e := ui.Icon(c, p.SVG)
 	if p.Label != "" {
 		e.Label(p.Label)

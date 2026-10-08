@@ -27,7 +27,7 @@ type Props struct {
 // Select draws a drop-down for props and returns the trigger element, so
 // a view can chain more calls on it. The popup opens under the trigger on
 // click; the arrows and Enter choose by keyboard.
-func Select(c *ui.Context, p Props) *ui.Element {
+func Select(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	sel := ui.SelectBase(c, p.Selected)
 	b := sel.Trigger
@@ -47,7 +47,7 @@ func Select(c *ui.Context, p Props) *ui.Element {
 		}
 		chevron(c, t)
 	})
-	sel.Popup(func(panel *ui.Element) {
+	sel.Popup(func(panel ui.Element) {
 		panel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)).Radius(t.Radius+2).
 			Background(t.Background).Border(1, t.Border).MinWidth(b.Bounds().W)
 		panel.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))

@@ -40,7 +40,7 @@ type Props struct {
 // RangeSlider draws the label, the readout and the track, and returns
 // the column. The readout follows the knobs as the user drags, because
 // the view builds every frame.
-func RangeSlider(c *ui.Context, p Props) *ui.Element {
+func RangeSlider(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	format := p.Format
 	if format == nil {

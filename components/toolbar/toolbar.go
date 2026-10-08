@@ -22,7 +22,7 @@ type Props struct {
 // Toolbar draws the controls in a row, one stop of Tab, with Left and
 // Right moving the focus among them, and Home and End to the first and
 // the last.
-func Toolbar(c *ui.Context, p Props) *ui.Element {
+func Toolbar(c *ui.Context, p Props) ui.Element {
 	tb := ui.Toolbar(c, func() {
 		if p.Children != nil {
 			p.Children(c)

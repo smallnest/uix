@@ -29,7 +29,7 @@ type Props struct {
 // Autocomplete draws the field and its suggestions below it, and returns
 // it, so a view can chain more calls on it. The field stretches over its
 // parent, as the other fields do; a bounded width overrides it in a Row.
-func Autocomplete(c *ui.Context, p Props) *ui.Element {
+func Autocomplete(c *ui.Context, p Props) ui.Element {
 	e := ui.Autocomplete(c, p.Value, p.Suggestions)
 	e.FillWidth()
 	if p.Label != "" {

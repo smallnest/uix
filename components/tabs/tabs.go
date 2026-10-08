@@ -28,7 +28,7 @@ type Props struct {
 // with an accent bar under it, the others muted, on a hairline, as the
 // tabs of shadcn/ui. It returns the list, so a view can chain more calls
 // on it.
-func Tabs(c *ui.Context, p Props) *ui.Element {
+func Tabs(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	tp := ui.TabsBase(c, p.Selected, len(p.Labels))
 	list := tp.List.Gap(0)

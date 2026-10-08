@@ -120,7 +120,7 @@ func WorkspaceView(c *ui.Context) {
 
 // dayChip draws one day of the sprint: a chip that highlights when it is
 // the chosen one.
-func dayChip(c *ui.Context, t *ui.Theme, d int) *ui.Element {
+func dayChip(c *ui.Context, t *ui.Theme, d int) ui.Element {
 	chosen := State.Day == d
 	bg, fg, bd := t.Surface, t.TextMuted, t.Border
 	if chosen {

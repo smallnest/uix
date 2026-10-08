@@ -39,7 +39,7 @@ type Props struct {
 // node has the keyboard focus, Up and Down move around it, Right opens
 // it or moves to its first child, and Left closes it or moves to its
 // parent.
-func Tree(c *ui.Context, p Props) *ui.Element {
+func Tree(c *ui.Context, p Props) ui.Element {
 	t := ui.Tree(c, func() {
 		for _, it := range p.Items {
 			build(c, it, p)

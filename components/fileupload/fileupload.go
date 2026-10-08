@@ -118,7 +118,7 @@ const defaultMaxBytes int64 = 8 << 20
 
 // FileUpload draws the upload zone and returns it, so a view can chain
 // more calls on it.
-func FileUpload(c *ui.Context, p Props) *ui.Element {
+func FileUpload(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	st := p.State
 	if st == nil {

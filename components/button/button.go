@@ -61,7 +61,7 @@ type Props struct {
 // Button draws a button for props and returns the MyGo element behind it,
 // so a view can chain more calls on it. When the user clicks, Button
 // calls OnClick and the view rebuilds on the next frame.
-func Button(c *ui.Context, p Props) *ui.Element {
+func Button(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	switch p.Variant {
 	case Link:
@@ -120,7 +120,7 @@ func variantColors(c *ui.Context, t *ui.Theme, v Variant) (face, hover, pressed,
 }
 
 // link draws a text button: accent text, no face, padded only across.
-func link(c *ui.Context, p Props) *ui.Element {
+func link(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	b := ui.ButtonBase(c)
 	fg := t.Accent
@@ -141,7 +141,7 @@ func link(c *ui.Context, p Props) *ui.Element {
 }
 
 // paddingSize sets the padding of the button for its size.
-func paddingSize(c *ui.Context, t *ui.Theme, b *ui.Element, s Size, link bool) {
+func paddingSize(c *ui.Context, t *ui.Theme, b ui.Element, s Size, link bool) {
 	var py, px float32
 	switch s {
 	case Sm:
@@ -160,7 +160,7 @@ func paddingSize(c *ui.Context, t *ui.Theme, b *ui.Element, s Size, link bool) {
 
 // finish applies Disabled and runs OnClick for the click. Disabled is
 // checked here so a disabled button never acts.
-func finish(c *ui.Context, b *ui.Element, p Props) *ui.Element {
+func finish(c *ui.Context, b ui.Element, p Props) ui.Element {
 	if p.Disabled {
 		b.Disabled(true)
 	}

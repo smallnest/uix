@@ -29,7 +29,7 @@ type Props struct {
 // Progress draws the label, the readout and the bar, and returns the
 // column. The readout follows the value as the app changes it, because
 // the view builds every frame.
-func Progress(c *ui.Context, p Props) *ui.Element {
+func Progress(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	format := p.Format
 	if format == nil {

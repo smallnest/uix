@@ -50,7 +50,7 @@ type Props struct {
 
 // Sidebar draws the rail and returns it, so a view can chain more calls
 // on it.
-func Sidebar(c *ui.Context, p Props) *ui.Element {
+func Sidebar(c *ui.Context, p Props) ui.Element {
 	e := ui.Sidebar(c, p.Selected, func() {
 		for _, s := range p.Sections {
 			ui.SidebarSection(c, s.Title, s.Open, func() {

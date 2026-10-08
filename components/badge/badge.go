@@ -29,7 +29,7 @@ type Props struct {
 }
 
 // Badge draws a pill with the label for props.
-func Badge(c *ui.Context, p Props) *ui.Element {
+func Badge(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	face, fg, border := variantColors(t, p.Variant)
 	b := ui.Box(c).Padding(t.Space(0.5), t.Space(1.5)).Radius(999).Background(face).TextColor(fg)

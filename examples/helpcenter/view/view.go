@@ -87,7 +87,7 @@ func HelpView(c *ui.Context) {
 		// The popover jumps to a section of the page; its links close it.
 		popover.Popover(c, popover.Props{
 			Open: &State.HelpOpen,
-			Trigger: func(c *ui.Context) *ui.Element {
+			Trigger: func(c *ui.Context) ui.Element {
 				return ui.Button(c, "Help")
 			},
 			Content: func(c *ui.Context) {

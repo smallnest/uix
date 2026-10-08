@@ -31,7 +31,7 @@ type Props struct {
 // taking it out; typing adds a token on Enter or a comma, a suggestion
 // adds on Enter or a click, and Backspace in the empty field takes out
 // the last.
-func TokenField(c *ui.Context, p Props) *ui.Element {
+func TokenField(c *ui.Context, p Props) ui.Element {
 	e := ui.TokenField(c, p.Tokens, p.Suggestions)
 	if p.Label != "" {
 		e.Label(p.Label)

@@ -37,7 +37,7 @@ type Props struct {
 
 // Alert draws a rounded notice: a tinted face, a colored border and a
 // colored bold title. It returns the notice, so a view can size it.
-func Alert(c *ui.Context, p Props) *ui.Element {
+func Alert(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	col := variantColor(t, p.Variant)
 	e := ui.Column(c).Radius(t.Radius).Clip().Padding(t.Space(3)).Gap(t.Space(1)).

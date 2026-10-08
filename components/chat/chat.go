@@ -79,7 +79,7 @@ type Props struct {
 
 // Chat draws the chat surface and returns it, so a view can chain more
 // calls on it.
-func Chat(c *ui.Context, p Props) *ui.Element {
+func Chat(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	return ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius * 3).Clip().
 		Children(func() {
@@ -186,7 +186,7 @@ func message(c *ui.Context, t *ui.Theme, m Message) {
 }
 
 // caret is the blinking block that marks the line the model is writing.
-func caret(c *ui.Context, t *ui.Theme) *ui.Element {
+func caret(c *ui.Context, t *ui.Theme) ui.Element {
 	size := t.FontSize
 	return ui.Box(c).Size(2, size).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {
 		phase := float64(pt.Now().UnixMilli()%800) / 800

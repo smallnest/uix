@@ -45,7 +45,7 @@ type Props struct {
 
 // Menu draws the button, and the menu it opens, and returns the button,
 // so a view can chain more calls on it.
-func Menu(c *ui.Context, p Props) *ui.Element {
+func Menu(c *ui.Context, p Props) ui.Element {
 	e := ui.MenuButton(c, p.Label, func(m *ui.Menu) {
 		for _, it := range p.Items {
 			if it.Separator {

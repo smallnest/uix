@@ -25,7 +25,7 @@ type Props struct {
 
 // Switch draws a row with the switch and its label, and returns it. The
 // switch itself is clickable; the label is not.
-func Switch(c *ui.Context, p Props) *ui.Element {
+func Switch(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	row := ui.Row(c).Gap(t.Space(2)).Children(func() {
 		s := ui.Switch(c, p.On)

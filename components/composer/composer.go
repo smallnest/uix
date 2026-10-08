@@ -54,7 +54,7 @@ type Props struct {
 
 // Composer draws the pill and the status row and returns them, so a view
 // can chain more calls on the column.
-func Composer(c *ui.Context, p Props) *ui.Element {
+func Composer(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	return ui.Column(c).FillWidth().Gap(t.Space(2.5)).Children(func() {
 		pill(c, t, p)
@@ -138,7 +138,7 @@ func pill(c *ui.Context, t *ui.Theme, p Props) {
 
 // circleButton is a 36-point round button, as the composer's controls
 // sit flush inside the pill.
-func circleButton(c *ui.Context, t *ui.Theme, bg ui.Color) *ui.Element {
+func circleButton(c *ui.Context, t *ui.Theme, bg ui.Color) ui.Element {
 	return ui.ButtonBase(c).Size(36, 36).Radius(18).Background(bg).Center()
 }
 
@@ -240,7 +240,7 @@ func paperclip(c *ui.Context, color ui.Color) {
 }
 
 // sparkle draws a four-point star, the mark of an AI model.
-func sparkle(c *ui.Context, size float32, color ui.Color) *ui.Element {
+func sparkle(c *ui.Context, size float32, color ui.Color) ui.Element {
 	return ui.Box(c).Size(size, size).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {
 		cx, cy := r.X+r.W/2, r.Y+r.H/2
 		arm := r.W / 2
@@ -256,7 +256,7 @@ func sparkle(c *ui.Context, size float32, color ui.Color) *ui.Element {
 }
 
 // infinity draws two tangent circles that read as the loop of a run.
-func infinity(c *ui.Context, color ui.Color) *ui.Element {
+func infinity(c *ui.Context, color ui.Color) ui.Element {
 	return ui.Box(c).Size(14, 14).Shrink(0).Draw(func(pt *ui.Painter, r ui.Rect) {
 		cx, cy := r.X+r.W/2, r.Y+r.H/2
 		rad := r.H / 4

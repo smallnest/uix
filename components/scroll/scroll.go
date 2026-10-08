@@ -24,7 +24,7 @@ type Props struct {
 // Scroll draws a container that scrolls its children vertically, and
 // returns it. Size it, or Grow it within its parent; the content sizes
 // to itself, so the scroll can move it.
-func Scroll(c *ui.Context, p Props) *ui.Element {
+func Scroll(c *ui.Context, p Props) ui.Element {
 	s := ui.Scroll(c)
 	if p.Children != nil {
 		s.Children(func() { p.Children(c) })

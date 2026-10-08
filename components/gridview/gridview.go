@@ -40,7 +40,7 @@ type Props struct {
 // GridView draws the items in a scrolling grid, and returns it. A click
 // or the arrow keys choose an item when State.Selected is set, and the
 // chosen cell shows its choice.
-func GridView(c *ui.Context, p Props) *ui.Element {
+func GridView(c *ui.Context, p Props) ui.Element {
 	g := ui.GridView(c, p.State, p.Count, p.MinWidth, p.Height, func(i int) {
 		if p.Item != nil {
 			p.Item(c, i)

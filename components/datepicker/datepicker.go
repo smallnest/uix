@@ -24,7 +24,7 @@ type Props struct {
 // below it changes, and returns it, so a view can chain more calls on
 // it. The field stretches over its parent, as the other fields do; a
 // bounded width overrides it in a Row.
-func DatePicker(c *ui.Context, p Props) *ui.Element {
+func DatePicker(c *ui.Context, p Props) ui.Element {
 	e := ui.DateInput(c, p.Value)
 	e.FillWidth()
 	if p.Disabled {

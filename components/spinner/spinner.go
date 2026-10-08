@@ -17,7 +17,7 @@ type Props struct {
 // Spinner draws the turning spokes, and returns the element. It turns on
 // its own, repainting without rebuilding the view, so a view that shows
 // it does not have to animate.
-func Spinner(c *ui.Context, p Props) *ui.Element {
+func Spinner(c *ui.Context, p Props) ui.Element {
 	e := ui.Spinner(c)
 	if p.Label != "" {
 		e.Label(p.Label)

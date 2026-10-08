@@ -29,7 +29,7 @@ type Props struct {
 
 // Field draws the label, the control that fn builds, and the message
 // under it, and returns the column.
-func Field(c *ui.Context, p Props, fn func()) *ui.Element {
+func Field(c *ui.Context, p Props, fn func()) ui.Element {
 	t := c.Theme()
 	return ui.Column(c).Gap(t.Space(0.5)).Children(func() {
 		if p.Label != "" {

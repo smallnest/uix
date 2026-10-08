@@ -27,7 +27,7 @@ type Props struct {
 
 // Breadcrumbs draws the path and returns it, so a view can chain more
 // calls on it.
-func Breadcrumbs(c *ui.Context, p Props) *ui.Element {
+func Breadcrumbs(c *ui.Context, p Props) ui.Element {
 	e := ui.Breadcrumbs(c, p.Items, p.Chosen)
 	if p.Disabled {
 		e.Disabled(true)

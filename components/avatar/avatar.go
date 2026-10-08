@@ -25,7 +25,7 @@ type Props struct {
 
 // Avatar draws a circle with the photo or the initials, and returns the
 // circle.
-func Avatar(c *ui.Context, p Props) *ui.Element {
+func Avatar(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	size := p.Size
 	if size == 0 {

@@ -25,6 +25,6 @@ type Props struct {
 
 // RichText draws the spans as one text, and returns it. Style the whole
 // text with the methods of the returned element, as for a Text.
-func RichText(c *ui.Context, p Props) *ui.Element {
+func RichText(c *ui.Context, p Props) ui.Element {
 	return ui.RichText(c, p.Spans...)
 }

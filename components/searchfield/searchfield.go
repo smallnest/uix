@@ -20,7 +20,7 @@ type Props struct {
 // clear button shows while the text holds any, which clears it, as
 // Escape does then; Enter reports Submitted, and any change reports
 // Changed. It fills the width of its container.
-func SearchField(c *ui.Context, p Props) *ui.Element {
+func SearchField(c *ui.Context, p Props) ui.Element {
 	e := ui.SearchField(c, p.Value)
 	e.FillWidth()
 	if p.Disabled {

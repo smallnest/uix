@@ -36,7 +36,7 @@ type Props struct {
 // arrow — it repeats, faster after a while — or presses the arrow keys,
 // Home and End while the control has the focus, because the view builds
 // every frame.
-func Stepper(c *ui.Context, p Props) *ui.Element {
+func Stepper(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	format := p.Format
 	if format == nil {

@@ -28,7 +28,7 @@ type Props struct {
 // Segmented draws the segments and returns the control. A click chooses
 // a segment, and the arrow keys move the choice while the control has
 // the focus; the chosen segment reads on a raised background.
-func Segmented(c *ui.Context, p Props) *ui.Element {
+func Segmented(c *ui.Context, p Props) ui.Element {
 	e := ui.Segmented(c, p.Selected, p.Labels...)
 	if p.Label != "" {
 		e.Label(p.Label)

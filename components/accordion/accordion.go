@@ -50,7 +50,7 @@ type Props struct {
 
 // Accordion draws the sections in a bordered box and returns it, so a
 // view can chain more calls on it.
-func Accordion(c *ui.Context, p Props) *ui.Element {
+func Accordion(c *ui.Context, p Props) ui.Element {
 	e := ui.Accordion(c, func() {
 		for _, it := range p.Items {
 			ui.AccordionItem(c, it.Title, it.Open, func() {
@@ -68,7 +68,7 @@ func Accordion(c *ui.Context, p Props) *ui.Element {
 
 // AccordionItem builds one section of an Accordion, for a view that
 // keeps one open at a time, or that builds its sections itself.
-func AccordionItem(c *ui.Context, it Item) *ui.Element {
+func AccordionItem(c *ui.Context, it Item) ui.Element {
 	return ui.AccordionItem(c, it.Title, it.Open, func() {
 		if it.Build != nil {
 			it.Build(c)

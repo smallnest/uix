@@ -35,7 +35,7 @@ type Props struct {
 // Grid draws the grid and returns it. The children fill the columns in
 // order; a child places itself with the ColumnStart, RowStart, ColumnSpan
 // and RowSpan methods of its element.
-func Grid(c *ui.Context, p Props) *ui.Element {
+func Grid(c *ui.Context, p Props) ui.Element {
 	g := ui.Grid(c)
 	if p.Columns > 0 {
 		g.Columns(p.Columns)

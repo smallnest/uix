@@ -30,7 +30,7 @@ type Props struct {
 // Card draws a bordered rounded container: the header, then the content
 // that content draws, then the footer row. It returns the container, so
 // a view can size it (for example, to grow in a column).
-func Card(c *ui.Context, p Props, content func()) *ui.Element {
+func Card(c *ui.Context, p Props, content func()) ui.Element {
 	t := c.Theme()
 	return ui.Column(c).Background(t.Background).Border(1, t.Border).Radius(t.Radius).
 		Padding(t.Space(4)).Gap(t.Space(3)).Children(func() {

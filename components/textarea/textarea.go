@@ -23,7 +23,7 @@ type Props struct {
 
 // Textarea draws a multi-line field editing *Value and returns it, so a
 // view can chain more calls on it. It fills the width of its container.
-func Textarea(c *ui.Context, p Props) *ui.Element {
+func Textarea(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	if p.Rows <= 0 {
 		p.Rows = 4

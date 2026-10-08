@@ -25,7 +25,7 @@ type Props struct {
 
 // Separator draws a 1-point line in the border color, labeled for
 // assistive technology, and returns it.
-func Separator(c *ui.Context, p Props) *ui.Element {
+func Separator(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	e := ui.Box(c).Background(t.Border).Label("separator").Shrink(0)
 	if p.Orientation == Vertical {

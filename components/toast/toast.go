@@ -62,9 +62,9 @@ func Push(c *ui.Context, p Props) {
 
 // Viewport draws the toasts of the window, bottom right, styled by the
 // theme. Call it once in the view, wherever; MyGo shows one viewport.
-func Viewport(c *ui.Context) *ui.Element {
+func Viewport(c *ui.Context) ui.Element {
 	t := c.Theme()
-	return ui.ToastViewportBase(c, func(viewport *ui.Element, toasts []ui.Toast) {
+	return ui.ToastViewportBase(c, func(viewport ui.Element, toasts []ui.Toast) {
 		viewport.Padding(16).AlignItems(ui.End).Gap(t.Space(2))
 		for _, ts := range toasts {
 			tp := ui.ToastBase(c, ts)

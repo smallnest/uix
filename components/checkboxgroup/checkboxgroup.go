@@ -29,7 +29,7 @@ type Props struct {
 // boxes indented under it, and returns the group. A click on the label
 // checks all the boxes, or none when they all are; the check shows mixed
 // while some are, and a click then checks them all.
-func CheckboxGroup(c *ui.Context, p Props) *ui.Element {
+func CheckboxGroup(c *ui.Context, p Props) ui.Element {
 	return ui.CheckboxGroup(c, p.Label, func() {
 		if p.Children != nil {
 			p.Children(c)

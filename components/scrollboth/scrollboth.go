@@ -24,7 +24,7 @@ type Props struct {
 // ScrollBoth draws a container that scrolls its children up and sideways,
 // and returns it. Size it, or Grow it within its parent; the content
 // sizes to itself, so the scroll can move it.
-func ScrollBoth(c *ui.Context, p Props) *ui.Element {
+func ScrollBoth(c *ui.Context, p Props) ui.Element {
 	s := ui.ScrollBoth(c)
 	if p.Children != nil {
 		s.Children(func() { p.Children(c) })

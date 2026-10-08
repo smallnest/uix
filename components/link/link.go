@@ -26,6 +26,6 @@ type Props struct {
 
 // Link draws the label as a link that opens URL when clicked or Entered,
 // and returns it.
-func Link(c *ui.Context, p Props) *ui.Element {
+func Link(c *ui.Context, p Props) ui.Element {
 	return ui.Link(c, p.Label, p.URL)
 }

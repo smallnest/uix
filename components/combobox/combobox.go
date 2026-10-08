@@ -26,7 +26,7 @@ type Props struct {
 // with it first; a click or Down shows them all, and Up and Down move
 // among them, Enter or a click chooses one, and Escape closes the popup.
 // It fills the width of its container.
-func Combobox(c *ui.Context, p Props) *ui.Element {
+func Combobox(c *ui.Context, p Props) ui.Element {
 	e := ui.Combobox(c, p.Value, p.Options)
 	e.FillWidth()
 	if p.Disabled {

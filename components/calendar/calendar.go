@@ -22,6 +22,6 @@ type Props struct {
 // chain more calls on it. A click chooses a day, as the arrows do while
 // the calendar has the focus, Page Up and Page Down move by months, and
 // Home and End go to the first and the last day of the month.
-func Calendar(c *ui.Context, p Props) *ui.Element {
+func Calendar(c *ui.Context, p Props) ui.Element {
 	return ui.Calendar(c, p.Date)
 }

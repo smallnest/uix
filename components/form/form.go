@@ -25,7 +25,7 @@ type Props struct {
 
 // Form draws a column of the fields that Children builds, with their
 // labels to the left, right-aligned to the widest, and returns it.
-func Form(c *ui.Context, p Props) *ui.Element {
+func Form(c *ui.Context, p Props) ui.Element {
 	if p.Children == nil {
 		p.Children = func(c *ui.Context) {}
 	}

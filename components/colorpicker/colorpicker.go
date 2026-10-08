@@ -18,7 +18,7 @@ type Props struct {
 
 // ColorPicker draws a swatch of *Value, which a picker below it
 // changes, and returns it, so a view can chain more calls on it.
-func ColorPicker(c *ui.Context, p Props) *ui.Element {
+func ColorPicker(c *ui.Context, p Props) ui.Element {
 	e := ui.ColorWell(c, p.Value)
 	if p.Disabled {
 		e.Disabled(true)

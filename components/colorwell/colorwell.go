@@ -31,7 +31,7 @@ type Props struct {
 
 // ColorWell draws a swatch of *Color that opens a ColorPicker below it,
 // and returns it, so a view can chain more calls on it.
-func ColorWell(c *ui.Context, p Props) *ui.Element {
+func ColorWell(c *ui.Context, p Props) ui.Element {
 	w := ui.ColorWell(c, p.Color)
 	if p.Label != "" {
 		w.Label(p.Label)

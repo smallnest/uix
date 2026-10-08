@@ -23,7 +23,7 @@ type Props struct {
 
 // Fieldset draws the legend and the fields as a group, and returns the
 // column. A margin sits above it when another group is above it.
-func Fieldset(c *ui.Context, p Props) *ui.Element {
+func Fieldset(c *ui.Context, p Props) ui.Element {
 	return ui.Fieldset(c, p.Legend, func() {
 		if p.Children != nil {
 			p.Children(c)

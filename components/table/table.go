@@ -37,7 +37,7 @@ type Props struct {
 
 // Table draws a table and returns it, so a view can chain more calls on
 // it, such as Grow and Submitted.
-func Table(c *ui.Context, p Props) *ui.Element {
+func Table(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	e := ui.Table(c, p.State, p.Columns, p.Rows, p.Cell)
 	e.Background(t.Background).Border(1, t.Border).Radius(t.Radius)

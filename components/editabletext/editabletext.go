@@ -26,7 +26,7 @@ type Props struct {
 // returns it. A double click on it, or Enter while it has the focus,
 // shows a field with the text before its extension chosen; Enter or
 // moving the focus away keeps what was typed, and Escape goes back.
-func EditableText(c *ui.Context, p Props) *ui.Element {
+func EditableText(c *ui.Context, p Props) ui.Element {
 	e := ui.EditableText(c, p.Value)
 	if e.Changed() && p.OnChange != nil {
 		p.OnChange(*p.Value)

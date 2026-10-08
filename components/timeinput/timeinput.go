@@ -22,7 +22,7 @@ type Props struct {
 // TimeInput draws a field editing the time of day of *Value and returns
 // it, so a view can chain more calls on it. The field keeps the width
 // its segments need; it does not stretch.
-func TimeInput(c *ui.Context, p Props) *ui.Element {
+func TimeInput(c *ui.Context, p Props) ui.Element {
 	e := ui.TimeInput(c, p.Value)
 	if p.Disabled {
 		e.Disabled(true)

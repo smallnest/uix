@@ -36,7 +36,7 @@ type Props struct {
 
 // ToggleGroup draws the toggles joined as one control and returns it, so
 // a view can chain more calls on it.
-func ToggleGroup(c *ui.Context, p Props) *ui.Element {
+func ToggleGroup(c *ui.Context, p Props) ui.Element {
 	e := ui.ToggleGroup(c, func() {
 		for _, it := range p.Items {
 			tg := ui.Toggle(c, it.On, it.Label)

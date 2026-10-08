@@ -38,7 +38,7 @@ type Props struct {
 
 // Image draws the picture and returns it, so a view can chain more calls
 // on it.
-func Image(c *ui.Context, p Props) *ui.Element {
+func Image(c *ui.Context, p Props) ui.Element {
 	e := ui.Image(c, p.Src)
 	if p.Width > 0 || p.Height > 0 {
 		switch {

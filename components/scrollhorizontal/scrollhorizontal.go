@@ -25,7 +25,7 @@ type Props struct {
 // ScrollHorizontal draws a row that scrolls its children horizontally,
 // and returns it. Size it, or Grow it within its parent; the content
 // sizes to itself, so the scroll can move it.
-func ScrollHorizontal(c *ui.Context, p Props) *ui.Element {
+func ScrollHorizontal(c *ui.Context, p Props) ui.Element {
 	s := ui.ScrollHorizontal(c)
 	if p.Children != nil {
 		s.Children(func() { p.Children(c) })

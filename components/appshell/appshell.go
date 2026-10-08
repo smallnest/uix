@@ -46,7 +46,7 @@ type Props struct {
 
 // AppShell draws the page frame and returns it, so a view can chain more
 // calls on it.
-func AppShell(c *ui.Context, p Props) *ui.Element {
+func AppShell(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	return ui.Row(c).Fill().Gap(t.Space(4)).Padding(t.Space(3)).Children(func() {
 		ui.Box(c).Width(260).FillHeight().Shrink(0).Background(t.Surface).

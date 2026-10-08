@@ -93,7 +93,7 @@ type Props struct {
 
 // NotificationCenter draws the panel and returns it, so a view can chain
 // more calls on it.
-func NotificationCenter(c *ui.Context, p Props) *ui.Element {
+func NotificationCenter(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	title := p.Title
 	if title == "" {

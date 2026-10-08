@@ -58,7 +58,7 @@ type Props struct {
 }
 
 // Thinking draws the indicator and returns it.
-func Thinking(c *ui.Context, p Props) *ui.Element {
+func Thinking(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	color := toneColor(t, p.Tone)
 	size := t.FontSize
@@ -93,7 +93,7 @@ func toneColor(t *ui.Theme, tone Tone) ui.Color {
 }
 
 // indicator draws the animated mark of the variant.
-func indicator(c *ui.Context, v Variant, color ui.Color) *ui.Element {
+func indicator(c *ui.Context, v Variant, color ui.Color) ui.Element {
 	switch v {
 	case Spin:
 		return dotGrid(c, true, color)
@@ -109,7 +109,7 @@ func indicator(c *ui.Context, v Variant, color ui.Color) *ui.Element {
 // dotGrid draws the wave or spin pattern: a 3x3 grid of dots whose
 // opacities follow a phase front across the grid, in a wave along the
 // diagonals or a head orbiting the centre.
-func dotGrid(c *ui.Context, spin bool, color ui.Color) *ui.Element {
+func dotGrid(c *ui.Context, spin bool, color ui.Color) ui.Element {
 	const size, gap = 4, 2
 	e := ui.Box(c).Size(20, 20).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {
 		phase := float64(p.Now().UnixMilli()%80) / 80
@@ -152,7 +152,7 @@ func spinScalar(col, row int) float64 {
 
 // stars twinkles five four-point sparkles, each on its own phase, so the
 // sky does not pulse in unison.
-func stars(c *ui.Context, color ui.Color) *ui.Element {
+func stars(c *ui.Context, color ui.Color) ui.Element {
 	// Positions as percentages of the box, like BoardUI's STAR_LAYOUT.
 	layout := []struct{ x, y, scale float64 }{
 		{50, 46, 1}, {18, 22, 0.55}, {82, 26, 0.45}, {78, 76, 0.55}, {22, 78, 0.4},
@@ -182,7 +182,7 @@ func stars(c *ui.Context, color ui.Color) *ui.Element {
 // infinity draws a figure-eight faintly and sweeps a comet along it: the
 // head and the fading dots of its trail, on the curve x = A sin t,
 // y = B sin 2t, so the loop reads as a horizontal eight.
-func infinity(c *ui.Context, color ui.Color) *ui.Element {
+func infinity(c *ui.Context, color ui.Color) ui.Element {
 	const lap = 1200.0 // ms per lap
 	e := ui.Box(c).Size(24, 16).Shrink(0).Draw(func(p *ui.Painter, r ui.Rect) {
 		cx, cy := r.X+r.W/2, r.Y+r.H/2

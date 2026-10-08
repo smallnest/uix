@@ -33,7 +33,7 @@ type Props struct {
 // Slider draws the label, the readout and the track, and returns the
 // column. The readout follows the value as the user drags, because the
 // view builds every frame.
-func Slider(c *ui.Context, p Props) *ui.Element {
+func Slider(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	format := p.Format
 	if format == nil {
@@ -46,7 +46,7 @@ func Slider(c *ui.Context, p Props) *ui.Element {
 				ui.Text(c, format(*p.Value)).FontSize(t.FontSize * 0.875).TextColor(t.TextMuted)
 			})
 		}
-		var s *ui.Element
+		var s ui.Element
 		if p.Step > 0 {
 			s = ui.StepSlider(c, p.Value, p.Min, p.Max, p.Step)
 		} else {

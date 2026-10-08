@@ -39,7 +39,7 @@ type Props struct {
 
 // Log draws the transcript and returns it, so a view can chain more
 // calls on it.
-func Log(c *ui.Context, p Props) *ui.Element {
+func Log(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	n := min(p.Revealed, len(p.Items))
 	return ui.Column(c).FillWidth().Gap(t.Space(1)).Children(func() {

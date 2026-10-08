@@ -17,7 +17,7 @@ func frame(p Props) func(c *ui.Context) {
 // help turns the props into one whose trigger is a Help button and whose
 // panel holds two lines.
 func help(p Props) func(c *ui.Context) {
-	p.Trigger = func(c *ui.Context) *ui.Element { return ui.Button(c, "Help") }
+	p.Trigger = func(c *ui.Context) ui.Element { return ui.Button(c, "Help") }
 	p.Content = func(c *ui.Context) {
 		ui.Column(c).Gap(4).Children(func() {
 			ui.Text(c, "View docs")

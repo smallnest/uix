@@ -34,7 +34,7 @@ type Props[T comparable] struct {
 // Group draws a column of the options for props, the chosen one in the
 // accent color, and returns the group, so a view can chain more calls on
 // it.
-func Group[T comparable](c *ui.Context, p Props[T]) *ui.Element {
+func Group[T comparable](c *ui.Context, p Props[T]) ui.Element {
 	return ui.RadioGroup(c, func() {
 		for _, o := range p.Options {
 			ui.Radio(c, p.Selected, o.Value, o.Label)

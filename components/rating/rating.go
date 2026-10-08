@@ -25,7 +25,7 @@ type Props struct {
 // click on a star sets the score to it, and a click on the set star
 // clears it; the arrows and Home and End move the score while focused.
 // ReadOnly draws the stars as they are, without the interaction.
-func Rating(c *ui.Context, p Props) *ui.Element {
+func Rating(c *ui.Context, p Props) ui.Element {
 	if p.ReadOnly {
 		return readOnly(c, p)
 	}
@@ -34,7 +34,7 @@ func Rating(c *ui.Context, p Props) *ui.Element {
 
 // readOnly draws the stars for ReadOnly. Why not MyGo's rating: it takes
 // the pointer and the arrows, and no flag turns that off from outside.
-func readOnly(c *ui.Context, p Props) *ui.Element {
+func readOnly(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	e := ui.Row(c).Gap(t.Space(0.5)).Shrink(0).Role(ui.RoleSlider).
 		Range(0, float64(p.Max), float64(*p.Value))

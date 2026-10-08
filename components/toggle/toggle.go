@@ -19,7 +19,7 @@ type Props struct {
 
 // Toggle draws a button that stays pressed while *On and returns it, so
 // a view can chain more calls on it.
-func Toggle(c *ui.Context, p Props) *ui.Element {
+func Toggle(c *ui.Context, p Props) ui.Element {
 	e := ui.Toggle(c, p.On, p.Label)
 	if p.Disabled {
 		e.Disabled(true)

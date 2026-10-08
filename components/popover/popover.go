@@ -5,7 +5,7 @@
 //
 //	popover.Popover(c, popover.Props{
 //		Open: &app.help,
-//		Trigger: func(c *ui.Context) *ui.Element {
+//		Trigger: func(c *ui.Context) ui.Element {
 //			return ui.Button(c, "Help")
 //		},
 //		Content: func(c *ui.Context) {
@@ -22,7 +22,7 @@ type Props struct {
 	Open *bool
 	// Trigger draws the element the panel belongs to; a click on it
 	// opens and closes the panel.
-	Trigger func(c *ui.Context) *ui.Element
+	Trigger func(c *ui.Context) ui.Element
 	// Content draws the panel, below the trigger.
 	Content func(c *ui.Context)
 	// Disabled keeps the trigger from opening the panel.
@@ -32,7 +32,7 @@ type Props struct {
 // Popover draws the trigger, and while *Open is true the panel below it.
 // It returns the panel while it shows, and nil while it is closed, so a
 // view can chain more calls on the panel.
-func Popover(c *ui.Context, p Props) *ui.Element {
+func Popover(c *ui.Context, p Props) ui.Element {
 	anchor := p.Trigger(c)
 	if p.Disabled {
 		anchor.Disabled(true)

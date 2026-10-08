@@ -103,7 +103,7 @@ type Props struct {
 
 // StatCards draws the grid of cards and returns it, so a view can chain
 // more calls on it.
-func StatCards(c *ui.Context, p Props) *ui.Element {
+func StatCards(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	return ui.Row(c).FillWidth().Wrap().Gap(t.Space(4)).Children(func() {
 		for _, s := range p.Stats {

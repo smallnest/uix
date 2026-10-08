@@ -27,7 +27,7 @@ type Props struct {
 // user drags to resize, or moves with the arrows once the divider has
 // the keyboard focus. Size it, as a Row or Column, to fill the room it
 // shares.
-func Split(c *ui.Context, p Props) *ui.Element {
+func Split(c *ui.Context, p Props) ui.Element {
 	if p.First == nil {
 		p.First = func(c *ui.Context) {}
 	}

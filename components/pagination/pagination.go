@@ -44,7 +44,7 @@ type Props struct {
 
 // Pagination draws the pagination and returns it, so a view can chain
 // more calls on it. Nothing is drawn for one page, as BoardUI hides it.
-func Pagination(c *ui.Context, p Props) *ui.Element {
+func Pagination(c *ui.Context, p Props) ui.Element {
 	if p.TotalPages <= 1 {
 		return ui.Box(c)
 	}

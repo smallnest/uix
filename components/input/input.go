@@ -22,7 +22,7 @@ type Props struct {
 
 // Input draws a field editing *Value and returns it, so a view can chain
 // more calls on it. It fills the width of its container.
-func Input(c *ui.Context, p Props) *ui.Element {
+func Input(c *ui.Context, p Props) ui.Element {
 	e := ui.TextInput(c, p.Value)
 	e.Placeholder(p.Placeholder)
 	e.FillWidth()

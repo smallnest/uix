@@ -31,6 +31,6 @@ type Props struct {
 // the Done button, and returns the bar. Enter and Cmd+G (F3 elsewhere)
 // step to the next match, Shift adds the previous, and Escape or Done
 // closes. While the bar is closed it draws nothing.
-func FindBar(c *ui.Context, p Props) *ui.Element {
+func FindBar(c *ui.Context, p Props) ui.Element {
 	return ui.FindBar(c, p.Open, p.Query, p.Matches, p.Current)
 }

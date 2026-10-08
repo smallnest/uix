@@ -27,7 +27,7 @@ type Props struct {
 
 // Collapsible draws the disclosure and returns it, so a view can chain
 // more calls on it.
-func Collapsible(c *ui.Context, p Props) *ui.Element {
+func Collapsible(c *ui.Context, p Props) ui.Element {
 	e := ui.Collapsible(c, p.Label, p.Open, func() {
 		if p.Children != nil {
 			p.Children(c)

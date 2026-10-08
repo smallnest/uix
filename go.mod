@@ -3,7 +3,7 @@ module github.com/smallnest/uix
 go 1.27.1
 
 require (
-	github.com/egoist/mygo v0.2.16-0.20261006170038-869768d02d91
+	github.com/egoist/mygo v0.3.3
 	github.com/lucasb-eyer/go-colorful v1.4.1
 )
 

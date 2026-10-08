@@ -56,7 +56,7 @@ var months = []string{
 
 // BarChart draws the card and returns it, so a view can chain more
 // calls on it.
-func BarChart(c *ui.Context, p Props) *ui.Element {
+func BarChart(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	selected := -1
 	if p.Selected != nil {

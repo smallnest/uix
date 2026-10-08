@@ -39,13 +39,13 @@ type Props struct {
 // Dialog draws the dialog for props, or nothing while it is closed, and
 // returns the panel. The backdrop dims the window; clicking it or
 // pressing Escape closes the dialog.
-func Dialog(c *ui.Context, p Props) *ui.Element {
+func Dialog(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	cancel := p.Cancel
 	if cancel == "" {
 		cancel = "Cancel"
 	}
-	return ui.DialogBase(c, p.Open, func(back, panel *ui.Element) {
+	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
 		back.Background(ui.RGBA(0, 0, 0, 0.4))
 		panel.Padding(t.Space(5)).Gap(t.Space(3)).Radius(t.Radius+4).Background(t.Background).
 			MinWidth(t.Space(48)).MaxWidth(t.Space(72)).Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))
