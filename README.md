@@ -64,8 +64,13 @@ func main() {
 | --- | --- |
 | `base` | Design tokens, light and dark |
 | `button` | Button in six variants and three sizes |
+| `buttongroup` | Row of buttons joined as one control, of which one is chosen, or several |
 | `field` | Form field: label, hint, error |
 | `input` | Text input, one line |
+| `inputgroup` | Field with an icon or text at either end, as a search or a currency |
+| `inputotp` | Row of cells that take a one-time password, one character each |
+| `kbd` | A key of the keyboard shown as a chip |
+| `label` | Standalone label of a control, in the medium weight |
 | `checkbox` | Check box with a label |
 | `switch` | Switch with a label |
 | `slider` | Slider with a label and a readout |
@@ -73,6 +78,9 @@ func main() {
 | `badge` | Pill label in four variants |
 | `progress` | Progress bar with a label and a readout |
 | `dialog` | Modal dialog with a title and actions |
+| `drawer` | Panel that rises over the bottom, with a handle, dimming the rest |
+| `sheet` | Panel that slides over from an edge, dimming the rest |
+| `command` | Palette that opens over the window to run a command by name |
 | `toast` | Transient notification at a window corner |
 | `dropdown` | Menu that opens from a button |
 | `tabs` | Tab list with an accent bar for the active tab |
@@ -81,6 +89,7 @@ func main() {
 | `table` | Data table with sort, choice and a header band |
 | `card` | Rounded container with a header, content and footer |
 | `avatar` | Circle with a photo or initials |
+| `aspectratio` | Box that keeps an aspect ratio, its children filling it |
 | `separator` | Horizontal or vertical divider |
 | `alert` | Colored notice in four variants |
 | `combobox` | Searchable drop-down that filters the options as you type |
@@ -98,6 +107,9 @@ func main() {
 | `togglegroup` | Row of toggle buttons, each with a tip, for a toolbar |
 | `tooltip` | Label that appears over a control after the pointer rests |
 | `menu` | Button that opens a menu of actions, with separators and disabled items |
+| `menubar` | Row of flat buttons, each opening a menu, as an app's File and Edit |
+| `navigationmenu` | Bar of links where a link with children opens a panel of links |
+| `contextmenu` | Menu the system shows for a right-click, from the items of the Props |
 | `sidebar` | Navigation column of sections and items, one chosen |
 | `tree` | Hierarchical list whose branches open and close, one node chosen |
 | `split` | Resizable panes with a divider the user drags |
@@ -105,6 +117,8 @@ func main() {
 | `toolbar` | Row of actions along the top of a window, one stop of Tab |
 | `meter` | Progress meter that colors by how near the top it is |
 | `spinner` | Ring of spokes that turns while work goes on |
+| `skeleton` | Placeholder of content still loading, a bar that pulses softly |
+| `empty` | Empty state: an icon over a title and a description, with an action |
 | `rangeslider` | Track with two knobs that set the low and the high of a range |
 | `stepper` | Number with arrows that step it, which repeat as they are held |
 | `richtext` | Text of styled runs, each with its own weight, color or underline |
@@ -120,6 +134,7 @@ func main() {
 | `calendar` | Month's calendar of which a click or the keys choose a day |
 | `checkboxgroup` | Group of check boxes under a check of all of them, mixed while some are |
 | `form` | Form whose field labels line up to the widest, as macOS draws them |
+| `questionnaire` | Form of questions, one at a time, with a progress bar and Back and Next |
 | `scrollhorizontal` | Row that scrolls its content sideways |
 | `scrollboth` | Container that scrolls its content up and sideways |
 | `link` | Text that opens a URL, or a path of the Router it lives in |
@@ -129,6 +144,8 @@ func main() {
 | `thinking` | "Thinking" indicator of an agent: a pulsing dot and steps that light up |
 | `log` | Scrolling list of an agent's steps that reveal one by one as they run |
 | `chat` | Message list with bubbles for the user and the assistant |
+| `marker` | Short inline label of a turn of a conversation, in three looks |
+| `attachment` | Card of a file of a conversation, with a preview and the upload's progress |
 | `composer` | Message box with a prompt and the send button for a chat |
 | `notificationcenter` | Panel of notifications in tabs, opened from a bell button |
 | `appshell` | App frame with a title, a sidebar and the page it switches |
@@ -141,9 +158,9 @@ func main() {
 
 The last twelve rows are ports of [BoardUI](https://github.com/BoardUI/boardui)
 components to MyGo's native UI: the same roles and the same look, drawn
-without HTML. Where BoardUI leans on the browser (drag and drop, an input
-element), the port uses the closest native MyGo equivalent, such as the
-open dialog for a file pick.
+without HTML. Where BoardUI leans on the browser (an input element), the
+port uses the closest native MyGo equivalent, such as the open dialog for
+a file pick, and the drop zones take files from other apps directly.
 
 ## Examples
 

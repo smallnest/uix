@@ -263,3 +263,84 @@ go run ./examples/navigation                open the window
 go test ./examples/navigation/...           render and check it headless
 go run ./examples/navigation/cmd/snapshot   write navigation.png and navigation-upload.png
 ```
+
+## Inputs
+
+The inputs example shows the button group, input group, one-time
+password, key and label components together in one page: the alignment
+to choose, the amount to type with its currency, the verification code
+its cells take, and the shortcut keys the actions hint at. The code
+field calls Verify when it fills.
+
+```
+go run ./examples/inputs                open the window
+go test ./examples/inputs/...           render and check it headless
+go run ./examples/inputs/cmd/snapshot   write inputs.png, inputs-filled.png and inputs-dark.png
+```
+
+## Placeholders
+
+The placeholders example shows the skeleton, empty and aspect-ratio
+components together in one page: the article loading, the search that
+found nothing, and the video keeping its ratio. The Clear button empties
+the search so the empty state has a way out.
+
+```
+go run ./examples/placeholders                open the window
+go test ./examples/placeholders/...           render and check it headless
+go run ./examples/placeholders/cmd/snapshot   write placeholders.png, placeholders-empty.png and placeholders-dark.png
+```
+
+## Overlays
+
+The overlays example shows the sheet, drawer and command components
+together in one page: the side panel of filters, the drawer that
+confirms an action, and the command palette that runs a command. The
+buttons open each, and the command palette opens for ⌘K too.
+
+```
+go run ./examples/overlays                open the window
+go test ./examples/overlays/...           render and check it headless
+go run ./examples/overlays/cmd/snapshot   write overlays.png, overlays-sheet.png, overlays-command.png and overlays-dark.png
+```
+
+## Menus
+
+The menus example shows the context menu, menu bar and navigation menu
+components together in one page: the bar across the top with the File
+and Edit menus, the navigation bar with the panel of links, and the box
+whose right-click opens a context menu. Choosing an item runs its
+action; the last action is named at the bottom.
+
+```
+go run ./examples/menus                open the window
+go test ./examples/menus/...           render and check it headless
+go run ./examples/menus/cmd/snapshot   write menus.png, menus-nav.png and menus-dark.png
+```
+
+## Conversation
+
+The conversation example shows the marker and attachment components
+together in a chat with a support agent: the markers name the turns, and
+the attachments are the file of the last turn, uploading as the page
+shows. The Upload button starts a new upload, and the X removes the
+attachment.
+
+```
+go run ./examples/conversation                open the window
+go test ./examples/conversation/...           render and check it headless
+go run ./examples/conversation/cmd/snapshot   write conversation.png, conversation-done.png and conversation-dark.png
+```
+
+## Questionnaire
+
+The questionnaire example shows the questionnaire component alone: an
+onboarding form of three questions, one at a time, with the progress bar
+up top and Back and Next under the choices. The Done button of the last
+step names the answers at the bottom.
+
+```
+go run ./examples/questionnaire                open the window
+go test ./examples/questionnaire/...           render and check it headless
+go run ./examples/questionnaire/cmd/snapshot   write questionnaire.png, questionnaire-step2.png, questionnaire-done.png and questionnaire-dark.png
+```

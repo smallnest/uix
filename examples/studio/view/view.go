@@ -110,7 +110,10 @@ func StudioView(c *ui.Context) {
 					ui.Text(c, hexOf(State.Accent)).FontSize(13).TextColor(t.TextMuted)
 				})
 				caption(c, "Photo")
-				image.Image(c, image.Props{Src: photo(), Width: 160, Height: 107, Fit: ui.ScaleDown}).
+				// The photo fills its card: Contain scales the small
+				// source up to the box, where ScaleDown would leave it at
+				// its own tiny size in the corner.
+				image.Image(c, image.Props{Src: photo(), Width: 160, Height: 107}).
 					Radius(8).Border(1, t.Border).Clip()
 			})
 			// The right column: the mark large, on the brand color.

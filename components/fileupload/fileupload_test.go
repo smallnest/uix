@@ -1,6 +1,8 @@
 package fileupload
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -201,6 +203,57 @@ func TestStartShowsProgress(t *testing.T) {
 	}
 	if !tt.HasText("report.pdf") {
 		t.Fatalf("missing the name in %q", tt.Texts())
+	}
+}
+
+// TestDroppedStartsUpload begins the upload of a file dropped on the
+// zone, the first of the drop, as a pick would.
+func TestDroppedStartsUpload(t *testing.T) {
+	s := &fu{}
+	path := filepath.Join(t.TempDir(), "report.pdf")
+	if err := os.WriteFile(path, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	startDropped(&s.st, time.Now(), path, defaultExtensions, defaultMaxBytes)
+	if s.st.Phase != Uploading {
+		t.Fatalf("Phase = %v, want Uploading", s.st.Phase)
+	}
+	if s.st.Name != "report.pdf" {
+		t.Fatalf("Name = %q, want report.pdf", s.st.Name)
+	}
+	fi, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.st.Size != fi.Size() {
+		t.Fatalf("Size = %d, want %d", s.st.Size, fi.Size())
+	}
+}
+
+// TestDroppedRejects refuses a dropped file of another kind, as a pick.
+func TestDroppedRejects(t *testing.T) {
+	s := &fu{}
+	path := filepath.Join(t.TempDir(), "movie.mp4")
+	if err := os.WriteFile(path, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	startDropped(&s.st, time.Now(), path, defaultExtensions, defaultMaxBytes)
+	if s.st.Phase != Idle {
+		t.Fatalf("Phase = %v, want Idle for a rejected drop", s.st.Phase)
+	}
+	if s.st.Rejection == "" {
+		t.Fatal("no rejection after the drop")
+	}
+}
+
+// TestDroppedGone ignores a path that vanished after the drop.
+func TestDroppedGone(t *testing.T) {
+	s := &fu{}
+	startDropped(&s.st, time.Now(), filepath.Join(t.TempDir(), "gone.pdf"),
+		defaultExtensions, defaultMaxBytes)
+	if s.st.Phase != Idle || s.st.Rejection != "" {
+		t.Fatalf("Phase = %v, Rejection = %q, want the vanished drop ignored",
+			s.st.Phase, s.st.Rejection)
 	}
 }
 

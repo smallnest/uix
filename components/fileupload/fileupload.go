@@ -7,12 +7,11 @@
 //	})
 //
 // The zone names the accepted kinds and the size limit, picks a file
-// through the native open dialog, rejects files outside them with the
-// reason, and simulates the upload, so the component needs no storage
-// layer: connect OnComplete to your upload/storage layer. The app owns
-// the State, as it owns the scroll of a chat. Drag and drop of BoardUI
-// has no native file counterpart in MyGo, so the zone selects with a
-// click instead; Pick can replace the dialog with any picker.
+// through the native open dialog or takes one dropped from another app,
+// rejects files outside them with the reason, and simulates the upload,
+// so the component needs no storage layer: connect OnComplete to your
+// upload/storage layer. The app owns the State, as it owns the scroll of
+// a chat. Pick can replace the dialog with any picker.
 package fileupload
 
 import (
@@ -165,10 +164,11 @@ func FileUpload(c *ui.Context, p Props) ui.Element {
 		})
 	} else {
 		// The dashed outline of the invite, darker while the pointer
-		// rests on the zone.
+		// rests on the zone or files dragged from another app hang over
+		// it.
 		z.Draw(func(pt *ui.Painter, r ui.Rect) {
 			dash := t.Border
-			if z.Hovered() {
+			if z.Hovered() || z.FileDragOver() {
 				dash = t.Text.Alpha(0.35)
 			}
 			pt.StrokeDashed(ui.Rect{X: r.X + 1, Y: r.Y + 1, W: r.W - 2, H: r.H - 2}, dash, radius, 2)
@@ -183,13 +183,22 @@ func FileUpload(c *ui.Context, p Props) ui.Element {
 			}
 		})
 	})
-	if st.Phase == Idle && z.Clicked() {
-		pick := p.Pick
-		if pick == nil {
-			pick = defaultPick(exts)
+	if st.Phase == Idle {
+		// The zone takes files dropped from another app: DroppedFiles
+		// registers it as a drop target and returns what dropped since
+		// the last frame, the first file taken. A drop is no click, so
+		// the pick below stays for the zone clicked.
+		if files := z.DroppedFiles(); len(files) > 0 {
+			startDropped(st, c.Now(), files[0], exts, maxBytes)
 		}
-		if f, err := pick(); err == nil && f.Name != "" {
-			startUpload(st, c.Now(), f, exts, maxBytes)
+		if z.Clicked() {
+			pick := p.Pick
+			if pick == nil {
+				pick = defaultPick(exts)
+			}
+			if f, err := pick(); err == nil && f.Name != "" {
+				startUpload(st, c.Now(), f, exts, maxBytes)
+			}
 		}
 	}
 	return z
@@ -293,6 +302,26 @@ func startUpload(st *State, now time.Time, f Picked, exts []string, maxBytes int
 	st.Start(f.Name, f.Size, now)
 }
 
+// startDropped begins the upload of a file dropped from another app, the
+// first of the drop, validating it as a pick would; a path that vanished
+// between the drop and the frame is ignored.
+func startDropped(st *State, now time.Time, path string, exts []string, maxBytes int64) {
+	f, err := pickedFromPath(path)
+	if err != nil {
+		return
+	}
+	startUpload(st, now, f, exts, maxBytes)
+}
+
+// pickedFromPath is the name and size of the file at path.
+func pickedFromPath(path string) (Picked, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return Picked{}, err
+	}
+	return Picked{Name: filepath.Base(path), Size: fi.Size()}, nil
+}
+
 // defaultPick is the native open dialog, filtered to the allowed kinds.
 func defaultPick(exts []string) func() (Picked, error) {
 	return func() (Picked, error) {
@@ -304,11 +333,7 @@ func defaultPick(exts []string) func() (Picked, error) {
 		if err != nil || len(paths) == 0 {
 			return Picked{}, err
 		}
-		st, err := os.Stat(paths[0])
-		if err != nil {
-			return Picked{}, err
-		}
-		return Picked{Name: filepath.Base(paths[0]), Size: st.Size()}, nil
+		return pickedFromPath(paths[0])
 	}
 }
 

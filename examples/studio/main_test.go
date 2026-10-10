@@ -29,6 +29,34 @@ func TestRenders(t *testing.T) {
 	}
 }
 
+// TestPhotoFillsCard draws the photo filling its 160x107 card, not at
+// its own small size in the corner: the sky, sun and hill of the picture
+// cover most of the card.
+func TestPhotoFillsCard(t *testing.T) {
+	tt := newTester(t)
+	img := tt.Image()
+	b := img.Bounds()
+	minX, minY, maxX, maxY := b.Max.X, b.Max.Y, -1, -1
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			r, g, bl, _ := img.At(x, y).RGBA()
+			R, G, B := int(r>>8), int(g>>8), int(bl>>8)
+			if (R == 135 && G == 206 && B >= 180 && B <= 240) || // the sky
+				(R == 255 && G == 200 && B == 60) || // the sun
+				(R == 60 && G >= 120 && G <= 220 && B == 40) { // the hill
+				minX, minY = min(minX, x), min(minY, y)
+				maxX, maxY = max(maxX, x), max(maxY, y)
+			}
+		}
+	}
+	if maxX < 0 {
+		t.Fatal("no photo drew")
+	}
+	if w, h := maxX-minX+1, maxY-minY+1; w < 150 || h < 100 {
+		t.Fatalf("photo drew at %dx%d, want it to fill the 160x107 card", w, h)
+	}
+}
+
 // TestLikes toggles the like with a click, which the status names and
 // the icon shows filled.
 func TestLikes(t *testing.T) {

@@ -1,0 +1,6 @@
+{
+  "type": "components:ui",
+  "install": "internal/ui/components/empty",
+  "dependencies": ["github.com/egoist/mygo"],
+  "registryDependencies": ["base", "button"]
+}
