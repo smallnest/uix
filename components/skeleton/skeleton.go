@@ -22,7 +22,7 @@ type Props struct {
 // Skeleton draws the bar and returns it, so a view can chain more calls
 // on it. The bar pulses between the muted tones as time loops, a frame
 // for each change.
-func Skeleton(c *ui.Context, p Props) *ui.Element {
+func Skeleton(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	radius := p.Radius
 	if radius <= 0 {

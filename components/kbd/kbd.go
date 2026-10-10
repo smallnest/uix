@@ -15,7 +15,7 @@ type Props struct {
 
 // Kbd draws the key and returns it, so a view can chain more calls on
 // it.
-func Kbd(c *ui.Context, p Props) *ui.Element {
+func Kbd(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	e := ui.Box(c).Padding(t.Space(0.75), t.Space(1.5)).Radius(t.Radius-2).
 		Background(t.SurfaceHover).Border(1, t.Border)

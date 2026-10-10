@@ -31,7 +31,7 @@ type Props struct {
 // Marker draws the label for props. The filled and bordered looks are
 // small pills; the Separator look is a line the label sits on, which
 // fills the width of the view.
-func Marker(c *ui.Context, p Props) *ui.Element {
+func Marker(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	if p.Variant == Separator {
 		// The label on a line: the line grows to each side of it.
@@ -52,7 +52,7 @@ func Marker(c *ui.Context, p Props) *ui.Element {
 }
 
 // label draws the text of the marker in its pill.
-func label(c *ui.Context, t *ui.Theme, s string, face, border ui.Color) *ui.Element {
+func label(c *ui.Context, t *ui.Theme, s string, face, border ui.Color) ui.Element {
 	b := ui.Box(c).Padding(t.Space(0.5), t.Space(1.5)).Radius(999).Background(face)
 	if border.A > 0 {
 		b.Border(1, border)

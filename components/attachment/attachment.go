@@ -40,7 +40,7 @@ type Props struct {
 // Attachment draws the card of the file and returns it, so a view can
 // chain more calls on it. The title grows across the card, and the
 // remove button sits at the far right.
-func Attachment(c *ui.Context, p Props) *ui.Element {
+func Attachment(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	return ui.Row(c).FillWidth().Gap(t.Space(2.5)).Padding(t.Space(2)).
 		Background(t.Surface).Border(1, t.Border).Radius(t.Radius).Children(func() {

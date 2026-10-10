@@ -10,8 +10,8 @@ package view
 import (
 	"github.com/egoist/mygo/ui"
 
-	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/aspectratio"
+	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/empty"
 	"github.com/smallnest/uix/components/input"
 	"github.com/smallnest/uix/components/skeleton"

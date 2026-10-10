@@ -37,7 +37,7 @@ type Props struct {
 
 // Empty draws the state and returns it, so a view can chain more calls
 // on it. The state centers in the space of its container.
-func Empty(c *ui.Context, p Props) *ui.Element {
+func Empty(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	icon := p.Icon
 	if icon == nil {

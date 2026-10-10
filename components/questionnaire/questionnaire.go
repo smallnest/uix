@@ -69,7 +69,7 @@ type Props struct {
 // Questionnaire draws the form for props and returns the card of it, so
 // a view can chain more calls on it. Back and Next sit at the bottom,
 // right-aligned; Next is disabled until the step has an answer.
-func Questionnaire(c *ui.Context, p Props) *ui.Element {
+func Questionnaire(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	st := p.State
 	if st == nil {

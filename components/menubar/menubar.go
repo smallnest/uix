@@ -58,7 +58,7 @@ type Props struct {
 
 // Menubar draws the bar of menus and returns it, so a view can chain
 // more calls on it.
-func Menubar(c *ui.Context, p Props) *ui.Element {
+func Menubar(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	bar := ui.Row(c).FillWidth().Gap(t.Space(1)).PaddingX(t.Space(2))
 	bar.Children(func() {

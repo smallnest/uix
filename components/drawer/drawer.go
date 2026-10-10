@@ -28,13 +28,13 @@ type Props struct {
 // Drawer draws the drawer for props, or nothing while it is closed, and
 // returns the panel. The backdrop dims the window; clicking it or
 // pressing Escape closes the drawer.
-func Drawer(c *ui.Context, p Props) *ui.Element {
+func Drawer(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	h := p.Height
 	if h <= 0 {
 		h = 380
 	}
-	return ui.DialogBase(c, p.Open, func(back, panel *ui.Element) {
+	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
 		back.Background(ui.RGBA(0, 0, 0, 0.4))
 		panel.Absolute().Left(0).Right(0).Bottom(0).Height(h).
 			Padding(t.Space(4), t.Space(5)).Radius(t.Radius+2, t.Radius+2, 0, 0).

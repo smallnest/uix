@@ -45,13 +45,13 @@ type Props struct {
 // Sheet draws the sheet for props, or nothing while it is closed, and
 // returns the panel. The backdrop dims the window; clicking it or
 // pressing Escape closes the sheet.
-func Sheet(c *ui.Context, p Props) *ui.Element {
+func Sheet(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	size := p.Size
 	if size <= 0 {
 		size = 320
 	}
-	return ui.DialogBase(c, p.Open, func(back, panel *ui.Element) {
+	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
 		back.Background(ui.RGBA(0, 0, 0, 0.4))
 		panel.Padding(t.Space(5)).Radius(t.Radius+2).Background(t.Background).
 			Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))

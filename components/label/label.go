@@ -19,7 +19,7 @@ type Props struct {
 
 // Label draws the text and returns it, so a view can chain more calls on
 // it.
-func Label(c *ui.Context, p Props) *ui.Element {
+func Label(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	e := ui.Text(c, p.Text).FontWeight(500).SingleLine()
 	if p.Disabled {

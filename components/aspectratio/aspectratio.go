@@ -20,7 +20,7 @@ type Props struct {
 
 // AspectRatio draws a box of the ratio and returns it, so a view can
 // chain more calls on it. The box fills the width of its container.
-func AspectRatio(c *ui.Context, p Props) *ui.Element {
+func AspectRatio(c *ui.Context, p Props) ui.Element {
 	r := p.Ratio
 	if r <= 0 {
 		r = 1

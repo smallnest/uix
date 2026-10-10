@@ -63,7 +63,7 @@ type Props struct {
 // Command draws the palette for props, or nothing while it is closed. It
 // returns the panel, so a view can chain more calls on it. The backdrop
 // dims the window; clicking it or pressing Escape closes the palette.
-func Command(c *ui.Context, p Props) *ui.Element {
+func Command(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	st := p.State
 	if st == nil {
@@ -72,7 +72,7 @@ func Command(c *ui.Context, p Props) *ui.Element {
 	if !*p.Open {
 		// The palette starts fresh each time it opens.
 		st.Query = ""
-		return nil
+		return ui.Element{}
 	}
 	// The commands the query leaves, and the choice kept within them: a
 	// new query chooses the first again, and a shorter list drops a
@@ -86,7 +86,7 @@ func Command(c *ui.Context, p Props) *ui.Element {
 		st.sel = -1
 	}
 	st.ls.Selected = &st.sel
-	panel := ui.DialogBase(c, p.Open, func(back, wp *ui.Element) {
+	panel := ui.DialogBase(c, p.Open, func(back, wp ui.Element) {
 		back.Background(ui.RGBA(0, 0, 0, 0.4))
 		w, h := c.Size()
 		wp.Width(min(w-t.Space(12), t.Space(120))).MaxHeight(h-t.Space(8)).

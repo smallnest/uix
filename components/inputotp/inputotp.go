@@ -37,7 +37,7 @@ type Props struct {
 // OTP draws the cells of the code and returns them, so a view can chain
 // more calls on it. The cells are one stop of Tab; the caret cell reads
 // on the accent while the field has the focus.
-func OTP(c *ui.Context, p Props) *ui.Element {
+func OTP(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	st := p.State
 	if st == nil {
@@ -115,6 +115,10 @@ func OTP(c *ui.Context, p Props) *ui.Element {
 				return true
 			}
 		case ui.InputPointerDown:
+			// The row is Focusable, so the pointer going down on a cell
+			// gives it the focus, and the typing that follows fills the
+			// cells; no call to Focus here, which an element of the frame
+			// being built could not take.
 			st.cursor = int(ev.X) / int(cell+gap)
 			if st.cursor > n-1 {
 				st.cursor = n - 1
@@ -122,7 +126,6 @@ func OTP(c *ui.Context, p Props) *ui.Element {
 			if st.cursor > len(st.Code) {
 				st.cursor = len(st.Code)
 			}
-			row.Focus()
 			return true
 		}
 		return false

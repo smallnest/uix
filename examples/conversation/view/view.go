@@ -13,8 +13,8 @@ import (
 
 	"github.com/egoist/mygo/ui"
 
-	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/attachment"
+	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/button"
 	"github.com/smallnest/uix/components/marker"
 )

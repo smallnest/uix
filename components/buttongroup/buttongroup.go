@@ -46,7 +46,7 @@ type Props struct {
 // a view can chain more calls on it. A click chooses a button: the one
 // alone with the single choice, which stays chosen, or a toggle with
 // Multiple. The chosen buttons read pressed on the track.
-func ButtonGroup(c *ui.Context, p Props) *ui.Element {
+func ButtonGroup(c *ui.Context, p Props) ui.Element {
 	// The choice of each option this frame, read from Selected before
 	// the toggles are built, and written back to it after, so a click
 	// that Changed one moves to the slice the app owns.

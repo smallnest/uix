@@ -35,17 +35,17 @@ type Props struct {
 // view can chain more calls on it. It fills the width of its container;
 // the field inside grows to it, and a click on it edits as an input
 // does.
-func InputGroup(c *ui.Context, p Props) *ui.Element {
+func InputGroup(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	// The field is built among the children, so it grows with the row:
 	// an element created before the row would not take part in its
 	// layout. Its focus, read after the frame, turns the border accent.
-	var in *ui.Element
+	var in ui.Element
 	root := ui.Row(c).FillWidth().AlignItems(ui.Center).Gap(t.Space(2)).
 		Padding(t.Space(1.5), t.Space(2.5)).Radius(t.Radius).Background(t.Surface).
 		Border(1, t.Border)
 	root.DrawOver(func(pp *ui.Painter, r ui.Rect) {
-		if !p.Disabled && in != nil && in.Focused() {
+		if !p.Disabled && in.Valid() && in.Focused() {
 			pp.Stroke(r, t.Accent, t.Radius, 1)
 		}
 	})

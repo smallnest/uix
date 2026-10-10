@@ -91,10 +91,10 @@ func amountCard(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).FillWidth().Gap(t.Space(2)).Children(func() {
 		label.Label(c, label.Props{Text: "Amount"})
 		inputgroup.InputGroup(c, inputgroup.Props{
-			Value:         &State.Amount,
-			Placeholder:   "0.00",
-			Leading:       dollar,
-			TrailingText:  "USD",
+			Value:        &State.Amount,
+			Placeholder:  "0.00",
+			Leading:      dollar,
+			TrailingText: "USD",
 		})
 	})
 }

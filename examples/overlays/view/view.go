@@ -64,9 +64,9 @@ func OverlaysView(c *ui.Context) {
 		})
 		ui.Column(c).FillWidth().Gap(t.Space(3)).Children(func() {
 			button.Button(c, button.Props{
-				Label:    "Open filters",
-				Variant:  button.Secondary,
-				OnClick:  func() { State.SheetOpen = true },
+				Label:   "Open filters",
+				Variant: button.Secondary,
+				OnClick: func() { State.SheetOpen = true },
 			})
 			button.Button(c, button.Props{
 				Label:   "Delete the project",
@@ -81,9 +81,9 @@ func OverlaysView(c *ui.Context) {
 			ui.Text(c, "The last command: "+State.Last).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 		})
 		sheet.Sheet(c, sheet.Props{
-			Open:  &State.SheetOpen,
-			Title: "Filters",
-			Side:  sheet.Right,
+			Open:     &State.SheetOpen,
+			Title:    "Filters",
+			Side:     sheet.Right,
 			Children: func() { filterForm(c, t) },
 		})
 		drawer.Drawer(c, drawer.Props{

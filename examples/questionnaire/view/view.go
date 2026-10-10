@@ -64,8 +64,8 @@ func QuestionnaireView(c *ui.Context) {
 			ui.Text(c, "A form of questions, from uix.").TextColor(t.TextMuted)
 		})
 		questionnaire.Questionnaire(c, questionnaire.Props{
-			State: &State.Form,
-			Steps: steps,
+			State:  &State.Form,
+			Steps:  steps,
 			OnDone: func() { State.Done = answersText() },
 		})
 		if State.Done != "" {

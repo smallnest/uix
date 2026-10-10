@@ -44,7 +44,7 @@ type Props struct {
 // ContextMenu gives the box it returns the context menu of the items,
 // and returns it, so a view can size it or chain more calls on it. The
 // system shows the menu over the box.
-func ContextMenu(c *ui.Context, p Props) *ui.Element {
+func ContextMenu(c *ui.Context, p Props) ui.Element {
 	e := ui.Box(c)
 	e.ContextMenu(func(m *ui.Menu) {
 		for _, it := range p.Items {

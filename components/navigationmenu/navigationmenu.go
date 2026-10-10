@@ -45,7 +45,7 @@ type Props struct {
 // NavigationMenu draws the bar and returns it, so a view can chain more
 // calls on it. The link with children shows an arrow, and opens its
 // panel of links below it on a click.
-func NavigationMenu(c *ui.Context, p Props) *ui.Element {
+func NavigationMenu(c *ui.Context, p Props) ui.Element {
 	t := c.Theme()
 	st := p.State
 	if st == nil {
