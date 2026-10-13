@@ -45,6 +45,23 @@ func TestNewChat(t *testing.T) {
 	}
 }
 
+// TestCountLabel shows the host's text for the size of the thread in
+// place of the English one, so a host can localize the status row.
+func TestCountLabel(t *testing.T) {
+	tt := ui.NewTester(frame(Props{
+		Value:        str(""),
+		Provider:     "Anthropic",
+		MessageCount: 2,
+		CountLabel:   "2 条消息",
+	}), 420, 120)
+	if !tt.HasText("2 条消息") {
+		t.Fatalf("missing the host's label in %q", tt.Texts())
+	}
+	if tt.HasText("2 messages") {
+		t.Fatalf("the English count stayed in %q", tt.Texts())
+	}
+}
+
 // TestShortensModel shows the name after the last slash in the chip.
 func TestShortensModel(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
