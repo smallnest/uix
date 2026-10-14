@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/egoist/mygo/ui"
+
+	"github.com/smallnest/uix/components/animate"
 )
 
 // Type names the kind of a toast, which the viewport colors.
@@ -72,6 +74,9 @@ func Viewport(c *ui.Context) ui.Element {
 			root.Row().Gap(t.Space(3)).Padding(t.Space(2), t.Space(3)).Radius(t.Radius).
 				Background(t.Background).Border(1, t.Border).MaxWidth(t.Space(72))
 			root.Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))
+			// The toast's parent is the viewport, which predates it, so
+			// the Enter fires as a toast appears and it rises into place.
+			root.Transition(animate.Rise(animate.Options{}))
 			root.Children(func() {
 				ui.Box(c).Size(t.Space(2.5), t.Space(2.5)).Radius(t.Space(1.25)).Background(toastColor(t, ts.Type)).Shrink(0)
 				ui.Column(c).Gap(t.Space(0.5)).Grow(1).Children(func() {

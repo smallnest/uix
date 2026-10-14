@@ -11,7 +11,11 @@
 //	})
 package dialog
 
-import "github.com/egoist/mygo/ui"
+import (
+	"github.com/egoist/mygo/ui"
+
+	"github.com/smallnest/uix/components/animate"
+)
 
 // Props describes the dialog to draw.
 type Props struct {
@@ -46,7 +50,13 @@ func Dialog(c *ui.Context, p Props) ui.Element {
 		cancel = "Cancel"
 	}
 	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
-		back.Background(ui.RGBA(0, 0, 0, 0.4))
+		// Why the backdrop animates, not the panel: MyGo fires an Enter
+		// only when the parent of the element appeared a frame earlier,
+		// and the panel's parent is the backdrop, born the same frame.
+		// The backdrop's parent is the window's overlay, so its Enter
+		// runs, and the panel inherits its transform.
+		back.Background(ui.RGBA(0, 0, 0, 0.4)).
+			Transition(animate.Panel(animate.Options{})).TransformOrigin(0.5, 0.5)
 		panel.Padding(t.Space(5)).Gap(t.Space(3)).Radius(t.Radius+4).Background(t.Background).
 			MinWidth(t.Space(48)).MaxWidth(t.Space(72)).Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))
 		panel.Children(func() {

@@ -429,3 +429,16 @@ go run ./examples/webview                open the window, showing example.com
 go test ./examples/webview/...           render and check it headless
 go run ./examples/webview/cmd/snapshot   write light.png and dark.png
 ```
+
+## Animate
+
+The animate example shows the animate component of uix: cards entering
+one after another, a pulse that breathes, a square that spins, and a
+list that slides in. The replay button plays the entrances again. The
+snapshot draws the view at rest, with reduce motion on.
+
+```
+go run ./examples/animate                open the window
+go test ./examples/animate/...           render and check it headless
+go run ./examples/animate/cmd/snapshot   write light.png and dark.png
+```

@@ -7,6 +7,7 @@ package main
 import (
 	"image/png"
 	"os"
+	"time"
 
 	"github.com/egoist/mygo/ui"
 
@@ -27,7 +28,8 @@ func main() {
 
 	// The dialog shot shows a toast first, then opens the dialog: the
 	// toast is pushed before the backdrop appears, because the modal
-	// covers the buttons behind it.
+	// covers the buttons behind it. Both entered on later frames, so a
+	// pause lets their entrance finish before the frame is captured.
 	view.State = view.FeedbackState{}
 	tt := ui.NewTester(view.FeedbackView, view.Width, view.Height)
 	if err := tt.Click("Show toast"); err != nil {
@@ -36,6 +38,8 @@ func main() {
 	if err := tt.Click("Delete account"); err != nil {
 		panic(err)
 	}
+	time.Sleep(300 * time.Millisecond)
+	tt.Frame()
 	save(tt, "dialog.png")
 }
 

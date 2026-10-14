@@ -10,7 +10,11 @@
 //	})
 package drawer
 
-import "github.com/egoist/mygo/ui"
+import (
+	"github.com/egoist/mygo/ui"
+
+	"github.com/smallnest/uix/components/animate"
+)
 
 // Props describes the drawer to draw.
 type Props struct {
@@ -35,7 +39,11 @@ func Drawer(c *ui.Context, p Props) ui.Element {
 		h = 380
 	}
 	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
-		back.Background(ui.RGBA(0, 0, 0, 0.4))
+		// The drawer animates through the backdrop, whose parent (the
+		// window's overlay) predates the drawer, so its Enter fires and
+		// the panel inherits it; a panel Enter would never run.
+		back.Background(ui.RGBA(0, 0, 0, 0.4)).
+			Transition(animate.FromEdge(animate.Down, animate.Options{Distance: 24}))
 		panel.Absolute().Left(0).Right(0).Bottom(0).Height(h).
 			Padding(t.Space(4), t.Space(5)).Radius(t.Radius+2, t.Radius+2, 0, 0).
 			Background(t.Background).Shadow(0, -10, 30, 0, ui.RGBA(0, 0, 0, 0.3))

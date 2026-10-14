@@ -11,7 +11,11 @@
 //	})
 package sheet
 
-import "github.com/egoist/mygo/ui"
+import (
+	"github.com/egoist/mygo/ui"
+
+	"github.com/smallnest/uix/components/animate"
+)
 
 // Side is the edge the sheet comes from.
 type Side int
@@ -52,7 +56,11 @@ func Sheet(c *ui.Context, p Props) ui.Element {
 		size = 320
 	}
 	return ui.DialogBase(c, p.Open, func(back, panel ui.Element) {
-		back.Background(ui.RGBA(0, 0, 0, 0.4))
+		// The sheet animates through the backdrop, whose parent (the
+		// window's overlay) predates the sheet, so its Enter fires and
+		// the panel inherits it; a panel Enter would never run.
+		back.Background(ui.RGBA(0, 0, 0, 0.4)).
+			Transition(animate.FromEdge(directionFor(p.Side), animate.Options{Distance: 24}))
 		panel.Padding(t.Space(5)).Radius(t.Radius+2).Background(t.Background).
 			Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))
 		switch p.Side {
@@ -76,4 +84,18 @@ func Sheet(c *ui.Context, p Props) ui.Element {
 			})
 		})
 	})
+}
+
+// directionFor maps the side the sheet lives on to the edge it slides
+// over from: a right sheet comes from the right, and so on.
+func directionFor(s Side) animate.Direction {
+	switch s {
+	case Left:
+		return animate.Left
+	case Top:
+		return animate.Up
+	case Bottom:
+		return animate.Down
+	}
+	return animate.Right
 }

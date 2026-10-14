@@ -55,6 +55,7 @@ func main() {
 | Component | Role |
 | --- | --- |
 | `base` | Design tokens, light and dark |
+| `animate` | Entrance and attention animations for any element: fade, rise, slide, scale, pulse, spin |
 | `button` | Button in six variants and three sizes |
 | `buttongroup` | Row of buttons joined as one control, of which one is chosen, or several |
 | `field` | Form field: label, hint, error |
@@ -273,6 +274,7 @@ func TestClick(t *testing.T) {
 ## Rules
 
 - A component imports only `github.com/egoist/mygo`, the sibling components it composes, and the mature parser a port needs (goldmark for Markdown, chroma for highlighting).
+- Motion comes from the `animate` component, which honors the desktop's reduce-motion preference.
 - A component reads its colors from the theme of the `Context`. It does not hard-code colors.
 - Every component ships with a headless test that proves its behavior.
 

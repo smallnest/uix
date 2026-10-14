@@ -13,6 +13,7 @@ package empty
 import (
 	"github.com/egoist/mygo/ui"
 
+	"github.com/smallnest/uix/components/animate"
 	"github.com/smallnest/uix/components/button"
 )
 
@@ -58,5 +59,7 @@ func Empty(c *ui.Context, p Props) ui.Element {
 			button.Button(c, button.Props{Label: p.ActionLabel, Size: button.Sm, OnClick: p.OnAction})
 		}
 	})
-	return e
+	// The state enters when it appears in a parent that was there the
+	// frame before, as a search that finds nothing replaces a list.
+	return e.Transition(animate.Panel(animate.Options{})).TransformOrigin(0.5, 0.5)
 }
