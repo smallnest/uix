@@ -15,9 +15,10 @@ func newTester(t *testing.T) *ui.Tester {
 	return ui.NewTester(view.GalleryView, view.Width, view.Height)
 }
 
-// countExact counts the texts of the frame equal to s, which tells the
-// library badge apart from the subtitle: the badge is its own text, the
-// subtitle is "uix · mygo · onevra" as one.
+// countExact counts the texts of the frame equal to s. The library
+// filter in the rail names the three libraries, so a library's text
+// appears there even on a page of another library: once when only the
+// filter names it, twice when the page's badge names it too.
 func countExact(tt *ui.Tester, s string) int {
 	n := 0
 	for _, x := range tt.Texts() {
@@ -33,17 +34,17 @@ func countExact(tt *ui.Tester, s string) int {
 func TestRenders(t *testing.T) {
 	tt := newTester(t)
 	for _, s := range []string{
-		"组件画廊", "uix · mygo · onevra", "操作与导航",
+		"组件画廊", "全部", "操作与导航",
 		"Button", "主要", "次要", "描边", "幽灵", "危险", "禁用",
 	} {
 		if !tt.HasText(s) {
 			t.Fatalf("missing %q in %q", s, tt.Texts())
 		}
 	}
-	if countExact(tt, "uix") == 0 {
-		t.Fatal("the Button page lacks the uix badge")
+	if countExact(tt, "uix") < 2 {
+		t.Fatal("the Button page lacks the uix badge beside the filter")
 	}
-	if countExact(tt, "onevra") != 0 {
+	if countExact(tt, "onevra") != 1 {
 		t.Fatal("the Button page shows a onevra badge")
 	}
 }
@@ -79,15 +80,43 @@ func TestNavigate(t *testing.T) {
 func TestLibraries(t *testing.T) {
 	tt := newTester(t)
 	reach(t, tt, "box", "Box")
-	if countExact(tt, "mygo") == 0 {
-		t.Fatal("the Box page lacks the mygo badge")
+	if countExact(tt, "mygo") < 2 {
+		t.Fatal("the Box page lacks the mygo badge beside the filter")
 	}
 	reach(t, tt, "donut", "DonutChart")
-	if countExact(tt, "onevra") == 0 {
+	if countExact(tt, "onevra") < 2 {
 		t.Fatal("the DonutChart page lacks the onevra badge")
 	}
-	if countExact(tt, "uix") != 0 {
+	if countExact(tt, "uix") != 1 {
 		t.Fatal("the DonutChart page shows a uix badge")
+	}
+}
+
+// TestLibraryFilter clicks a library and the sidebar shows that
+// library's components alone, and the page lands on one of them; the
+// 全部 segment restores the mixed sidebar.
+func TestLibraryFilter(t *testing.T) {
+	tt := newTester(t)
+	if err := tt.Click("mygo"); err != nil {
+		t.Fatal(err)
+	}
+	if view.State.Selected != "textinputbuffer" {
+		t.Fatalf("the mygo filter chose %q, want textinputbuffer", view.State.Selected)
+	}
+	if !tt.HasText("TextInputBuffer") || !tt.HasText("Box") {
+		t.Fatalf("the mygo sidebar misses its components: %q", tt.Texts())
+	}
+	if tt.HasText("Button") {
+		t.Fatal("the mygo filter still shows a uix component")
+	}
+	if err := tt.Click("uix"); err != nil {
+		t.Fatal(err)
+	}
+	if !tt.HasText("Button") {
+		t.Fatalf("the uix filter lost its components: %q", tt.Texts())
+	}
+	if tt.HasText("Box") {
+		t.Fatal("the uix filter still shows a mygo component")
 	}
 }
 

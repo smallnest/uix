@@ -30,13 +30,17 @@ var commandState command.State
 // State is the state of the example; the controls edit it in place.
 var State = GalleryState{}
 
-// GalleryState holds the gallery: the page chosen in the sidebar and the
-// search text filtering the sidebar items.
+// GalleryState holds the gallery: the page chosen in the sidebar, the
+// search text filtering the sidebar items, and the library the sidebar
+// is filtered to.
 type GalleryState struct {
 	// Selected is the ID of the page shown.
 	Selected string
 	// Query filters the sidebar items.
 	Query string
+	// Filter is the chosen segment of the library filter: 0 shows every
+	// library mixed, 1 uix, 2 mygo and 3 onevra alone.
+	Filter int
 }
 
 // Demo holds the values the demo pages edit. Each page keeps its own
