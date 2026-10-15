@@ -364,3 +364,11 @@ func demoResponsiveModal(c *ui.Context, t *ui.Theme) {
 		},
 	})
 }
+
+// demoDiffView shows mygo's editor reviewing a change: the old and new
+// texts side by side, the changed lines marked.
+func demoDiffView(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(560).Height(240).Children(func() {
+		editor.DiffView(c, &Demo.Diff)
+	})
+}

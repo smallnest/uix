@@ -6,6 +6,7 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
+	"github.com/egoist/mygo/ui/editor"
 
 	"github.com/smallnest/uix/components/carousel"
 	"github.com/smallnest/uix/components/command"
@@ -45,9 +46,10 @@ type GalleryState struct {
 
 // Demo holds the values the demo pages edit. Each page keeps its own
 // state, so a control stays where the visitor left it across frames.
-// The buffer is born non-nil: a buffer input panics without one, and a
-// visitor reaches the page before any Reset of an embedding window.
-var Demo = DemoState{Buffer: ui.NewTextBuffer("")}
+// The buffer and the history are born non-nil: a buffer input and the
+// back buttons panic without them, and a visitor reaches the pages
+// before any Reset of an embedding window.
+var Demo = DemoState{Buffer: ui.NewTextBuffer(""), History: ui.NewRouter("/")}
 
 // DemoState is the state of every interactive demo of the gallery.
 type DemoState struct {
@@ -135,6 +137,15 @@ type DemoState struct {
 	// The responsive modal and the app shell.
 	RModal   bool
 	ShellSel string
+	// The mygo pages: the history of the back and forward buttons, the
+	// step of the stepped slider, the height of the vertical split, the
+	// replay of the motion, and the diff and outline the pages draw.
+	History   *ui.Router
+	Step      float64
+	SplitV    float32
+	MotionRun uint64
+	Diff      editor.DiffState
+	OutlineT  ui.OutlineState[string]
 }
 
 // Reset puts the example in its initial state, for the tests and the
@@ -182,6 +193,13 @@ func Reset() {
 		FeedRows:  feedRows(1, 8),
 		FeedN:     9,
 		ShellSel:  "overview",
+		History:   ui.NewRouter("/"),
+		Step:      50,
+		SplitV:    80,
+		Diff: editor.DiffState{
+			Old: editor.NewBuffer("func main() {\n\tfmt.Println(\"hello\")\n}\n"),
+			New: editor.NewBuffer("func main() {\n\tfmt.Println(\"你好\")\n}\n"),
+		},
 	}
 }
 

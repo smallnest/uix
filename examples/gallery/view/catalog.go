@@ -67,6 +67,7 @@ var catalog = []Section{
 			{"navigationmenu", "NavigationMenu", Uix, lucide.Navigation, demoNavigationMenu},
 			{"magicback", "MagicBack", Uix, lucide.Undo2, demoMagicBack},
 			{"interactivestepper", "InteractiveStepper", Uix, lucide.Footprints, demoInteractiveStepper},
+			{"backbutton", "BackButton", Mygo, lucide.CornerUpLeft, demoBackButton},
 		},
 	},
 	{
@@ -103,6 +104,7 @@ var catalog = []Section{
 			{"rangeslider", "RangeSlider", Uix, lucide.MoveHorizontal, demoRangeSlider},
 			{"rating", "Rating", Uix, lucide.Star, demoRating},
 			{"meter", "Meter", Uix, lucide.Gauge, demoMeter},
+			{"stepslider", "StepSlider", Mygo, lucide.ListMusic, demoStepSlider},
 		},
 	},
 	{
@@ -159,6 +161,9 @@ var catalog = []Section{
 			{"infinitescroll", "InfiniteScroll", Uix, lucide.Infinity, demoInfiniteScroll},
 			{"item", "Item", Uix, lucide.Layers, demoItem},
 			{"webview", "WebView", Uix, lucide.Globe, demoWebView},
+			{"motion", "Motion", Mygo, lucide.Film, demoMotion},
+			{"chart", "Chart", Mygo, lucide.ChartScatter, demoChart},
+			{"outlinetable", "OutlineTable", Mygo, lucide.TableProperties, demoOutlineTable},
 		},
 	},
 	{
@@ -196,6 +201,7 @@ var catalog = []Section{
 			{"settings", "Settings", Uix, lucide.Settings, demoSettings},
 			{"bubble", "Bubble", Uix, lucide.MessageCircle, demoBubble},
 			{"messagescroller", "MessageScroller", Uix, lucide.ScrollText, demoMessageScroller},
+			{"diffview", "DiffView", Mygo, lucide.FileDiff, demoDiffView},
 		},
 	},
 	{
@@ -215,6 +221,7 @@ var catalog = []Section{
 			{"accordion", "Accordion", Uix, lucide.Plus, demoAccordion},
 			{"fileupload", "FileUpload", Uix, lucide.FileUp, demoFileUpload},
 			{"canvas", "Canvas", Mygo, lucide.PenTool, demoCanvas},
+			{"splitvertical", "SplitVertical", Mygo, lucide.AlignVerticalJustifyStart, demoSplitVertical},
 			{"appshell", "AppShell", Uix, lucide.LayoutPanelTop, demoAppShell},
 		},
 	},

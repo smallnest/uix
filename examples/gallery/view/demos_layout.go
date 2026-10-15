@@ -204,6 +204,22 @@ func demoCanvas(c *ui.Context, t *ui.Theme) {
 	})
 }
 
+// demoSplitVertical shows mygo's split with one pane above the other,
+// the bar between them dragging the height.
+func demoSplitVertical(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(360).Height(200).Children(func() {
+		ui.SplitVertical(c, &Demo.SplitV, func() {
+			ui.Box(c).Fill().Background(t.Surface).Center().Children(func() {
+				ui.Text(c, "上方").TextColor(t.TextMuted)
+			})
+		}, func() {
+			ui.Box(c).Fill().Background(t.Background).Center().Children(func() {
+				ui.Text(c, "下方").TextColor(t.TextMuted)
+			})
+		})
+	})
+}
+
 // demoAppShell shows the shell of a whole app: the trail, the sidebar
 // and the header over a content area, in a box the height of a page.
 func demoAppShell(c *ui.Context, t *ui.Theme) {

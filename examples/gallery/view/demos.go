@@ -411,6 +411,23 @@ func demoInteractiveStepper(c *ui.Context, t *ui.Theme) {
 	})
 }
 
+// demoBackButton shows mygo's back and forward buttons over a history:
+// the buttons move through it, disabled at its ends, and the path shows
+// where the history is.
+func demoBackButton(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Width(320).Gap(t.Space(2)).Children(func() {
+		ui.Row(c).Gap(t.Space(2)).Children(func() {
+			ui.BackButton(c, Demo.History)
+			ui.ForwardButton(c, Demo.History)
+		})
+		ui.Text(c, "当前路径: "+Demo.History.Path()).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Row(c).Gap(t.Space(2)).Children(func() {
+			button.Button(c, button.Props{Label: "访问 文档", OnClick: func() { Demo.History.Push("/docs") }})
+			button.Button(c, button.Props{Label: "访问 设置", OnClick: func() { Demo.History.Push("/settings") }})
+		})
+	})
+}
+
 // demoFindBar shows a bar that finds a word in a short document; the
 // gallery counts the matches of the query in the sample text.
 func demoFindBar(c *ui.Context, t *ui.Theme) {

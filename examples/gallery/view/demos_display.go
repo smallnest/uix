@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/egoist/mygo/ui"
+	mchart "github.com/egoist/mygo/ui/chart"
 
 	"github.com/oneo-me/onevra/source/components"
 	"github.com/oneo-me/onevra/source/components/chart"
@@ -429,5 +430,70 @@ func demoWebView(c *ui.Context, t *ui.Theme) {
 				})
 			}
 		})
+	})
+}
+
+// demoMotion shows mygo's own animation engine: a card that a Keyframes
+// sequence fades and grows in on replay, and a dot that a Loop keeps
+// breathing.
+func demoMotion(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Gap(t.Space(3)).Children(func() {
+		ui.Row(c).Gap(t.Space(4)).Children(func() {
+			b := ui.Box(c).Size(96, 96).Radius(t.Radius * 2).Background(t.Accent.Alpha(0.82)).Center().
+				Children(func() {
+					ui.Text(c, "Keyframes").TextColor(t.AccentText)
+				})
+			p := b.Keyframes("demo.motion.in", []ui.Keyframe{
+				{At: 0, Value: 0},
+				{At: 400 * time.Millisecond, Value: 1, Ease: ui.EaseOut},
+			}, ui.KeyframeOptions{Run: Demo.MotionRun})
+			b.Opacity(p).Transform(ui.Scaling(0.5+0.5*p, 0.5+0.5*p)).TransformOrigin(0.5, 0.5)
+			d := ui.Box(c).Size(24, 24).Radius(12).Background(t.Success)
+			phase := d.Loop("demo.motion.pulse", 1200*time.Millisecond, ui.Bounce(ui.EaseInOut))
+			d.Opacity(0.35 + 0.65*phase)
+		})
+		ui.Row(c).AlignItems(ui.Center).Gap(t.Space(2)).Children(func() {
+			button.Button(c, button.Props{Label: "重播", Variant: button.Outline, OnClick: func() { Demo.MotionRun++ }})
+			ui.Text(c, "mygo 的 Keyframes 与 Loop。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		})
+	})
+}
+
+// demoChart shows a bar plot built from mygo's chart scales: the band
+// scale places the bars, the linear scale their heights.
+func demoChart(c *ui.Context, t *ui.Theme) {
+	x := mchart.NewBand("周一", "周二", "周三", "周四", "周五").Padding(0.3, 0.15)
+	y := mchart.NewLinear(0, 120).Nice(4)
+	values := []float64{64, 90, 48, 110, 76}
+	mchart.Plot(c, mchart.Axes{Left: y.Ticks(4), Bottom: x.Ticks()}, func(area ui.Element) {
+		for i, v := range values {
+			mchart.Rect(c, x.Band(i), y.Span(0, v)).Background(t.Accent).Radius(4)
+		}
+	}).Height(200).Gap(6)
+}
+
+// demoOutlineTable shows mygo's outline as a table of columns, folders
+// and files opening and closing.
+func demoOutlineTable(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(360).Height(200).Children(func() {
+		ui.OutlineTable(c, &Demo.OutlineT, []ui.TableColumn{
+			{Title: "名称", Sortable: true},
+			{Title: "类型", Width: 100},
+		}, []string{"src", "README.md"},
+			func(k string) []string {
+				if k == "src" {
+					return []string{"main.go", "view.go"}
+				}
+				return nil
+			},
+			func(path string, col int) {
+				if col == 0 {
+					ui.Text(c, path).SingleLine()
+				} else if path == "src" {
+					ui.Text(c, "目录")
+				} else {
+					ui.Text(c, "文件")
+				}
+			})
 	})
 }

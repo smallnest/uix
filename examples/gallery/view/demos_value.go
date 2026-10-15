@@ -1,6 +1,8 @@
 package view
 
 import (
+	"fmt"
+
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/components/calendar"
@@ -108,4 +110,13 @@ func demoColorPicker(c *ui.Context, t *ui.Theme) {
 // demoColorWell shows a swatch that opens a picker below it.
 func demoColorWell(c *ui.Context, t *ui.Theme) {
 	colorwell.ColorWell(c, colorwell.Props{Color: &Demo.Well, Label: "色调"})
+}
+
+// demoStepSlider shows mygo's slider that snaps to ticks, as the arrows
+// and the track step it.
+func demoStepSlider(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Width(320).Gap(t.Space(2)).Children(func() {
+		ui.StepSlider(c, &Demo.Step, 0, 100, 25)
+		ui.Text(c, fmt.Sprintf("步进值: %.0f", Demo.Step)).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+	})
 }

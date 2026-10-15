@@ -100,13 +100,13 @@ func TestLibraryFilter(t *testing.T) {
 	if err := tt.Click("mygo"); err != nil {
 		t.Fatal(err)
 	}
-	if view.State.Selected != "textinputbuffer" {
-		t.Fatalf("the mygo filter chose %q, want textinputbuffer", view.State.Selected)
+	if view.State.Selected != "backbutton" {
+		t.Fatalf("the mygo filter chose %q, want backbutton", view.State.Selected)
 	}
-	if !tt.HasText("TextInputBuffer") || !tt.HasText("Box") {
+	if !tt.HasText("BackButton") || !tt.HasText("Box") {
 		t.Fatalf("the mygo sidebar misses its components: %q", tt.Texts())
 	}
-	if tt.HasText("Button") {
+	if countExact(tt, "Button") != 0 {
 		t.Fatal("the mygo filter still shows a uix component")
 	}
 	if err := tt.Click("uix"); err != nil {
