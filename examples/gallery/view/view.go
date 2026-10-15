@@ -62,9 +62,10 @@ func rail(c *ui.Context, t *ui.Theme) {
 			ui.Text(c, "没有匹配的组件。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 			return
 		}
-		// The sidebar scrolls its items in the rail's remaining height, as
-		// the settings rail does with its categories.
-		sidebar.Sidebar(c, sidebar.Props{Selected: &State.Selected, Sections: sections}).FillHeight()
+		// The sidebar scrolls its items in the rail's remaining height; it
+		// grows to that, not to a percent of the window, so its scroll
+		// clips at the rail's bottom instead of drawing past it.
+		sidebar.Sidebar(c, sidebar.Props{Selected: &State.Selected, Sections: sections}).Grow(1)
 	})
 }
 
