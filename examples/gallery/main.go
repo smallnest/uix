@@ -16,6 +16,10 @@ import (
 )
 
 func main() {
+	// The view needs its initial state, as every example does: the
+	// controls own their buffers and choices, and the tests draw the
+	// same starting window.
+	view.Reset()
 	mygo.App.WhenReady(func() {
 		win := mygo.NewWindow(mygo.WindowOptions{
 			Title:   "Gallery",

@@ -45,7 +45,9 @@ type GalleryState struct {
 
 // Demo holds the values the demo pages edit. Each page keeps its own
 // state, so a control stays where the visitor left it across frames.
-var Demo = DemoState{}
+// The buffer is born non-nil: a buffer input panics without one, and a
+// visitor reaches the page before any Reset of an embedding window.
+var Demo = DemoState{Buffer: ui.NewTextBuffer("")}
 
 // DemoState is the state of every interactive demo of the gallery.
 type DemoState struct {

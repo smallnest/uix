@@ -60,3 +60,26 @@ func count(s string, texts []string) int {
 	}
 	return n
 }
+
+// TestStartupStateRenders draws every page from the state of a window
+// that forgot Reset: zero choices, only the buffer the package inits.
+// Clicking mygo jumped to TextInputBuffer in that state once and the
+// page panicked on the nil buffer; this keeps the zero state safe.
+func TestStartupStateRenders(t *testing.T) {
+	State = GalleryState{}
+	Demo = DemoState{Buffer: ui.NewTextBuffer("")}
+	tt := ui.NewTester(GalleryView, Width, Height)
+	for _, s := range catalog {
+		for _, e := range s.Entries {
+			State.Selected = e.ID
+			func() {
+				defer func() {
+					if r := recover(); r != nil {
+						t.Errorf("%s (%s) panicked at startup: %v", e.Name, e.ID, r)
+					}
+				}()
+				tt.Frame()
+			}()
+		}
+	}
+}
