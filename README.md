@@ -4,6 +4,8 @@ uix is a shadcn/ui-style component library for the [MyGo](https://github.com/ego
 
 Import a component the Go way — it is a normal package of the module — and it draws with MyGo's native UI. No webview, no HTML.
 
+![](uix.png)
+
 ## Quick start
 
 Import the components you use:
