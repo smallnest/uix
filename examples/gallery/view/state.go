@@ -1,18 +1,27 @@
 package view
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
+	"github.com/smallnest/uix/components/carousel"
 	"github.com/smallnest/uix/components/command"
 	"github.com/smallnest/uix/components/fileupload"
+	"github.com/smallnest/uix/components/infinitescroll"
 	"github.com/smallnest/uix/components/inputotp"
 	"github.com/smallnest/uix/components/messagescroller"
+	"github.com/smallnest/uix/components/navigationmenu"
 	"github.com/smallnest/uix/components/questionnaire"
 	"github.com/smallnest/uix/components/settings"
 	"github.com/smallnest/uix/components/typewriter"
 )
+
+// Web is the web view of the gallery window, made by main; nil in the
+// headless tests, where the webview page draws a placeholder instead.
+var Web *mygo.WebView
 
 // commandState is the state of the command palette demo, which the
 // palette keeps between frames.
@@ -100,11 +109,33 @@ type DemoState struct {
 	Tree1, Tree2   bool
 	// The grid keeps its place and choice.
 	Grid ui.GridState
+	// The navigation extras.
+	Run   uint64
+	Nav   navigationmenu.State
+	Istep int
+	// The carousel keeps where its track is and which slide shows.
+	CarouselScroll ui.ScrollState
+	Carousel       carousel.State
+	// The find bar of the document demo.
+	FindOpen    bool
+	FindQuery   string
+	FindCurrent int
+	// The multi-select popup, closed unless the trigger opens it.
+	MultiOpen bool
+	// The infinite feed; OnMore appends from the counter.
+	Feed     infinitescroll.State
+	FeedRows []string
+	FeedN    int
+	// The responsive modal and the app shell.
+	RModal   bool
+	ShellSel string
 }
 
 // Reset puts the example in its initial state, for the tests and the
-// snapshot command.
+// snapshot command. The gallery window's main sets Web after Reset, so
+// the webview page draws a placeholder until then.
 func Reset() {
+	Web = nil
 	State = GalleryState{Selected: "button"}
 	Demo = DemoState{
 		BtnSel:    []string{"left"},
@@ -141,5 +172,18 @@ func Reset() {
 		Collapse:  true,
 		Acc1:      true,
 		Tree1:     true,
+		FindOpen:  true,
+		FeedRows:  feedRows(1, 8),
+		FeedN:     9,
+		ShellSel:  "overview",
 	}
+}
+
+// feedRows is a page of the infinite feed, "第 n 行" upward.
+func feedRows(start, n int) []string {
+	rows := make([]string, n)
+	for i := range rows {
+		rows[i] = fmt.Sprintf("第 %d 行", start+i)
+	}
+	return rows
 }

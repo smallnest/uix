@@ -1,23 +1,29 @@
 package view
 
 import (
+	"time"
+
 	"github.com/egoist/mygo/ui"
 
 	"github.com/oneo-me/onevra/source/components"
 	"github.com/oneo-me/onevra/source/components/chart"
 	"github.com/oneo-me/onevra/source/components/graph"
 
+	"github.com/smallnest/uix/components/animate"
 	"github.com/smallnest/uix/components/avatar"
 	"github.com/smallnest/uix/components/badge"
 	"github.com/smallnest/uix/components/barchart"
 	"github.com/smallnest/uix/components/blockquote"
+	"github.com/smallnest/uix/components/button"
 	"github.com/smallnest/uix/components/card"
 	"github.com/smallnest/uix/components/empty"
 	"github.com/smallnest/uix/components/gridview"
 	"github.com/smallnest/uix/components/headingwithanchor"
 	"github.com/smallnest/uix/components/icon"
 	"github.com/smallnest/uix/components/image"
+	"github.com/smallnest/uix/components/infinitescroll"
 	"github.com/smallnest/uix/components/inlinecode"
+	"github.com/smallnest/uix/components/item"
 	"github.com/smallnest/uix/components/kbd"
 	"github.com/smallnest/uix/components/label"
 	"github.com/smallnest/uix/components/linechart"
@@ -29,6 +35,7 @@ import (
 	"github.com/smallnest/uix/components/statcard"
 	"github.com/smallnest/uix/components/table"
 	"github.com/smallnest/uix/components/tree"
+	"github.com/smallnest/uix/components/webview"
 )
 
 // demoText shows mygo's text primitive.
@@ -336,6 +343,91 @@ func demoPixelGrid(c *ui.Context, t *ui.Theme) {
 		Background(t.Background).Border(1, t.Border).Children(func() {
 		ui.Column(c).Fill().Center().Children(func() {
 			ui.Text(c, "方格背景").TextColor(t.TextMuted)
+		})
+	})
+}
+
+// demoAnimate shows elements that move in on their own: cards that
+// enter one after another, and a pulse that breathes. The replay button
+// plays the entrances again.
+func demoAnimate(c *ui.Context, t *ui.Theme) {
+	card := func(label string) ui.Element {
+		return ui.Box(c).Size(96, 96).Radius(t.Radius * 2).Background(t.Accent.Alpha(0.82)).Center().
+			Children(func() {
+				ui.Text(c, label).TextColor(t.AccentText)
+			})
+	}
+	ui.Column(c).Gap(t.Space(3)).Children(func() {
+		ui.Row(c).AlignItems(ui.Center).Gap(t.Space(2)).Children(func() {
+			animate.Pulse(ui.Box(c).Size(10, 10).Radius(5).Background(t.Danger), animate.Options{Duration: 1400 * time.Millisecond})
+			ui.Text(c, "进入时依次浮现。").TextColor(t.TextMuted)
+			ui.Spacer(c)
+			button.Button(c, button.Props{Label: "重播", Variant: button.Outline, OnClick: func() { Demo.Run++ }})
+		})
+		ui.Row(c).Gap(t.Space(3)).Children(func() {
+			animate.FadeIn(card("淡入"), animate.Options{Run: Demo.Run})
+			animate.RiseIn(card("升起"), animate.Options{Delay: 120 * time.Millisecond, Run: Demo.Run})
+			animate.SlideIn(card("滑入"), animate.Options{Delay: 240 * time.Millisecond, Run: Demo.Run}, animate.Left)
+			animate.ScaleIn(card("缩放"), animate.Options{Delay: 360 * time.Millisecond, Run: Demo.Run})
+		})
+	})
+}
+
+// demoInfiniteScroll shows a feed that appends a page as it nears the
+// end; the counter names the rows appended.
+func demoInfiniteScroll(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(360).Height(220).Children(func() {
+		infinitescroll.InfiniteScroll(c, infinitescroll.Props{
+			State: &Demo.Feed,
+			OnMore: func() {
+				Demo.FeedRows = append(Demo.FeedRows, feedRows(Demo.FeedN, 8)...)
+				Demo.FeedN += 8
+			},
+			Children: func() {
+				ui.Column(c).FillWidth().Children(func() {
+					for _, name := range Demo.FeedRows {
+						ui.Row(c).FillWidth().Height(32).AlignItems(ui.Center).Padding(0, 12).Children(func() {
+							ui.Text(c, name).Grow(1)
+						})
+					}
+				})
+			},
+		})
+	})
+}
+
+// demoItem shows a row of a list: a tile, a title, a description and
+// the actions at the far end.
+func demoItem(c *ui.Context, t *ui.Theme) {
+	item.ItemGroup(c, []item.Props{
+		{Media: lucide.User(), Title: "账户", Description: "你的名字和照片", OnClick: func() {}},
+		{Media: lucide.Bell(), Title: "通知", Description: "提醒你的内容", OnClick: func() {}},
+		{Media: lucide.Shield(), Title: "隐私", Description: "应用可以看到什么", OnClick: func() {}},
+	})
+}
+
+// demoWebView shows the page of the window's web view, with a reload
+// button. Headless there is no web view, so the demo draws a
+// placeholder that names the page.
+func demoWebView(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Width(520).Gap(t.Space(2)).Children(func() {
+		ui.Row(c).FillWidth().MinWidth(0).AlignItems(ui.Center).Gap(t.Space(2)).Children(func() {
+			ui.Text(c, "WebView").Bold()
+			ui.Text(c, "https://example.com").Grow(1).MinWidth(0).SingleLine().TextColor(t.TextMuted)
+			if Web != nil {
+				button.Button(c, button.Props{Label: "刷新", Variant: button.Ghost, OnClick: func() {
+					Web.Page().Reload()
+				}})
+			}
+		})
+		ui.Box(c).FillWidth().Height(240).Radius(t.Radius).Border(1, t.Border).Children(func() {
+			if Web != nil {
+				webview.WebView(c, webview.Props{Web: Web}).Fill()
+			} else {
+				ui.Box(c).Fill().Center().Children(func() {
+					ui.Text(c, "打开窗口时,这里显示 example.com 的网页。").TextColor(t.TextMuted)
+				})
+			}
 		})
 	})
 }

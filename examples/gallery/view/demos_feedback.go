@@ -7,6 +7,7 @@ import (
 	"github.com/smallnest/uix/components/alert"
 	"github.com/smallnest/uix/components/alertdialog"
 	"github.com/smallnest/uix/components/attachment"
+	"github.com/smallnest/uix/components/bubble"
 	"github.com/smallnest/uix/components/chat"
 	"github.com/smallnest/uix/components/code"
 	"github.com/smallnest/uix/components/command"
@@ -17,10 +18,12 @@ import (
 	"github.com/smallnest/uix/components/log"
 	"github.com/smallnest/uix/components/markdown"
 	"github.com/smallnest/uix/components/message"
+	"github.com/smallnest/uix/components/messagescroller"
 	"github.com/smallnest/uix/components/notificationcenter"
 	"github.com/smallnest/uix/components/popover"
 	"github.com/smallnest/uix/components/progress"
 	"github.com/smallnest/uix/components/questionnaire"
+	"github.com/smallnest/uix/components/responsivemodal"
 	sel "github.com/smallnest/uix/components/select"
 	"github.com/smallnest/uix/components/settings"
 	"github.com/smallnest/uix/components/sheet"
@@ -309,4 +312,55 @@ func demoSettings(c *ui.Context, t *ui.Theme) {
 			},
 		},
 	}, settings.SettingsOptions{})
+}
+
+// demoBubble shows the framed bubble of a conversation, on either side.
+func demoBubble(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(2)).Children(func() {
+		bubble.Bubble(c, bubble.Props{Text: "早上好。", Align: bubble.End})
+		bubble.Bubble(c, bubble.Props{Text: "收到,还有别的吗?", Variant: bubble.Secondary})
+	})
+}
+
+// demoMessageScroller shows a conversation that stays at the newest
+// message, with a button to jump back down when the reader scrolled up.
+func demoMessageScroller(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(440).Height(240).Children(func() {
+		messagescroller.MessageScroller(c, messagescroller.Props{
+			State:    &Demo.Scroller,
+			NewLabel: "新消息",
+			Children: func() {
+				ui.Column(c).FillWidth().Gap(t.Space(2)).Padding(t.Space(3)).Children(func() {
+					for _, m := range []message.Props{
+						{Name: "你", Header: "现在", Text: "早上好。", Align: bubble.End},
+						{Name: "Ada", Header: "现在", Text: "收到,这就回复。", Variant: bubble.Secondary},
+						{Name: "你", Header: "现在", Text: "谢谢。", Align: bubble.End},
+					} {
+						message.Message(c, m)
+					}
+				})
+			},
+		})
+	})
+}
+
+// demoResponsiveModal shows a modal that becomes a bottom sheet in a
+// narrow window; the button opens it.
+func demoResponsiveModal(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		button.Button(c, button.Props{Label: "打开响应式对话框", OnClick: func() { Demo.RModal = true }})
+		ui.Text(c, "窗口窄时它变成底部面板。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+	})
+	responsivemodal.ResponsiveModal(c, responsivemodal.Props{
+		Open:  &Demo.RModal,
+		Title: "响应式对话框",
+		Body: func(c *ui.Context) {
+			ui.Text(c, "窗口窄时它变成底部面板。")
+		},
+		Actions: func(c *ui.Context) {
+			ui.Row(c).FillWidth().Justify(ui.End).Children(func() {
+				button.Button(c, button.Props{Label: "完成", OnClick: func() { Demo.RModal = false }})
+			})
+		},
+	})
 }

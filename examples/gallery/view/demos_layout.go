@@ -6,6 +6,7 @@ import (
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/components/accordion"
+	"github.com/smallnest/uix/components/appshell"
 	"github.com/smallnest/uix/components/aspectratio"
 	"github.com/smallnest/uix/components/collapsible"
 	"github.com/smallnest/uix/components/field"
@@ -18,6 +19,7 @@ import (
 	"github.com/smallnest/uix/components/scrollboth"
 	"github.com/smallnest/uix/components/scrollhorizontal"
 	"github.com/smallnest/uix/components/separator"
+	"github.com/smallnest/uix/components/sidebar"
 	"github.com/smallnest/uix/components/split"
 )
 
@@ -199,5 +201,27 @@ func demoCanvas(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Size(96, 96).Radius(t.Radius).Background(t.Surface).Border(1, t.Border).Draw(func(p *ui.Painter, r ui.Rect) {
 		p.Fill(ui.Rect{X: r.X + 8, Y: r.Y + 8, W: r.W - 16, H: r.H - 16}, t.Accent, 8)
 		p.Fill(ui.Rect{X: r.X + 32, Y: r.Y + 32, W: 32, H: 32}, t.Success, 6)
+	})
+}
+
+// demoAppShell shows the shell of a whole app: the trail, the sidebar
+// and the header over a content area, in a box the height of a page.
+func demoAppShell(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(620).Height(300).Children(func() {
+		appshell.AppShell(c, appshell.Props{
+			Title:    "概览",
+			Team:     "团队",
+			Member:   "成员",
+			Selected: &Demo.ShellSel,
+			Sections: []sidebar.Section{
+				{Title: "工作区", Items: []sidebar.Item{
+					{ID: "overview", Label: "概览"},
+					{ID: "analytics", Label: "分析"},
+				}},
+			},
+			Content: func(c *ui.Context) {
+				ui.Text(c, "应用外壳的内容区。")
+			},
+		})
 	})
 }

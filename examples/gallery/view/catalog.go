@@ -63,6 +63,10 @@ var catalog = []Section{
 			{"segmented", "Segmented", Uix, lucide.SlidersHorizontal, demoButtonSegmented},
 			{"stepper", "Stepper", Uix, lucide.ArrowUpDown, demoStepper},
 			{"carousel", "Carousel", Uix, lucide.Rows3, demoCarousel},
+			{"menubar", "Menubar", Uix, lucide.AppWindow, demoMenubar},
+			{"navigationmenu", "NavigationMenu", Uix, lucide.Navigation, demoNavigationMenu},
+			{"magicback", "MagicBack", Uix, lucide.Undo2, demoMagicBack},
+			{"interactivestepper", "InteractiveStepper", Uix, lucide.Footprints, demoInteractiveStepper},
 		},
 	},
 	{
@@ -85,6 +89,7 @@ var catalog = []Section{
 			{"nativeselect", "NativeSelect", Uix, lucide.Monitor, demoNativeSelect},
 			{"typewriter", "Typewriter", Uix, lucide.Keyboard, demoTypewriter},
 			{"textinputbuffer", "TextInputBuffer", Mygo, lucide.TextCursor, demoTextInputBuffer},
+			{"findbar", "FindBar", Uix, lucide.ScanSearch, demoFindBar},
 		},
 	},
 	{
@@ -150,6 +155,10 @@ var catalog = []Section{
 			{"donutchart", "DonutChart", Onevra, lucide.ChartPie, demoDonutChart},
 			{"graph", "Graph", Onevra, lucide.Network, demoGraph},
 			{"pixelgrid", "PixelGrid", Onevra, lucide.Grid3x3, demoPixelGrid},
+			{"animate", "Animate", Uix, lucide.Clapperboard, demoAnimate},
+			{"infinitescroll", "InfiniteScroll", Uix, lucide.Infinity, demoInfiniteScroll},
+			{"item", "Item", Uix, lucide.Layers, demoItem},
+			{"webview", "WebView", Uix, lucide.Globe, demoWebView},
 		},
 	},
 	{
@@ -168,6 +177,7 @@ var catalog = []Section{
 			{"alert", "Alert", Uix, lucide.CircleAlert, demoAlert},
 			{"loadingbutton", "LoadingButton", Uix, lucide.Loader, demoLoadingButton},
 			{"notificationcenter", "NotificationCenter", Uix, lucide.BellRing, demoNotificationCenter},
+			{"responsivemodal", "ResponsiveModal", Uix, lucide.Maximize2, demoResponsiveModal},
 		},
 	},
 	{
@@ -184,6 +194,8 @@ var catalog = []Section{
 			{"log", "Log", Uix, lucide.ListStart, demoLog},
 			{"questionnaire", "Questionnaire", Uix, lucide.ClipboardList, demoQuestionnaire},
 			{"settings", "Settings", Uix, lucide.Settings, demoSettings},
+			{"bubble", "Bubble", Uix, lucide.MessageCircle, demoBubble},
+			{"messagescroller", "MessageScroller", Uix, lucide.ScrollText, demoMessageScroller},
 		},
 	},
 	{
@@ -203,6 +215,7 @@ var catalog = []Section{
 			{"accordion", "Accordion", Uix, lucide.Plus, demoAccordion},
 			{"fileupload", "FileUpload", Uix, lucide.FileUp, demoFileUpload},
 			{"canvas", "Canvas", Mygo, lucide.PenTool, demoCanvas},
+			{"appshell", "AppShell", Uix, lucide.LayoutPanelTop, demoAppShell},
 		},
 	},
 }

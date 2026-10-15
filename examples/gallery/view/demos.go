@@ -2,6 +2,7 @@ package view
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/egoist/mygo/ui"
 
@@ -15,14 +16,19 @@ import (
 	"github.com/smallnest/uix/components/contextmenu"
 	"github.com/smallnest/uix/components/dropdown"
 	"github.com/smallnest/uix/components/editabletext"
+	"github.com/smallnest/uix/components/findbar"
 	"github.com/smallnest/uix/components/floatinglabelinput"
 	"github.com/smallnest/uix/components/input"
 	"github.com/smallnest/uix/components/inputgroup"
 	"github.com/smallnest/uix/components/inputotp"
+	"github.com/smallnest/uix/components/interactivestepper"
 	"github.com/smallnest/uix/components/link"
+	"github.com/smallnest/uix/components/magicback"
 	"github.com/smallnest/uix/components/menu"
+	"github.com/smallnest/uix/components/menubar"
 	"github.com/smallnest/uix/components/multiselect"
 	"github.com/smallnest/uix/components/nativeselect"
+	"github.com/smallnest/uix/components/navigationmenu"
 	"github.com/smallnest/uix/components/numberinput"
 	"github.com/smallnest/uix/components/pagination"
 	"github.com/smallnest/uix/components/searchfield"
@@ -189,7 +195,9 @@ func demoStepper(c *ui.Context, t *ui.Theme) {
 // demoCarousel shows slides you flip with buttons or dots.
 func demoCarousel(c *ui.Context, t *ui.Theme) {
 	carousel.Carousel(c, carousel.Props{
-		Count: 3,
+		Count:  3,
+		Scroll: &Demo.CarouselScroll,
+		State:  &Demo.Carousel,
 		Slide: func(c *ui.Context, i int) {
 			ui.Box(c).FillWidth().Height(140).Background(t.Accent.Alpha(1 - float32(i)*0.16)).
 				Radius(t.Radius * 2).Center().Children(func() {
@@ -311,6 +319,7 @@ func demoMultiSelect(c *ui.Context, t *ui.Theme) {
 	multiselect.Multiselect(c, multiselect.Props{
 		Values:  &Demo.Multi,
 		Options: []string{"go", "rust", "zig", "swift"},
+		Open:    &Demo.MultiOpen,
 	})
 }
 
@@ -339,5 +348,82 @@ func demoTextInputBuffer(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		ui.Text(c, "缓冲区").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 		ui.TextInputBuffer(c, Demo.Buffer)
+	})
+}
+
+// demoMenubar shows the flat bar of menus of a desktop app.
+func demoMenubar(c *ui.Context, t *ui.Theme) {
+	menubar.Menubar(c, menubar.Props{
+		Menus: []menubar.Menu{
+			{Label: "文件", Items: []menubar.Item{
+				{Label: "新建", ShortcutMods: ui.Cmd, ShortcutKey: ui.KeyN, Action: func() {}},
+				{Separator: true},
+				{Label: "保存", ShortcutMods: ui.Cmd, ShortcutKey: ui.KeyS, Action: func() {}},
+				{Label: "退出", Action: func() {}},
+			}},
+			{Label: "编辑", Items: []menubar.Item{
+				{Label: "撤销", ShortcutMods: ui.Cmd, ShortcutKey: ui.KeyZ, Action: func() {}},
+				{Label: "加粗", Checked: true, Action: func() {}},
+			}},
+		},
+	})
+}
+
+// demoNavigationMenu shows a bar of links, of which one opens a panel.
+func demoNavigationMenu(c *ui.Context, t *ui.Theme) {
+	navigationmenu.NavigationMenu(c, navigationmenu.Props{
+		State: &Demo.Nav,
+		Items: []navigationmenu.Item{
+			{Label: "文档", Children: []navigationmenu.Item{
+				{Label: "入门", OnClick: func() {}},
+				{Label: "指南", OnClick: func() {}},
+				{Label: "参考", OnClick: func() {}},
+			}},
+			{Label: "关于", OnClick: func() {}},
+		},
+	})
+}
+
+// demoMagicBack shows the back button of a browser, home when there is
+// nothing to go back to.
+func demoMagicBack(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Width(200).Gap(t.Space(2)).Children(func() {
+		magicback.MagicBack(c, magicback.Props{
+			Back:   true,
+			Label:  "返回",
+			OnBack: func() {},
+			OnHome: func() {},
+		})
+		ui.Text(c, "有去处的返回按钮。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+	})
+}
+
+// demoInteractiveStepper shows a form of steps, each with its content.
+func demoInteractiveStepper(c *ui.Context, t *ui.Theme) {
+	interactivestepper.InteractiveStepper(c, interactivestepper.Props{
+		Step: &Demo.Istep,
+		Steps: []interactivestepper.Step{
+			{Title: "信息", Body: func(c *ui.Context) { ui.Text(c, "填写账户信息。") }},
+			{Title: "确认", Body: func(c *ui.Context) { ui.Text(c, "确认信息无误。") }},
+			{Title: "完成", Body: func(c *ui.Context) { ui.Text(c, "提交完成。") }},
+		},
+		OnComplete: func() {},
+	})
+}
+
+// demoFindBar shows a bar that finds a word in a short document; the
+// gallery counts the matches of the query in the sample text.
+func demoFindBar(c *ui.Context, t *ui.Theme) {
+	const sample = "uix 是一个用纯 Go 写的组件库。组件库提供按钮、输入框和对话框等组件。"
+	matches := 0
+	if q := Demo.FindQuery; q != "" {
+		matches = strings.Count(strings.ToLower(sample), strings.ToLower(q))
+	}
+	ui.Column(c).Width(440).Gap(t.Space(2)).Children(func() {
+		ui.Text(c, sample)
+		findbar.FindBar(c, findbar.Props{
+			Open: &Demo.FindOpen, Query: &Demo.FindQuery,
+			Matches: matches, Current: &Demo.FindCurrent,
+		})
 	})
 }

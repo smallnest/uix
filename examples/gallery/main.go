@@ -17,12 +17,20 @@ import (
 
 func main() {
 	mygo.App.WhenReady(func() {
-		mygo.NewWindow(mygo.WindowOptions{
+		win := mygo.NewWindow(mygo.WindowOptions{
 			Title:   "Gallery",
 			Width:   view.Width,
 			Height:  view.Height,
 			Content: ui.View(view.GalleryView),
 		})
+		// The webview page shows a real page: the window makes the web
+		// view, and the demo draws it. Headless, Web stays nil and the
+		// page draws a placeholder.
+		v, err := win.NewWebView(mygo.WebViewOptions{URL: "https://example.com"})
+		if err != nil {
+			panic(err)
+		}
+		view.Web = v
 	})
 	if err := mygo.App.Run(); err != nil {
 		panic(err)
