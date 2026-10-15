@@ -12,8 +12,8 @@ import (
 
 	"github.com/egoist/mygo/ui"
 
-	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/accordion"
+	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/breadcrumbs"
 	"github.com/smallnest/uix/components/collapsible"
 	"github.com/smallnest/uix/components/popover"

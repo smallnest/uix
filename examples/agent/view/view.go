@@ -80,8 +80,8 @@ var logSteps = []string{
 // snapshot command.
 func Reset() {
 	State = AgentState{
-		Place:   "chat",
-		Notifs:  sampleNotifs(),
+		Place:    "chat",
+		Notifs:   sampleNotifs(),
 		nextTick: time.Time{},
 	}
 }
@@ -150,15 +150,15 @@ func AgentView(c *ui.Context) {
 				})
 			default:
 				chat.Chat(c, chat.Props{
-					Messages:  State.Messages,
-					Value:     &State.Input,
-					Busy:      State.Busy,
-					Thinking:  State.Thinking,
-					OnSubmit:  submit,
-					OnStop:    stop,
-					Model:     "openai/gpt-5-nano",
-					Provider:  "Demo mode",
-					Scroll:    &State.Scroll,
+					Messages: State.Messages,
+					Value:    &State.Input,
+					Busy:     State.Busy,
+					Thinking: State.Thinking,
+					OnSubmit: submit,
+					OnStop:   stop,
+					Model:    "openai/gpt-5-nano",
+					Provider: "Demo mode",
+					Scroll:   &State.Scroll,
 					Suggestions: []string{
 						"Explain this starter",
 						"Suggest a name for the app",

@@ -41,7 +41,7 @@ var Logo = ui.MustParseSVG([]byte(`<svg viewBox="0 0 30 10"><rect width="9" heig
 // heart outlines a heart; filled fills it, for the like toggle.
 var (
 	heartOutline = ui.MustParseSVG([]byte(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`))
-	heartFilled = ui.MustParseSVG([]byte(`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`))
+	heartFilled  = ui.MustParseSVG([]byte(`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`))
 )
 
 // photo is a small picture to show: a sky over a hill, as a gradient.
@@ -83,12 +83,12 @@ func StudioView(c *ui.Context) {
 			ui.Spacer(c)
 			heart := ui.Box(c).Size(32, 32).Radius(8).Background(t.Surface).
 				Border(1, t.Border).Center().Cursor(ui.CursorPointer).Children(func() {
-					h := heartOutline
-					if State.Liked {
-						h = heartFilled
-					}
-					icon.Icon(c, icon.Props{SVG: h, Width: 18, Height: 18, Label: "Like"})
-				})
+				h := heartOutline
+				if State.Liked {
+					h = heartFilled
+				}
+				icon.Icon(c, icon.Props{SVG: h, Width: 18, Height: 18, Label: "Like"})
+			})
 			if heart.Clicked() {
 				State.Liked = !State.Liked
 				if State.Liked {

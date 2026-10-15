@@ -10,8 +10,8 @@ import (
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/components/appshell"
-	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/barchart"
+	tokens "github.com/smallnest/uix/components/base"
 	"github.com/smallnest/uix/components/linechart"
 	"github.com/smallnest/uix/components/sidebar"
 	"github.com/smallnest/uix/components/statcard"

@@ -49,7 +49,7 @@ type MonitorState struct {
 func Reset() {
 	State = MonitorState{
 		CPU: 12, Memory: 64, Disk: 23,
-		Reading: 0,
+		Reading:   0,
 		TargetLow: 20, TargetHigh: 80,
 		Port:   8080,
 		Status: "Idle. Press Scan to scan for threats.",
