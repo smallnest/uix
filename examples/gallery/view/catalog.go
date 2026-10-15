@@ -155,6 +155,8 @@ var catalog = []Section{
 			{"linechart", "LineChart", Uix, lucide.ChartLine, demoLineChart},
 			{"barchart", "BarChart", Uix, lucide.ChartColumn, demoBarChart},
 			{"donutchart", "DonutChart", Onevra, lucide.ChartPie, demoDonutChart},
+			{"area", "Area", Onevra, lucide.ChartArea, demoAreaChart},
+			{"stackedbar", "StackedBar", Onevra, lucide.ChartColumnBig, demoStackedBar},
 			{"graph", "Graph", Onevra, lucide.Network, demoGraph},
 			{"pixelgrid", "PixelGrid", Onevra, lucide.Grid3x3, demoPixelGrid},
 			{"animate", "Animate", Uix, lucide.Clapperboard, demoAnimate},
@@ -202,6 +204,8 @@ var catalog = []Section{
 			{"bubble", "Bubble", Uix, lucide.MessageCircle, demoBubble},
 			{"messagescroller", "MessageScroller", Uix, lucide.ScrollText, demoMessageScroller},
 			{"diffview", "DiffView", Mygo, lucide.FileDiff, demoDiffView},
+			{"resultsummary", "ResultSummary", Onevra, lucide.Summary, demoResultSummary},
+			{"glasscomposer", "GlassComposer", Onevra, lucide.GlassWater, demoGlassComposer},
 		},
 	},
 	{

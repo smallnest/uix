@@ -4,6 +4,8 @@ import (
 	"github.com/egoist/mygo/ui"
 	"github.com/egoist/mygo/ui/editor"
 
+	ochat "github.com/oneo-me/onevra/source/components/chat"
+
 	"github.com/smallnest/uix/components/alert"
 	"github.com/smallnest/uix/components/alertdialog"
 	"github.com/smallnest/uix/components/attachment"
@@ -370,5 +372,36 @@ func demoResponsiveModal(c *ui.Context, t *ui.Theme) {
 func demoDiffView(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Width(560).Height(240).Children(func() {
 		editor.DiffView(c, &Demo.Diff)
+	})
+}
+
+// demoResultSummary shows onevra's summary of a finished turn: a title,
+// a description and the changed items, the extra ones behind a toggle.
+func demoResultSummary(c *ui.Context, t *ui.Theme) {
+	ochat.ResultSummary(c, &Demo.OSummary, ochat.SummaryOptions{
+		Title:       "已更改 3 个文件",
+		Description: "重构了消息的发送路径。",
+		ActionLabel: "查看变更",
+		MoreLabel:   "更多文件",
+		LessLabel:   "更少文件",
+		Items: []ochat.SummaryItem{
+			{ID: "main", Label: "main.go", Detail: "重命名函数"},
+			{ID: "view", Label: "view.go", Detail: "新增状态"},
+			{ID: "readme", Label: "README.md", Detail: "更新用法"},
+		},
+	})
+}
+
+// demoGlassComposer shows onevra's message box on a glass panel over the
+// backdrop; the draft and the layout the composer keeps come from the
+// demo's state.
+func demoGlassComposer(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(440).Padding(t.Space(2)).Children(func() {
+		ochat.GlassComposer(c, &Demo.OLayout, &Demo.OComposer, ochat.ComposerOptions{
+			Label:       "消息",
+			Placeholder: "随便问点什么",
+			SendLabel:   "发送",
+			StopLabel:   "停止",
+		})
 	})
 }

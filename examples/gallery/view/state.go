@@ -8,6 +8,8 @@ import (
 	"github.com/egoist/mygo/ui"
 	"github.com/egoist/mygo/ui/editor"
 
+	ochat "github.com/oneo-me/onevra/source/components/chat"
+
 	"github.com/smallnest/uix/components/carousel"
 	"github.com/smallnest/uix/components/command"
 	"github.com/smallnest/uix/components/fileupload"
@@ -146,6 +148,11 @@ type DemoState struct {
 	MotionRun uint64
 	Diff      editor.DiffState
 	OutlineT  ui.OutlineState[string]
+	// The onevra pages: the summary's expansion and the composer's
+	// draft and measured glass, which the components keep.
+	OSummary  ochat.SummaryState
+	OComposer string
+	OLayout   ochat.FloatingConversationState
 }
 
 // Reset puts the example in its initial state, for the tests and the

@@ -322,6 +322,29 @@ func demoDonutChart(c *ui.Context, t *ui.Theme) {
 	}, chart.Options{PlotHeight: 200}).Height(240)
 }
 
+// demoAreaChart shows a onevra area chart of a series filling its
+// baseline.
+func demoAreaChart(c *ui.Context, t *ui.Theme) {
+	chart.Area(c, &chart.State{Index: -1}, chart.Data{
+		Labels: []string{"一月", "二月", "三月", "四月", "五月", "六月"},
+		Series: []chart.Series{
+			{ID: "revenue", Label: "营收", Values: []float64{64, 90, 48, 110, 76, 95}},
+		},
+	}, chart.Options{PlotHeight: 200}).Height(240)
+}
+
+// demoStackedBar shows a onevra bar chart of series stacked one on
+// another.
+func demoStackedBar(c *ui.Context, t *ui.Theme) {
+	chart.StackedBar(c, &chart.State{Index: -1}, chart.Data{
+		Labels: []string{"一月", "二月", "三月"},
+		Series: []chart.Series{
+			{ID: "design", Label: "设计", Values: []float64{34, 42, 28}},
+			{ID: "development", Label: "开发", Values: []float64{48, 55, 60}},
+		},
+	}, chart.Options{PlotHeight: 200}).Height(240)
+}
+
 // demoGraph shows a onevra relationship graph of nodes and edges.
 func demoGraph(c *ui.Context, t *ui.Theme) {
 	graph.View(c, &graph.State{}, graph.Data{
