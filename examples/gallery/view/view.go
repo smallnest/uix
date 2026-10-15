@@ -40,12 +40,12 @@ func GalleryView(c *ui.Context) {
 func rail(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Width(244).FillHeight().Shrink(0).Gap(t.Space(2)).
 		Background(t.Surface).Radius(t.Radius * 3).Padding(t.Space(2.5)).Children(func() {
-		ui.Text(c, "Gallery").FontSize(t.FontSize * 1.2).Bold()
+		ui.Text(c, "组件画廊").FontSize(t.FontSize * 1.2).Bold()
 		ui.Text(c, "uix · mygo · onevra").FontSize(t.FontSize * 0.8).TextColor(t.TextMuted)
-		searchfield.SearchField(c, searchfield.Props{Value: &State.Query})
+		searchfield.SearchField(c, searchfield.Props{Value: &State.Query, Placeholder: "搜索组件…"})
 		sections := sectionsFor(State.Query)
 		if len(sections) == 0 {
-			ui.Text(c, "No component matches.").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+			ui.Text(c, "没有匹配的组件。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 			return
 		}
 		// The sidebar scrolls its items in the rail's remaining height, as
@@ -87,7 +87,8 @@ func current() (Entry, string) {
 
 // sectionsFor returns the sidebar sections whose items match the query:
 // every item when the query is empty, else those whose name or ID
-// contains it, case-insensitively.
+// contains it, case-insensitively. Each item carries the icon of its
+// component.
 func sectionsFor(query string) []sidebar.Section {
 	q := strings.ToLower(strings.TrimSpace(query))
 	var out []sidebar.Section
@@ -95,7 +96,7 @@ func sectionsFor(query string) []sidebar.Section {
 		var items []sidebar.Item
 		for _, e := range s.Entries {
 			if q == "" || strings.Contains(strings.ToLower(e.Name), q) || strings.Contains(strings.ToLower(e.ID), q) {
-				items = append(items, sidebar.Item{ID: e.ID, Label: e.Name})
+				items = append(items, sidebar.Item{ID: e.ID, Label: e.Name, Icon: e.Icon()})
 			}
 		}
 		if len(items) > 0 {

@@ -33,14 +33,14 @@ import (
 
 // demoText shows mygo's text primitive.
 func demoText(c *ui.Context, t *ui.Theme) {
-	ui.Text(c, "Hello from the Text primitive of mygo.")
+	ui.Text(c, "你好，这是 mygo 的 Text 原语。")
 }
 
 // demoBox shows mygo's box container.
 func demoBox(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Width(220).Padding(t.Space(3)).Radius(t.Radius).Background(t.Surface).
 		Border(1, t.Border).Children(func() {
-		ui.Text(c, "A Box lays its children out in a column.")
+		ui.Text(c, "Box 把子元素按列排布。")
 	})
 }
 
@@ -56,27 +56,27 @@ func demoRow(c *ui.Context, t *ui.Theme) {
 // demoColumn shows mygo's column container.
 func demoColumn(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(1.5)).Children(func() {
-		ui.Text(c, "First row")
-		ui.Text(c, "Second row")
-		ui.Text(c, "Third row")
+		ui.Text(c, "第一行")
+		ui.Text(c, "第二行")
+		ui.Text(c, "第三行")
 	})
 }
 
 // demoSpacer shows mygo's spacer pushing a sibling to the far end.
 func demoSpacer(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).FillWidth().Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Left")
+		ui.Text(c, "左侧")
 		ui.Spacer(c)
-		ui.Text(c, "Right")
+		ui.Text(c, "右侧")
 	})
 }
 
 // demoIcon shows an SVG shown as an icon in the text color.
 func demoIcon(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Gap(t.Space(3)).AlignItems(ui.Center).Children(func() {
-		icon.Icon(c, icon.Props{SVG: lucide.Search(), Label: "Search", Width: 20, Height: 20})
-		icon.Icon(c, icon.Props{SVG: lucide.Bell(), Label: "Bell", Width: 20, Height: 20})
-		icon.Icon(c, icon.Props{SVG: lucide.Settings(), Label: "Settings", Width: 20, Height: 20})
+		icon.Icon(c, icon.Props{SVG: lucide.Search(), Label: "搜索", Width: 20, Height: 20})
+		icon.Icon(c, icon.Props{SVG: lucide.Bell(), Label: "通知", Width: 20, Height: 20})
+		icon.Icon(c, icon.Props{SVG: lucide.Settings(), Label: "设置", Width: 20, Height: 20})
 	})
 }
 
@@ -106,9 +106,9 @@ func demoAvatar(c *ui.Context, t *ui.Theme) {
 func demoBadge(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Wrap().Gap(t.Space(2)).Children(func() {
 		badge.Badge(c, badge.Props{Label: "v1.2.0"})
-		badge.Badge(c, badge.Props{Label: "Secondary", Variant: badge.Secondary})
+		badge.Badge(c, badge.Props{Label: "次要", Variant: badge.Secondary})
 		badge.Badge(c, badge.Props{Label: "Beta", Variant: badge.Outline})
-		badge.Badge(c, badge.Props{Label: "Needs attention", Variant: badge.Destructive})
+		badge.Badge(c, badge.Props{Label: "需要关注", Variant: badge.Destructive})
 	})
 }
 
@@ -122,21 +122,21 @@ func demoKbd(c *ui.Context, t *ui.Theme) {
 
 // demoLabel shows a standalone label of a control.
 func demoLabel(c *ui.Context, t *ui.Theme) {
-	label.Label(c, label.Props{Text: "Email address"})
+	label.Label(c, label.Props{Text: "邮箱地址"})
 }
 
 // demoMarker shows short inline labels of a turn.
 func demoMarker(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Gap(t.Space(2)).Children(func() {
-		marker.Marker(c, marker.Props{Label: "System"})
-		marker.Marker(c, marker.Props{Label: "Bordered", Variant: marker.Border})
+		marker.Marker(c, marker.Props{Label: "系统"})
+		marker.Marker(c, marker.Props{Label: "描边", Variant: marker.Border})
 	})
 }
 
 // demoInlineCode shows a code chip in the prose.
 func demoInlineCode(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Gap(t.Space(1.5)).AlignItems(ui.Center).Children(func() {
-		ui.Text(c, "Run").TextColor(t.TextMuted)
+		ui.Text(c, "运行").TextColor(t.TextMuted)
 		inlinecode.InlineCode(c, inlinecode.Props{Text: "go run ./examples/gallery"})
 	})
 }
@@ -144,33 +144,33 @@ func demoInlineCode(c *ui.Context, t *ui.Theme) {
 // demoBlockquote shows a quote on a muted face with an accent bar.
 func demoBlockquote(c *ui.Context, t *ui.Theme) {
 	blockquote.Blockquote(c, blockquote.Props{
-		Text:   "The best way to predict the future is to invent it.",
-		Author: "— Ada Lovelace",
+		Text:   "预测未来最好的方式是创造它。",
+		Author: "— Alan Kay",
 	})
 }
 
 // demoHeadingWithAnchor shows a heading with a link that copies the
 // anchor.
 func demoHeadingWithAnchor(c *ui.Context, t *ui.Theme) {
-	headingwithanchor.Heading(c, headingwithanchor.Props{Text: "Install", Anchor: "install"})
+	headingwithanchor.Heading(c, headingwithanchor.Props{Text: "安装", Anchor: "install"})
 }
 
 // demoRichText shows styled runs of text.
 func demoRichText(c *ui.Context, t *ui.Theme) {
 	richtext.RichText(c, richtext.Props{Spans: []ui.Span{
-		{Text: "One "},
-		{Text: "weighted", Weight: 600},
-		{Text: " run, one "},
-		{Text: "colored", Color: t.Accent},
-		{Text: " run."},
+		{Text: "一段"},
+		{Text: "加粗", Weight: 600},
+		{Text: "、一段"},
+		{Text: "彩色", Color: t.Accent},
+		{Text: "的文字。"},
 	}})
 }
 
 // demoCard shows a rounded container with a header and a body.
 func demoCard(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Width(280).Children(func() {
-		card.Card(c, card.Props{Title: "Card", Description: "A rounded container of content."}, func() {
-			ui.Text(c, "The body of the card.")
+		card.Card(c, card.Props{Title: "卡片", Description: "带圆角的内容容器。"}, func() {
+			ui.Text(c, "卡片的正文。")
 		})
 	})
 }
@@ -178,9 +178,9 @@ func demoCard(c *ui.Context, t *ui.Theme) {
 // demoStatCard shows metric cards with a delta.
 func demoStatCard(c *ui.Context, t *ui.Theme) {
 	statcard.StatCards(c, statcard.Props{Stats: []statcard.Stat{
-		{Icon: statcard.IconUsers, Label: "Customers", Value: "14,592", Delta: "+5.3%", DeltaColor: statcard.Up},
-		{Icon: statcard.IconBox, Label: "Unit sold", Value: "385", Delta: "-2.1%", DeltaColor: statcard.Down},
-		{Icon: statcard.IconBasket, Label: "Orders", Value: "1,394", Delta: "0.00%", DeltaColor: statcard.Flat},
+		{Icon: statcard.IconUsers, Label: "客户", Value: "14,592", Delta: "+5.3%", DeltaColor: statcard.Up},
+		{Icon: statcard.IconBox, Label: "售出", Value: "385", Delta: "-2.1%", DeltaColor: statcard.Down},
+		{Icon: statcard.IconBasket, Label: "订单", Value: "1,394", Delta: "0.00%", DeltaColor: statcard.Flat},
 	}})
 }
 
@@ -196,8 +196,8 @@ func demoSkeleton(c *ui.Context, t *ui.Theme) {
 func demoEmpty(c *ui.Context, t *ui.Theme) {
 	empty.Empty(c, empty.Props{
 		Icon:        lucide.Search(),
-		Title:       "No results",
-		Description: "Try a different search.",
+		Title:       "没有结果",
+		Description: "换个关键词试试。",
 	})
 }
 
@@ -231,15 +231,15 @@ func demoTable(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Height(180).Children(func() {
 		table.Table(c, table.Props{
 			Columns: []ui.TableColumn{
-				{Title: "Name"},
-				{Title: "Role"},
-				{Title: "Status"},
+				{Title: "姓名"},
+				{Title: "角色"},
+				{Title: "状态"},
 			},
 			Rows: 4,
 			Cell: func(row, col int) {
 				names := []string{"Ada Lovelace", "Alan Turing", "Grace Hopper", "Linus Torvalds"}
-				roles := []string{"Analyst", "Mathematician", "Admiral", "Engineer"}
-				statuses := []string{"Active", "Active", "Away", "Active"}
+				roles := []string{"分析师", "数学家", "海军上将", "工程师"}
+				statuses := []string{"在线", "在线", "离开", "在线"}
 				cell := [][]string{names, roles, statuses}[col]
 				ui.Text(c, cell[row]).SingleLine()
 			},
@@ -277,7 +277,7 @@ func demoOutline(c *ui.Context, t *ui.Theme) {
 // demoLineChart shows a line chart of a year against the year before.
 func demoLineChart(c *ui.Context, t *ui.Theme) {
 	linechart.LineChart(c, linechart.Props{
-		Title: "Revenue",
+		Title: "营收",
 		Data: []linechart.Point{
 			{Label: "Jan", Current: 40, Previous: 30},
 			{Label: "Feb", Current: 52, Previous: 38},
@@ -292,7 +292,7 @@ func demoLineChart(c *ui.Context, t *ui.Theme) {
 // demoBarChart shows a paired bar chart against a year earlier.
 func demoBarChart(c *ui.Context, t *ui.Theme) {
 	barchart.BarChart(c, barchart.Props{
-		Title: "Orders",
+		Title: "订单",
 		Data: []barchart.Point{
 			{Label: "Jan", Current: 22, Previous: 18},
 			{Label: "Feb", Current: 28, Previous: 20},
@@ -307,10 +307,10 @@ func demoBarChart(c *ui.Context, t *ui.Theme) {
 // demoDonutChart shows a onevra donut of proportions.
 func demoDonutChart(c *ui.Context, t *ui.Theme) {
 	chart.Donut(c, &chart.State{Index: -1}, []chart.Slice{
-		{ID: "design", Label: "Design", Value: 34},
-		{ID: "development", Label: "Development", Value: 28},
-		{ID: "research", Label: "Research", Value: 20},
-		{ID: "planning", Label: "Planning", Value: 18},
+		{ID: "design", Label: "设计", Value: 34},
+		{ID: "development", Label: "开发", Value: 28},
+		{ID: "research", Label: "研究", Value: 20},
+		{ID: "planning", Label: "规划", Value: 18},
 	}, chart.Options{PlotHeight: 200}).Height(240)
 }
 
@@ -335,7 +335,7 @@ func demoPixelGrid(c *ui.Context, t *ui.Theme) {
 	components.PixelGrid(c, components.PixelGridOptions{Spacing: 18}).FillWidth().Height(120).
 		Background(t.Background).Border(1, t.Border).Children(func() {
 		ui.Column(c).Fill().Center().Children(func() {
-			ui.Text(c, "A squared backdrop").TextColor(t.TextMuted)
+			ui.Text(c, "方格背景").TextColor(t.TextMuted)
 		})
 	})
 }

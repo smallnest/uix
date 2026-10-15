@@ -33,8 +33,8 @@ func countExact(tt *ui.Tester, s string) int {
 func TestRenders(t *testing.T) {
 	tt := newTester(t)
 	for _, s := range []string{
-		"Gallery", "uix · mygo · onevra", "Actions & navigation",
-		"Button", "Primary", "Secondary", "Outline", "Ghost", "Destructive", "Disabled",
+		"组件画廊", "uix · mygo · onevra", "操作与导航",
+		"Button", "主要", "次要", "描边", "幽灵", "危险", "禁用",
 	} {
 		if !tt.HasText(s) {
 			t.Fatalf("missing %q in %q", s, tt.Texts())
@@ -69,7 +69,7 @@ func TestNavigate(t *testing.T) {
 	if view.State.Selected != "pixelgrid" {
 		t.Fatalf("the click chose %q, want pixelgrid", view.State.Selected)
 	}
-	if !tt.HasText("A squared backdrop") {
+	if !tt.HasText("方格背景") {
 		t.Fatalf("the page does not show the pixel grid demo: %q", tt.Texts())
 	}
 }
@@ -117,10 +117,10 @@ func TestSearch(t *testing.T) {
 func TestDialog(t *testing.T) {
 	tt := newTester(t)
 	reach(t, tt, "dialog", "Dialog")
-	if err := tt.Click("Open dialog"); err != nil {
+	if err := tt.Click("打开对话框"); err != nil {
 		t.Fatal(err)
 	}
-	if !tt.HasText("Delete your account?") {
+	if !tt.HasText("要删除你的账户吗？") {
 		t.Fatalf("the dialog did not open: %q", tt.Texts())
 	}
 }
@@ -129,7 +129,7 @@ func TestDialog(t *testing.T) {
 func TestDarkMode(t *testing.T) {
 	tt := newTester(t)
 	tt.SetDark(true)
-	if !tt.HasText("Gallery") {
+	if !tt.HasText("组件画廊") {
 		t.Fatal("dark gallery missing the title")
 	}
 	img := tt.Image()

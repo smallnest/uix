@@ -21,13 +21,13 @@ import (
 
 // demoCheckbox shows a check box with a label.
 func demoCheckbox(c *ui.Context, t *ui.Theme) {
-	checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Check, Label: "Remember me"})
+	checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Check, Label: "记住我"})
 }
 
 // demoCheckboxGroup shows a group of check boxes under a label.
 func demoCheckboxGroup(c *ui.Context, t *ui.Theme) {
 	checkboxgroup.CheckboxGroup(c, checkboxgroup.Props{
-		Label: "Languages",
+		Label: "语言",
 		Children: func(c *ui.Context) {
 			checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Check, Label: "Go"})
 			checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Tg2, Label: "Rust"})
@@ -37,7 +37,7 @@ func demoCheckboxGroup(c *ui.Context, t *ui.Theme) {
 
 // demoSwitch shows a switch with a label.
 func demoSwitch(c *ui.Context, t *ui.Theme) {
-	sw.Switch(c, sw.Props{On: &Demo.Switch, Label: "Autosave"})
+	sw.Switch(c, sw.Props{On: &Demo.Switch, Label: "自动保存"})
 }
 
 // demoRadio shows a radio group with one chosen.
@@ -45,9 +45,9 @@ func demoRadio(c *ui.Context, t *ui.Theme) {
 	radio.Group(c, radio.Props[string]{
 		Selected: &Demo.Radio,
 		Options: []radio.Option[string]{
-			{Value: "Small", Label: "Small"},
-			{Value: "Medium", Label: "Medium"},
-			{Value: "Large", Label: "Large"},
+			{Value: "小", Label: "小"},
+			{Value: "中", Label: "中"},
+			{Value: "大", Label: "大"},
 		},
 	})
 }
@@ -57,7 +57,7 @@ func demoSlider(c *ui.Context, t *ui.Theme) {
 	slider.Slider(c, slider.Props{
 		Value: &Demo.Slider,
 		Min:   0, Max: 100, Step: 1,
-		Label: "Volume",
+		Label: "音量",
 	})
 }
 
@@ -66,7 +66,7 @@ func demoRangeSlider(c *ui.Context, t *ui.Theme) {
 	rangeslider.RangeSlider(c, rangeslider.Props{
 		Low: &Demo.RangeLo, High: &Demo.RangeHi,
 		Min: 0, Max: 100, Step: 1,
-		Label: "Price range",
+		Label: "价格区间",
 	})
 }
 
@@ -77,7 +77,7 @@ func demoRating(c *ui.Context, t *ui.Theme) {
 
 // demoMeter shows a progress meter that colors by its value.
 func demoMeter(c *ui.Context, t *ui.Theme) {
-	meter.Meter(c, meter.Props{Value: 72, Min: 0, Max: 100, Label: "Disk usage"})
+	meter.Meter(c, meter.Props{Value: 72, Min: 0, Max: 100, Label: "磁盘占用"})
 }
 
 // demoDatePicker shows a calendar button that picks a date.
@@ -107,5 +107,5 @@ func demoColorPicker(c *ui.Context, t *ui.Theme) {
 
 // demoColorWell shows a swatch that opens a picker below it.
 func demoColorWell(c *ui.Context, t *ui.Theme) {
-	colorwell.ColorWell(c, colorwell.Props{Color: &Demo.Well, Label: "Tint"})
+	colorwell.ColorWell(c, colorwell.Props{Color: &Demo.Well, Label: "色调"})
 }

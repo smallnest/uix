@@ -42,12 +42,12 @@ import (
 // demoButton shows the six faces of the button.
 func demoButton(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Wrap().Gap(t.Space(2)).Children(func() {
-		button.Button(c, button.Props{Label: "Primary"})
-		button.Button(c, button.Props{Label: "Secondary", Variant: button.Secondary})
-		button.Button(c, button.Props{Label: "Outline", Variant: button.Outline})
-		button.Button(c, button.Props{Label: "Ghost", Variant: button.Ghost})
-		button.Button(c, button.Props{Label: "Destructive", Variant: button.Destructive})
-		button.Button(c, button.Props{Label: "Disabled", Disabled: true})
+		button.Button(c, button.Props{Label: "主要"})
+		button.Button(c, button.Props{Label: "次要", Variant: button.Secondary})
+		button.Button(c, button.Props{Label: "描边", Variant: button.Outline})
+		button.Button(c, button.Props{Label: "幽灵", Variant: button.Ghost})
+		button.Button(c, button.Props{Label: "危险", Variant: button.Destructive})
+		button.Button(c, button.Props{Label: "禁用", Disabled: true})
 	})
 }
 
@@ -56,22 +56,22 @@ func demoButtonGroup(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		buttongroup.ButtonGroup(c, buttongroup.Props{
 			Options: []buttongroup.Option{
-				{Label: "Left", Value: "left"},
-				{Label: "Center", Value: "center"},
-				{Label: "Right", Value: "right"},
+				{Label: "左", Value: "left"},
+				{Label: "中", Value: "center"},
+				{Label: "右", Value: "right"},
 			},
 			Selected: &Demo.BtnSel,
 		})
-		ui.Text(c, "One of the alignment controls is chosen.").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "三个对齐方式中选择一个。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 }
 
 // demoToggle shows two pressed toggles of a toolbar.
 func demoToggle(c *ui.Context, t *ui.Theme) {
 	ui.Row(c).Gap(t.Space(2)).Children(func() {
-		toggle.Toggle(c, toggle.Props{On: &Demo.Tg1, Label: "Bold"})
-		toggle.Toggle(c, toggle.Props{On: &Demo.Tg2, Label: "Italic"})
-		toggle.Toggle(c, toggle.Props{On: &Demo.Tg3, Label: "Underline"})
+		toggle.Toggle(c, toggle.Props{On: &Demo.Tg1, Label: "加粗"})
+		toggle.Toggle(c, toggle.Props{On: &Demo.Tg2, Label: "斜体"})
+		toggle.Toggle(c, toggle.Props{On: &Demo.Tg3, Label: "下划线"})
 	})
 }
 
@@ -79,42 +79,42 @@ func demoToggle(c *ui.Context, t *ui.Theme) {
 func demoButtonToggleGroup(c *ui.Context, t *ui.Theme) {
 	togglegroup.ToggleGroup(c, togglegroup.Props{
 		Items: []togglegroup.Item{
-			{On: &Demo.Tg1, Label: "B", Tip: "Bold"},
-			{On: &Demo.Tg2, Label: "I", Tip: "Italic"},
-			{On: &Demo.Tg3, Label: "U", Tip: "Underline"},
+			{On: &Demo.Tg1, Label: "B", Tip: "加粗"},
+			{On: &Demo.Tg2, Label: "I", Tip: "斜体"},
+			{On: &Demo.Tg3, Label: "U", Tip: "下划线"},
 		},
 	})
 }
 
 // demoLink shows a link that opens a URL.
 func demoLink(c *ui.Context, t *ui.Theme) {
-	link.Link(c, link.Props{Label: "The uix repository", URL: "https://github.com/smallnest/uix"})
+	link.Link(c, link.Props{Label: "uix 仓库", URL: "https://github.com/smallnest/uix"})
 }
 
 // demoMenu shows a button that opens a menu of actions.
 func demoMenu(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		menu.Menu(c, menu.Props{
-			Label: "Open menu",
+			Label: "打开菜单",
 			Items: []menu.Item{
-				{Label: "New", Action: func() {}},
-				{Label: "Open", Action: func() {}},
-				{Label: "Save", Action: func() {}},
+				{Label: "新建", Action: func() {}},
+				{Label: "打开", Action: func() {}},
+				{Label: "保存", Action: func() {}},
 			},
 		})
-		ui.Text(c, "The menu opens on a click.").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "点击按钮打开菜单。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 }
 
 // demoDropdown shows a button whose menu drops below it.
 func demoDropdown(c *ui.Context, t *ui.Theme) {
 	dropdown.Dropdown(c, dropdown.Props{
-		Trigger: "Actions",
+		Trigger: "操作",
 		Open:    &Demo.Drop,
 		Items: []dropdown.Item{
-			{Label: "Rename", OnClick: func() {}},
-			{Label: "Duplicate", OnClick: func() {}},
-			{Label: "Delete", OnClick: func() {}},
+			{Label: "重命名", OnClick: func() {}},
+			{Label: "复制", OnClick: func() {}},
+			{Label: "删除", OnClick: func() {}},
 		},
 	})
 }
@@ -123,23 +123,23 @@ func demoDropdown(c *ui.Context, t *ui.Theme) {
 func demoContextMenu(c *ui.Context, t *ui.Theme) {
 	contextmenu.ContextMenu(c, contextmenu.Props{
 		Items: []contextmenu.Item{
-			{Label: "Copy", Action: func() {}},
-			{Label: "Paste", Action: func() {}},
-			{Label: "Cut", Action: func() {}},
+			{Label: "复制", Action: func() {}},
+			{Label: "粘贴", Action: func() {}},
+			{Label: "剪切", Action: func() {}},
 		},
 	}).FillWidth().Background(t.Surface).Border(1, t.Border).Radius(t.Radius).Padding(t.Space(3)).Children(func() {
-		ui.Text(c, "Right-click this panel for the menu.").TextColor(t.TextMuted)
+		ui.Text(c, "在面板上点击右键打开菜单。").TextColor(t.TextMuted)
 	})
 }
 
 // demoBreadcrumbs shows a path of items, the last where you are.
 func demoBreadcrumbs(c *ui.Context, t *ui.Theme) {
-	breadcrumbs.Breadcrumbs(c, breadcrumbs.Props{Items: []string{"Home", "Docs", "Install"}})
+	breadcrumbs.Breadcrumbs(c, breadcrumbs.Props{Items: []string{"首页", "文档", "安装"}})
 }
 
 // demoTabs shows a tab list with an accent bar on the active tab.
 func demoTabs(c *ui.Context, t *ui.Theme) {
-	tabs.Tabs(c, tabs.Props{Selected: &Demo.Tabs, Labels: []string{"Overview", "Activity", "Settings"}})
+	tabs.Tabs(c, tabs.Props{Selected: &Demo.Tabs, Labels: []string{"概览", "动态", "设置"}})
 }
 
 // demoNavSidebar shows a navigation rail of sections and items.
@@ -149,8 +149,8 @@ func demoNavSidebar(c *ui.Context, t *ui.Theme) {
 		sidebar.Sidebar(c, sidebar.Props{
 			Selected: &sel,
 			Sections: []sidebar.Section{
-				{Title: "Favorites", Items: []sidebar.Item{{ID: "recents", Label: "Recents"}, {ID: "desktop", Label: "Desktop"}}},
-				{Title: "Places", Items: []sidebar.Item{{ID: "documents", Label: "Documents"}, {ID: "downloads", Label: "Downloads"}}},
+				{Title: "收藏", Items: []sidebar.Item{{ID: "recents", Label: "最近"}, {ID: "desktop", Label: "桌面"}}},
+				{Title: "位置", Items: []sidebar.Item{{ID: "documents", Label: "文稿"}, {ID: "downloads", Label: "下载"}}},
 			},
 		})
 	})
@@ -159,12 +159,12 @@ func demoNavSidebar(c *ui.Context, t *ui.Theme) {
 // demoToolbar shows a row of actions along the top.
 func demoToolbar(c *ui.Context, t *ui.Theme) {
 	toolbar.Toolbar(c, toolbar.Props{
-		Label: "Format",
+		Label: "格式",
 		Children: func(c *ui.Context) {
-			ui.Button(c, "New")
-			ui.Button(c, "Open")
+			ui.Button(c, "新建")
+			ui.Button(c, "打开")
 			ui.Spacer(c)
-			ui.Button(c, "Share")
+			ui.Button(c, "分享")
 		},
 	})
 }
@@ -176,13 +176,13 @@ func demoPagination(c *ui.Context, t *ui.Theme) {
 
 // demoButtonSegmented shows a switch between views, one chosen.
 func demoButtonSegmented(c *ui.Context, t *ui.Theme) {
-	segmented.Segmented(c, segmented.Props{Selected: &Demo.Seg, Labels: []string{"Hourly", "Daily", "Monthly"}})
+	segmented.Segmented(c, segmented.Props{Selected: &Demo.Seg, Labels: []string{"按小时", "按天", "按月"}})
 }
 
 // demoStepper shows a number with arrows that step it.
 func demoStepper(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Width(160).Gap(t.Space(2)).Children(func() {
-		stepper.Stepper(c, stepper.Props{Value: &Demo.StepperV, Min: 0, Max: 10, Step: 1, Label: "Seats"})
+		stepper.Stepper(c, stepper.Props{Value: &Demo.StepperV, Min: 0, Max: 10, Step: 1, Label: "座位"})
 	})
 }
 
@@ -193,7 +193,7 @@ func demoCarousel(c *ui.Context, t *ui.Theme) {
 		Slide: func(c *ui.Context, i int) {
 			ui.Box(c).FillWidth().Height(140).Background(t.Accent.Alpha(1 - float32(i)*0.16)).
 				Radius(t.Radius * 2).Center().Children(func() {
-				ui.Text(c, fmt.Sprintf("Slide %d", i+1)).FontSize(t.FontSize * 1.2).FontWeight(600).TextColor(t.AccentText)
+				ui.Text(c, fmt.Sprintf("第 %d 张", i+1)).FontSize(t.FontSize * 1.2).FontWeight(600).TextColor(t.AccentText)
 			})
 		},
 		Height: 140,
@@ -203,30 +203,31 @@ func demoCarousel(c *ui.Context, t *ui.Theme) {
 // demoInput shows a single-line text input.
 func demoInput(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Name").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
-		input.Input(c, input.Props{Value: &Demo.Input, Placeholder: "Your name"})
+		ui.Text(c, "姓名").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		input.Input(c, input.Props{Value: &Demo.Input, Placeholder: "你的名字"})
 	})
 }
 
 // demoTextarea shows a multi-line text area.
 func demoTextarea(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Notes").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
-		textarea.Textarea(c, textarea.Props{Value: &Demo.Textarea, Placeholder: "Write a note", Rows: 4})
+		ui.Text(c, "备注").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		textarea.Textarea(c, textarea.Props{Value: &Demo.Textarea, Placeholder: "写一条备注", Rows: 4})
 	})
 }
 
 // demoNumberInput shows a number input with step buttons.
 func demoNumberInput(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Quantity").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "数量").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 		numberinput.NumberInput(c, numberinput.Props{Value: &Demo.Number, Lo: 0, Hi: 10, Step: 1})
 	})
 }
 
-// demoSearchField shows a search box with a clear button.
+// demoSearchField shows a search box with a clear button and a
+// placeholder in Chinese.
 func demoSearchField(c *ui.Context, t *ui.Theme) {
-	searchfield.SearchField(c, searchfield.Props{Value: &Demo.Search})
+	searchfield.SearchField(c, searchfield.Props{Value: &Demo.Search, Placeholder: "搜索组件…"})
 }
 
 // demoCombobox shows a searchable drop-down.
@@ -242,7 +243,7 @@ func demoAutocomplete(c *ui.Context, t *ui.Theme) {
 	autocomplete.Autocomplete(c, autocomplete.Props{
 		Value:       &Demo.AutoComp,
 		Suggestions: []string{"mygo", "mygo/ui", "uix", "onevra"},
-		Label:       "Package",
+		Label:       "包名",
 	})
 }
 
@@ -251,7 +252,7 @@ func demoTokenField(c *ui.Context, t *ui.Theme) {
 	tokenfield.TokenField(c, tokenfield.Props{
 		Tokens:      &Demo.Tokens,
 		Suggestions: []string{"go", "rust", "ui", "native"},
-		Label:       "Tags",
+		Label:       "标签",
 	})
 }
 
@@ -259,14 +260,14 @@ func demoTokenField(c *ui.Context, t *ui.Theme) {
 func demoOTP(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		inputotp.OTP(c, inputotp.Props{State: &Demo.OTP, Length: 6, OnComplete: func(code string) {}})
-		ui.Text(c, "The verification code, cell by cell.").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "验证码，一格一位。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 }
 
 // demoInputGroup shows a field with a mark at either end.
 func demoInputGroup(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Amount").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "金额").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 		inputgroup.InputGroup(c, inputgroup.Props{
 			Value:        &Demo.Amount,
 			Placeholder:  "0.00",
@@ -278,14 +279,14 @@ func demoInputGroup(c *ui.Context, t *ui.Theme) {
 
 // demoFloatingLabel shows a field whose label floats to the border.
 func demoFloatingLabel(c *ui.Context, t *ui.Theme) {
-	floatinglabelinput.FloatingLabelInput(c, floatinglabelinput.Props{Label: "Email", Value: &Demo.Float})
+	floatinglabelinput.FloatingLabelInput(c, floatinglabelinput.Props{Label: "邮箱", Value: &Demo.Float})
 }
 
 // demoAutoSize shows a text area that grows with its text.
 func demoAutoSize(c *ui.Context, t *ui.Theme) {
 	autosizetextarea.AutosizeTextarea(c, autosizetextarea.Props{
 		Value:       &Demo.AutoSize,
-		Placeholder: "A note that grows as you type",
+		Placeholder: "输入时自动增高的备注",
 		MinRows:     2,
 		MaxRows:     6,
 	})
@@ -301,7 +302,7 @@ func demoSelect(c *ui.Context, t *ui.Theme) {
 	sel.Select(c, sel.Props{
 		Selected:    &Demo.SelStr,
 		Options:     []string{"A", "B", "C", "D"},
-		Placeholder: "Choose a plan",
+		Placeholder: "选择一个方案",
 	})
 }
 
@@ -318,9 +319,9 @@ func demoNativeSelect(c *ui.Context, t *ui.Theme) {
 	nativeselect.NativeSelect(c, nativeselect.Props{
 		Selected: &Demo.NativeSel,
 		Options: []nativeselect.Option{
-			{Label: "Daily", Value: "Daily"},
-			{Label: "Weekly", Value: "Weekly"},
-			{Label: "Monthly", Value: "Monthly"},
+			{Label: "每天", Value: "每天"},
+			{Label: "每周", Value: "每周"},
+			{Label: "每月", Value: "每月"},
 		},
 	})
 }
@@ -328,7 +329,7 @@ func demoNativeSelect(c *ui.Context, t *ui.Theme) {
 // demoTypewriter shows text that types itself out, with a caret.
 func demoTypewriter(c *ui.Context, t *ui.Theme) {
 	typewriter.Typewriter(c, typewriter.Props{
-		Text:  "Typing itself out, a character at a time.",
+		Text:  "一个字符一个字符地打出来。",
 		State: &Demo.Tw,
 	})
 }
@@ -336,7 +337,7 @@ func demoTypewriter(c *ui.Context, t *ui.Theme) {
 // demoTextInputBuffer shows a mygo buffer field over indexed storage.
 func demoTextInputBuffer(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		ui.Text(c, "Buffer").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "缓冲区").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 		ui.TextInputBuffer(c, Demo.Buffer)
 	})
 }

@@ -73,6 +73,30 @@ func TestSubmits(t *testing.T) {
 	}
 }
 
+// TestPlaceholder draws the field with a custom placeholder, built from
+// the public pieces when mygo's own does not fit; the query still shows
+// and its clear button still takes it out.
+func TestPlaceholder(t *testing.T) {
+	q := "ada"
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Fill().Padding(16).Gap(8).Children(func() {
+			SearchField(c, Props{Value: &q, Placeholder: "搜索组件…"}).Label("Search mail")
+		})
+	}, 260, 100)
+	if !tt.HasText("Clear") {
+		t.Fatal("clear button missing while the query holds")
+	}
+	if err := tt.Click("Clear"); err != nil {
+		t.Fatal(err)
+	}
+	if q != "" {
+		t.Fatalf("query %q, want empty after clear", q)
+	}
+	if tt.HasText("Clear") {
+		t.Fatal("clear button still shows after clearing")
+	}
+}
+
 // TestDisabled keeps the field from being typed into.
 func TestDisabled(t *testing.T) {
 	q := ""

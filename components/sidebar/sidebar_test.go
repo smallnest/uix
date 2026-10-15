@@ -27,7 +27,7 @@ func TestRenders(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
 		Selected: &selected,
 		Sections: []Section{
-			{Title: "Files", Open: &open, Items: []Item{{"notes", "Notes"}, {"todo", "Todo"}}},
+			{Title: "Files", Open: &open, Items: []Item{{ID: "notes", Label: "Notes"}, {ID: "todo", Label: "Todo"}}},
 		},
 	}), 400, 200)
 	calm(tt)
@@ -44,7 +44,7 @@ func TestChooses(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
 		Selected: &selected,
 		Sections: []Section{
-			{Title: "Files", Items: []Item{{"notes", "Notes"}, {"todo", "Todo"}}},
+			{Title: "Files", Items: []Item{{ID: "notes", Label: "Notes"}, {ID: "todo", Label: "Todo"}}},
 		},
 	}), 400, 200)
 	calm(tt)
@@ -62,7 +62,7 @@ func TestSection(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
 		Selected: &selected,
 		Sections: []Section{
-			{Title: "Files", Open: &open, Items: []Item{{"notes", "Notes"}, {"todo", "Todo"}}},
+			{Title: "Files", Open: &open, Items: []Item{{ID: "notes", Label: "Notes"}, {ID: "todo", Label: "Todo"}}},
 		},
 	}), 400, 200)
 	calm(tt)
@@ -80,7 +80,7 @@ func TestDisabled(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
 		Selected: &selected,
 		Sections: []Section{
-			{Title: "Files", Items: []Item{{"notes", "Notes"}, {"todo", "Todo"}}},
+			{Title: "Files", Items: []Item{{ID: "notes", Label: "Notes"}, {ID: "todo", Label: "Todo"}}},
 		},
 		Disabled: true,
 	}), 400, 200)
@@ -99,7 +99,7 @@ func TestDarkMode(t *testing.T) {
 	tt := ui.NewTester(frame(Props{
 		Selected: &selected,
 		Sections: []Section{
-			{Title: "Files", Items: []Item{{"notes", "Notes"}}},
+			{Title: "Files", Items: []Item{{ID: "notes", Label: "Notes"}}},
 		},
 	}), 400, 200)
 	calm(tt)

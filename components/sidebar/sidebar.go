@@ -25,6 +25,9 @@ type Item struct {
 	ID string
 	// Label is the text of the item, such as "Recents".
 	Label string
+	// Icon shows beside the label; nil draws no icon, as a sidebar of
+	// files does not.
+	Icon *ui.SVG
 }
 
 // Section is a group of Items under a title, which a click on the title
@@ -55,7 +58,7 @@ func Sidebar(c *ui.Context, p Props) ui.Element {
 		for _, s := range p.Sections {
 			ui.SidebarSection(c, s.Title, s.Open, func() {
 				for _, it := range s.Items {
-					ui.SidebarItem(c, it.ID, nil, it.Label)
+					ui.SidebarItem(c, it.ID, it.Icon, it.Label)
 				}
 			})
 		}

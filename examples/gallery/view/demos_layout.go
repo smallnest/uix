@@ -1,6 +1,8 @@
 package view
 
 import (
+	"fmt"
+
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/components/accordion"
@@ -22,15 +24,15 @@ import (
 // demoSeparator shows a horizontal divider.
 func demoSeparator(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(3)).Children(func() {
-		ui.Text(c, "Above the line")
+		ui.Text(c, "分隔线上方")
 		separator.Separator(c, separator.Props{})
-		ui.Text(c, "Below the line")
+		ui.Text(c, "分隔线下方")
 	})
 }
 
 // demoField shows a field with a label, a hint and a control.
 func demoField(c *ui.Context, t *ui.Theme) {
-	field.Field(c, field.Props{Label: "Name", Hint: "As shown to others"}, func() {
+	field.Field(c, field.Props{Label: "姓名", Hint: "显示给其他人"}, func() {
 		input.Input(c, input.Props{Value: &Demo.Input})
 	})
 }
@@ -38,13 +40,13 @@ func demoField(c *ui.Context, t *ui.Theme) {
 // demoFieldset shows a group of fields under a bold legend.
 func demoFieldset(c *ui.Context, t *ui.Theme) {
 	fieldset.Fieldset(c, fieldset.Props{
-		Legend: "Account",
+		Legend: "账户",
 		Children: func(c *ui.Context) {
 			ui.Column(c).Gap(t.Space(2)).Children(func() {
-				field.Field(c, field.Props{Label: "Name"}, func() {
+				field.Field(c, field.Props{Label: "姓名"}, func() {
 					input.Input(c, input.Props{Value: &Demo.Input})
 				})
-				field.Field(c, field.Props{Label: "Email"}, func() {
+				field.Field(c, field.Props{Label: "邮箱"}, func() {
 					input.Input(c, input.Props{Value: &Demo.Float, Placeholder: "you@example.com"})
 				})
 			})
@@ -57,10 +59,10 @@ func demoForm(c *ui.Context, t *ui.Theme) {
 	form.Form(c, form.Props{
 		Children: func(c *ui.Context) {
 			ui.Column(c).Gap(t.Space(2)).Children(func() {
-				field.Field(c, field.Props{Label: "Name"}, func() {
+				field.Field(c, field.Props{Label: "姓名"}, func() {
 					input.Input(c, input.Props{Value: &Demo.Input})
 				})
-				field.Field(c, field.Props{Label: "Email"}, func() {
+				field.Field(c, field.Props{Label: "邮箱"}, func() {
 					input.Input(c, input.Props{Value: &Demo.Float, Placeholder: "you@example.com"})
 				})
 			})
@@ -87,7 +89,7 @@ func demoScroll(c *ui.Context, t *ui.Theme) {
 		scroll.Scroll(c, scroll.Props{Children: func(c *ui.Context) {
 			ui.Column(c).Gap(t.Space(1.5)).Children(func() {
 				for i := 1; i <= 20; i++ {
-					ui.Text(c, "Row "+string(rune('0'+i/10))+string(rune('0'+i%10))).TextColor(t.TextMuted)
+					ui.Text(c, fmt.Sprintf("第 %d 行", i)).TextColor(t.TextMuted)
 				}
 			})
 		}}).Fill()
@@ -116,7 +118,7 @@ func demoScrollBoth(c *ui.Context, t *ui.Theme) {
 		scrollboth.ScrollBoth(c, scrollboth.Props{Children: func(c *ui.Context) {
 			ui.Column(c).Gap(t.Space(1.5)).Children(func() {
 				for row := 1; row <= 20; row++ {
-					ui.Text(c, "Line "+string(rune('0'+row/10))+string(rune('0'+row%10))).TextColor(t.TextMuted)
+					ui.Text(c, fmt.Sprintf("第 %d 行", row)).TextColor(t.TextMuted)
 				}
 			})
 		}}).Fill()
@@ -130,12 +132,12 @@ func demoSplit(c *ui.Context, t *ui.Theme) {
 			Size: &Demo.Split,
 			First: func(c *ui.Context) {
 				ui.Column(c).Fill().Padding(t.Space(2)).Children(func() {
-					ui.Text(c, "First pane").TextColor(t.TextMuted)
+					ui.Text(c, "左窗格").TextColor(t.TextMuted)
 				})
 			},
 			Second: func(c *ui.Context) {
 				ui.Column(c).Fill().Padding(t.Space(2)).Children(func() {
-					ui.Text(c, "Second pane").TextColor(t.TextMuted)
+					ui.Text(c, "右窗格").TextColor(t.TextMuted)
 				})
 			},
 		})
@@ -159,10 +161,10 @@ func demoAspectRatio(c *ui.Context, t *ui.Theme) {
 // demoCollapsible shows a disclosure whose label shows the content.
 func demoCollapsible(c *ui.Context, t *ui.Theme) {
 	collapsible.Collapsible(c, collapsible.Props{
-		Label: "More details",
+		Label: "更多详情",
 		Open:  &Demo.Collapse,
 		Children: func(c *ui.Context) {
-			ui.Text(c, "The hidden content of the disclosure.").TextColor(t.TextMuted)
+			ui.Text(c, "折叠时隐藏的内容。").TextColor(t.TextMuted)
 		},
 	})
 }
@@ -172,11 +174,11 @@ func demoAccordion(c *ui.Context, t *ui.Theme) {
 	ui.Box(c).Width(360).Children(func() {
 		accordion.Accordion(c, accordion.Props{
 			Items: []accordion.Item{
-				{Title: "Section one", Open: &Demo.Acc1, Build: func(c *ui.Context) {
-					ui.Text(c, "The first section.").TextColor(t.TextMuted)
+				{Title: "第一节", Open: &Demo.Acc1, Build: func(c *ui.Context) {
+					ui.Text(c, "第一部分的内容。").TextColor(t.TextMuted)
 				}},
-				{Title: "Section two", Open: &Demo.Acc2, Build: func(c *ui.Context) {
-					ui.Text(c, "The second section.").TextColor(t.TextMuted)
+				{Title: "第二节", Open: &Demo.Acc2, Build: func(c *ui.Context) {
+					ui.Text(c, "第二部分的内容。").TextColor(t.TextMuted)
 				}},
 			},
 		})
