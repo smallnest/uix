@@ -15,112 +15,113 @@ func newTester(t *testing.T) *ui.Tester {
 	return ui.NewTester(view.GalleryView, view.Width, view.Height)
 }
 
-// TestRenders draws the gallery headless: the title, the filters, the
-// photos of the initial view, and the status line. The docs and the
-// videos do not show, because the type filter shows photos only.
+// countExact counts the texts of the frame equal to s, which tells the
+// library badge apart from the subtitle: the badge is its own text, the
+// subtitle is "uix · mygo · onevra" as one.
+func countExact(tt *ui.Tester, s string) int {
+	n := 0
+	for _, x := range tt.Texts() {
+		if x == s {
+			n++
+		}
+	}
+	return n
+}
+
+// TestRenders draws the gallery headless: the shell, the default page
+// (Button) with its uix badge, and the six faces of the button.
 func TestRenders(t *testing.T) {
 	tt := newTester(t)
 	for _, s := range []string{
-		"Gallery", "8 items", "Type", "Sort",
-		"Photos", "Docs", "Videos", "Name", "Date",
-		"Alpine.jpg", "Beach.png", "City.jpg", "Forest.png",
-		"Meadow.jpg", "River.jpg", "Snow.png", "Sunset.jpg",
-		"Choose an item, or change the type or the sort.",
+		"Gallery", "uix · mygo · onevra", "Actions & navigation",
+		"Button", "Primary", "Secondary", "Outline", "Ghost", "Destructive", "Disabled",
 	} {
 		if !tt.HasText(s) {
 			t.Fatalf("missing %q in %q", s, tt.Texts())
 		}
 	}
-	for _, s := range []string{"Budget.pdf", "Clip.mp4"} {
-		if tt.HasText(s) {
-			t.Fatalf("the type filter shows %q, which is no photo", s)
-		}
+	if countExact(tt, "uix") == 0 {
+		t.Fatal("the Button page lacks the uix badge")
+	}
+	if countExact(tt, "onevra") != 0 {
+		t.Fatal("the Button page shows a onevra badge")
 	}
 }
 
-// TestFilters switches the type filter to the docs, which the grid shows
-// and the count follows.
-func TestFilters(t *testing.T) {
-	tt := newTester(t)
-	if err := tt.Click("Docs"); err != nil {
+// reach filters the sidebar to the item, which is deep in the catalog
+// and out of the window otherwise, and clicks it. The search box is the
+// way to an item out of view, as a user would use it.
+func reach(t *testing.T, tt *ui.Tester, query, item string) {
+	t.Helper()
+	view.State.Query = query
+	tt.Frame()
+	if err := tt.Click(item); err != nil {
 		t.Fatal(err)
 	}
-	if view.State.Kind != 1 {
-		t.Fatal("the Docs radio did not switch the type")
+}
+
+// TestNavigate clicks a sidebar item and the page switches to it. The
+// onevra pages are deep in the catalog, so the search box brings the
+// item into view first.
+func TestNavigate(t *testing.T) {
+	tt := newTester(t)
+	reach(t, tt, "pixel", "PixelGrid")
+	if view.State.Selected != "pixelgrid" {
+		t.Fatalf("the click chose %q, want pixelgrid", view.State.Selected)
 	}
-	if view.State.Chosen != -1 {
-		t.Fatal("the filter did not drop the choice")
-	}
-	if !tt.HasText("4 items") || !tt.HasText("Budget.pdf") {
-		t.Fatalf("the grid does not show the docs: %q", tt.Texts())
-	}
-	if tt.HasText("Alpine.jpg") {
-		t.Fatal("the grid still shows a photo")
-	}
-	if !tt.HasText("Showing Docs by name.") {
-		t.Fatal("the status does not name the filter")
+	if !tt.HasText("A squared backdrop") {
+		t.Fatalf("the page does not show the pixel grid demo: %q", tt.Texts())
 	}
 }
 
-// TestSorts switches the sort to the date: the earliest photo, City,
-// moves to the first column, before the alphabetically first, Alpine.
-func TestSorts(t *testing.T) {
+// TestLibraries shows the badge of each library on one of its pages: a
+// mygo page carries the mygo badge, an onevra page the onevra badge.
+func TestLibraries(t *testing.T) {
 	tt := newTester(t)
-	if err := tt.Click("Date"); err != nil {
+	reach(t, tt, "box", "Box")
+	if countExact(tt, "mygo") == 0 {
+		t.Fatal("the Box page lacks the mygo badge")
+	}
+	reach(t, tt, "donut", "DonutChart")
+	if countExact(tt, "onevra") == 0 {
+		t.Fatal("the DonutChart page lacks the onevra badge")
+	}
+	if countExact(tt, "uix") != 0 {
+		t.Fatal("the DonutChart page shows a uix badge")
+	}
+}
+
+// TestSearch filters the sidebar with a query, and a click on a match
+// opens its page.
+func TestSearch(t *testing.T) {
+	tt := newTester(t)
+	view.State.Query = "chart"
+	tt.Frame()
+	if !tt.HasText("DonutChart") {
+		t.Fatalf("the sidebar does not show the charts: %q", tt.Texts())
+	}
+	if tt.HasText("Breadcrumbs") {
+		t.Fatal("the sidebar still shows an item that does not match")
+	}
+	if err := tt.Click("DonutChart"); err != nil {
 		t.Fatal(err)
 	}
-	if view.State.Sort != 1 {
-		t.Fatal("the Date radio did not switch the sort")
-	}
-	city, _ := tt.Find("City.jpg")
-	alpine, _ := tt.Find("Alpine.jpg")
-	if city.X >= alpine.X {
-		t.Fatalf("the date sort did not move City (%g) before Alpine (%g)", city.X, alpine.X)
+	if view.State.Selected != "donutchart" {
+		t.Fatalf("the click chose %q, want donutchart", view.State.Selected)
 	}
 }
 
-// TestChooses chooses a file with a click, which the status names and
-// the state records.
-func TestChooses(t *testing.T) {
+// TestDialog opens a surface from its page: the search box brings the
+// trigger page into view, then the trigger button opens the dialog over
+// the window.
+func TestDialog(t *testing.T) {
 	tt := newTester(t)
-	if err := tt.Click("Beach.png"); err != nil {
+	reach(t, tt, "dialog", "Dialog")
+	if err := tt.Click("Open dialog"); err != nil {
 		t.Fatal(err)
 	}
-	if view.State.Chosen != 1 {
-		t.Fatalf("the click chose %d, want 1 (Beach.png)", view.State.Chosen)
-	}
-	if !tt.HasText("Chosen Beach.png.") {
-		t.Fatalf("the status does not name the choice: %q", tt.Texts())
-	}
-}
-
-// TestKeys chooses a file with the arrows: a Tab focuses the grid, and
-// the Right key picks the first photo.
-func TestKeys(t *testing.T) {
-	tt := newTester(t)
-	tt.Key(0, ui.KeyTab)
-	tt.Key(0, ui.KeyTab)
-	tt.Key(0, ui.KeyTab)
-	tt.Key(0, ui.KeyRight)
-	if view.State.Chosen != 0 {
-		t.Fatalf("the arrows chose %d, want 0", view.State.Chosen)
-	}
-}
-
-// TestSecondWindow draws the gallery again after a choice, as a second
-// window would; the reset must give the grid a fresh state, or the old
-// frame would not build again.
-func TestSecondWindow(t *testing.T) {
-	tt1 := newTester(t)
-	if err := tt1.Click("Beach.png"); err != nil {
-		t.Fatal(err)
-	}
-	tt2 := newTester(t)
-	if !tt2.HasText("Alpine.jpg") || !tt2.HasText("8 items") {
-		t.Fatalf("the second window does not show the gallery: %q", tt2.Texts())
-	}
-	if tt2.HasText("Chosen Beach.png.") {
-		t.Fatal("the second window kept the status of the first")
+	if !tt.HasText("Delete your account?") {
+		t.Fatalf("the dialog did not open: %q", tt.Texts())
 	}
 }
 

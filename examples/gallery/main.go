@@ -1,7 +1,9 @@
-// The gallery example shows the grid, gridview, scroll and fieldset
-// components together in a file gallery: two field sets filter the files
-// by type and sort them by name or date, and a grid view shows the files
-// that remain, of which a click chooses one.
+// The gallery example shows the components of the three libraries —
+// uix's own, mygo's primitives, and onevra's — in a shell like onevra's
+// showcase: a sidebar of every component, one page each, with a badge
+// naming the library the page shows. Where the same component exists in
+// several libraries, the gallery keeps one, by priority uix, mygo,
+// onevra. A search box above the sidebar filters the items.
 //
 //	go run ./examples/gallery
 package main

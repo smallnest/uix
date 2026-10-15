@@ -1,0 +1,341 @@
+package view
+
+import (
+	"github.com/egoist/mygo/ui"
+
+	"github.com/oneo-me/onevra/source/components"
+	"github.com/oneo-me/onevra/source/components/chart"
+	"github.com/oneo-me/onevra/source/components/graph"
+
+	"github.com/smallnest/uix/components/avatar"
+	"github.com/smallnest/uix/components/badge"
+	"github.com/smallnest/uix/components/barchart"
+	"github.com/smallnest/uix/components/blockquote"
+	"github.com/smallnest/uix/components/card"
+	"github.com/smallnest/uix/components/empty"
+	"github.com/smallnest/uix/components/gridview"
+	"github.com/smallnest/uix/components/headingwithanchor"
+	"github.com/smallnest/uix/components/icon"
+	"github.com/smallnest/uix/components/image"
+	"github.com/smallnest/uix/components/inlinecode"
+	"github.com/smallnest/uix/components/kbd"
+	"github.com/smallnest/uix/components/label"
+	"github.com/smallnest/uix/components/linechart"
+	"github.com/smallnest/uix/components/list"
+	"github.com/smallnest/uix/components/lucide"
+	"github.com/smallnest/uix/components/marker"
+	"github.com/smallnest/uix/components/richtext"
+	"github.com/smallnest/uix/components/skeleton"
+	"github.com/smallnest/uix/components/statcard"
+	"github.com/smallnest/uix/components/table"
+	"github.com/smallnest/uix/components/tree"
+)
+
+// demoText shows mygo's text primitive.
+func demoText(c *ui.Context, t *ui.Theme) {
+	ui.Text(c, "Hello from the Text primitive of mygo.")
+}
+
+// demoBox shows mygo's box container.
+func demoBox(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(220).Padding(t.Space(3)).Radius(t.Radius).Background(t.Surface).
+		Border(1, t.Border).Children(func() {
+		ui.Text(c, "A Box lays its children out in a column.")
+	})
+}
+
+// demoRow shows mygo's row container: children side by side.
+func demoRow(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(2)).Children(func() {
+		ui.Box(c).Size(24, 24).Radius(6).Background(t.Accent)
+		ui.Box(c).Size(24, 24).Radius(6).Background(t.Success)
+		ui.Box(c).Size(24, 24).Radius(6).Background(t.Warning)
+	})
+}
+
+// demoColumn shows mygo's column container.
+func demoColumn(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Gap(t.Space(1.5)).Children(func() {
+		ui.Text(c, "First row")
+		ui.Text(c, "Second row")
+		ui.Text(c, "Third row")
+	})
+}
+
+// demoSpacer shows mygo's spacer pushing a sibling to the far end.
+func demoSpacer(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).FillWidth().Gap(t.Space(2)).Children(func() {
+		ui.Text(c, "Left")
+		ui.Spacer(c)
+		ui.Text(c, "Right")
+	})
+}
+
+// demoIcon shows an SVG shown as an icon in the text color.
+func demoIcon(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(3)).AlignItems(ui.Center).Children(func() {
+		icon.Icon(c, icon.Props{SVG: lucide.Search(), Label: "Search", Width: 20, Height: 20})
+		icon.Icon(c, icon.Props{SVG: lucide.Bell(), Label: "Bell", Width: 20, Height: 20})
+		icon.Icon(c, icon.Props{SVG: lucide.Settings(), Label: "Settings", Width: 20, Height: 20})
+	})
+}
+
+// demoLucide shows icons of the Lucide set at different sizes.
+func demoLucide(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(4)).AlignItems(ui.Center).Children(func() {
+		for _, f := range []func() *ui.SVG{lucide.House, lucide.Mail, lucide.Users, lucide.Palette} {
+			icon.Icon(c, icon.Props{SVG: f(), Width: 20, Height: 20})
+		}
+	})
+}
+
+// demoImage shows a picture fitted into a box, here an SVG.
+func demoImage(c *ui.Context, t *ui.Theme) {
+	image.Image(c, image.Props{Src: lucide.Palette(), Width: 64, Height: 64})
+}
+
+// demoAvatar shows a circle with initials or a photo.
+func demoAvatar(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(3)).Children(func() {
+		avatar.Avatar(c, avatar.Props{Name: "Ada Lovelace", Size: 40})
+		avatar.Avatar(c, avatar.Props{Name: "Alan Turing", Size: 40})
+	})
+}
+
+// demoBadge shows the four looks of a badge.
+func demoBadge(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Wrap().Gap(t.Space(2)).Children(func() {
+		badge.Badge(c, badge.Props{Label: "v1.2.0"})
+		badge.Badge(c, badge.Props{Label: "Secondary", Variant: badge.Secondary})
+		badge.Badge(c, badge.Props{Label: "Beta", Variant: badge.Outline})
+		badge.Badge(c, badge.Props{Label: "Needs attention", Variant: badge.Destructive})
+	})
+}
+
+// demoKbd shows a key of the keyboard as a chip.
+func demoKbd(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(2)).Children(func() {
+		kbd.Kbd(c, kbd.Props{Label: "⌘"})
+		kbd.Kbd(c, kbd.Props{Label: "K"})
+	})
+}
+
+// demoLabel shows a standalone label of a control.
+func demoLabel(c *ui.Context, t *ui.Theme) {
+	label.Label(c, label.Props{Text: "Email address"})
+}
+
+// demoMarker shows short inline labels of a turn.
+func demoMarker(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(2)).Children(func() {
+		marker.Marker(c, marker.Props{Label: "System"})
+		marker.Marker(c, marker.Props{Label: "Bordered", Variant: marker.Border})
+	})
+}
+
+// demoInlineCode shows a code chip in the prose.
+func demoInlineCode(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(1.5)).AlignItems(ui.Center).Children(func() {
+		ui.Text(c, "Run").TextColor(t.TextMuted)
+		inlinecode.InlineCode(c, inlinecode.Props{Text: "go run ./examples/gallery"})
+	})
+}
+
+// demoBlockquote shows a quote on a muted face with an accent bar.
+func demoBlockquote(c *ui.Context, t *ui.Theme) {
+	blockquote.Blockquote(c, blockquote.Props{
+		Text:   "The best way to predict the future is to invent it.",
+		Author: "— Ada Lovelace",
+	})
+}
+
+// demoHeadingWithAnchor shows a heading with a link that copies the
+// anchor.
+func demoHeadingWithAnchor(c *ui.Context, t *ui.Theme) {
+	headingwithanchor.Heading(c, headingwithanchor.Props{Text: "Install", Anchor: "install"})
+}
+
+// demoRichText shows styled runs of text.
+func demoRichText(c *ui.Context, t *ui.Theme) {
+	richtext.RichText(c, richtext.Props{Spans: []ui.Span{
+		{Text: "One "},
+		{Text: "weighted", Weight: 600},
+		{Text: " run, one "},
+		{Text: "colored", Color: t.Accent},
+		{Text: " run."},
+	}})
+}
+
+// demoCard shows a rounded container with a header and a body.
+func demoCard(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(280).Children(func() {
+		card.Card(c, card.Props{Title: "Card", Description: "A rounded container of content."}, func() {
+			ui.Text(c, "The body of the card.")
+		})
+	})
+}
+
+// demoStatCard shows metric cards with a delta.
+func demoStatCard(c *ui.Context, t *ui.Theme) {
+	statcard.StatCards(c, statcard.Props{Stats: []statcard.Stat{
+		{Icon: statcard.IconUsers, Label: "Customers", Value: "14,592", Delta: "+5.3%", DeltaColor: statcard.Up},
+		{Icon: statcard.IconBox, Label: "Unit sold", Value: "385", Delta: "-2.1%", DeltaColor: statcard.Down},
+		{Icon: statcard.IconBasket, Label: "Orders", Value: "1,394", Delta: "0.00%", DeltaColor: statcard.Flat},
+	}})
+}
+
+// demoSkeleton shows placeholders of content still loading.
+func demoSkeleton(c *ui.Context, t *ui.Theme) {
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		skeleton.Skeleton(c, skeleton.Props{Width: 200, Height: 16, Radius: 4})
+		skeleton.Skeleton(c, skeleton.Props{Width: 160, Height: 16, Radius: 4})
+	})
+}
+
+// demoEmpty shows an empty state: an icon over a title and a description.
+func demoEmpty(c *ui.Context, t *ui.Theme) {
+	empty.Empty(c, empty.Props{
+		Icon:        lucide.Search(),
+		Title:       "No results",
+		Description: "Try a different search.",
+	})
+}
+
+// demoList shows a scrolling list of rows, one chosen.
+func demoList(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Height(180).Children(func() {
+		list.List(c, list.Props{Items: []string{"Alpha", "Beta", "Gamma", "Delta", "Epsilon"}})
+	})
+}
+
+// demoGridView shows a grid of items that a click chooses.
+func demoGridView(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Height(200).Children(func() {
+		gridview.GridView(c, gridview.Props{
+			State:    &Demo.Grid,
+			Count:    6,
+			MinWidth: 100,
+			Height:   64,
+			Item: func(c *ui.Context, i int) {
+				ui.Column(c).Center().Gap(4).Children(func() {
+					ui.Box(c).Size(28, 28).Radius(8).Background(t.Accent.Alpha(1 - float32(i)*0.08))
+					ui.Text(c, string(rune('A'+i))).FontSize(t.FontSize * 0.8).TextColor(t.TextMuted)
+				})
+			},
+		})
+	})
+}
+
+// demoTable shows a data table with a header band.
+func demoTable(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Height(180).Children(func() {
+		table.Table(c, table.Props{
+			Columns: []ui.TableColumn{
+				{Title: "Name"},
+				{Title: "Role"},
+				{Title: "Status"},
+			},
+			Rows: 4,
+			Cell: func(row, col int) {
+				names := []string{"Ada Lovelace", "Alan Turing", "Grace Hopper", "Linus Torvalds"}
+				roles := []string{"Analyst", "Mathematician", "Admiral", "Engineer"}
+				statuses := []string{"Active", "Active", "Away", "Active"}
+				cell := [][]string{names, roles, statuses}[col]
+				ui.Text(c, cell[row]).SingleLine()
+			},
+		})
+	})
+}
+
+// demoTree shows a hierarchical list whose branches open and close.
+func demoTree(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Height(200).Children(func() {
+		tree.Tree(c, tree.Props{
+			Items: []tree.Item{
+				{Label: "src", Open: &Demo.Tree1, Children: []tree.Item{{Label: "main.go"}, {Label: "view"}}},
+				{Label: "README.md"},
+				{Label: "go.mod"},
+			},
+		})
+	})
+}
+
+// demoOutline shows mygo's collapsible outline of a hierarchy.
+func demoOutline(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Height(180).Width(220).Children(func() {
+		ui.Outline(c, &ui.OutlineState[string]{}, []string{"src", "go.mod"},
+			func(k string) []string {
+				if k == "src" {
+					return []string{"main.go", "view.go"}
+				}
+				return nil
+			},
+			func(k string) { ui.Text(c, k).SingleLine() })
+	})
+}
+
+// demoLineChart shows a line chart of a year against the year before.
+func demoLineChart(c *ui.Context, t *ui.Theme) {
+	linechart.LineChart(c, linechart.Props{
+		Title: "Revenue",
+		Data: []linechart.Point{
+			{Label: "Jan", Current: 40, Previous: 30},
+			{Label: "Feb", Current: 52, Previous: 38},
+			{Label: "Mar", Current: 46, Previous: 44},
+			{Label: "Apr", Current: 68, Previous: 50},
+			{Label: "May", Current: 61, Previous: 55},
+			{Label: "Jun", Current: 82, Previous: 62},
+		},
+	}).Height(240)
+}
+
+// demoBarChart shows a paired bar chart against a year earlier.
+func demoBarChart(c *ui.Context, t *ui.Theme) {
+	barchart.BarChart(c, barchart.Props{
+		Title: "Orders",
+		Data: []barchart.Point{
+			{Label: "Jan", Current: 22, Previous: 18},
+			{Label: "Feb", Current: 28, Previous: 20},
+			{Label: "Mar", Current: 26, Previous: 24},
+			{Label: "Apr", Current: 34, Previous: 26},
+			{Label: "May", Current: 31, Previous: 30},
+			{Label: "Jun", Current: 41, Previous: 33},
+		},
+	}).Height(240)
+}
+
+// demoDonutChart shows a onevra donut of proportions.
+func demoDonutChart(c *ui.Context, t *ui.Theme) {
+	chart.Donut(c, &chart.State{Index: -1}, []chart.Slice{
+		{ID: "design", Label: "Design", Value: 34},
+		{ID: "development", Label: "Development", Value: 28},
+		{ID: "research", Label: "Research", Value: 20},
+		{ID: "planning", Label: "Planning", Value: 18},
+	}, chart.Options{PlotHeight: 200}).Height(240)
+}
+
+// demoGraph shows a onevra relationship graph of nodes and edges.
+func demoGraph(c *ui.Context, t *ui.Theme) {
+	graph.View(c, &graph.State{}, graph.Data{
+		Nodes: []graph.Node{
+			{ID: "ada", Label: "Ada"},
+			{ID: "alan", Label: "Alan"},
+			{ID: "grace", Label: "Grace"},
+		},
+		Edges: []graph.Edge{
+			{Source: "ada", Target: "alan"},
+			{Source: "alan", Target: "grace"},
+			{Source: "grace", Target: "ada"},
+		},
+	}, graph.Options{Height: 220})
+}
+
+// demoPixelGrid shows a onevra squared backdrop under content.
+func demoPixelGrid(c *ui.Context, t *ui.Theme) {
+	components.PixelGrid(c, components.PixelGridOptions{Spacing: 18}).FillWidth().Height(120).
+		Background(t.Background).Border(1, t.Border).Children(func() {
+		ui.Column(c).Fill().Center().Children(func() {
+			ui.Text(c, "A squared backdrop").TextColor(t.TextMuted)
+		})
+	})
+}

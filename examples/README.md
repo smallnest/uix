@@ -169,15 +169,17 @@ go run ./examples/docreader/cmd/snapshot   write docreader.png, docreader-find.p
 
 ## Gallery
 
-The gallery example shows the grid, gridview, scroll and fieldset
-components together in a file gallery. Two field sets filter the files
-by type and sort them by name or date, and a grid view shows the files
-that remain, of which a click chooses one.
+The gallery example shows the components of the three libraries in one
+window: uix's own components, mygo's primitives and onevra's. A sidebar
+of the components, with a search box above it, chooses the page, and
+every page shows one component with a badge naming its library. Where
+the same component exists in more than one library, the gallery keeps
+one, preferring uix, then mygo, then onevra.
 
 ```
 go run ./examples/gallery                open the window
 go test ./examples/gallery/...           render and check it headless
-go run ./examples/gallery/cmd/snapshot   write gallery.png, gallery-docs.png and gallery-dark.png
+go run ./examples/gallery/cmd/snapshot   write the gallery PNGs: a uix, a mygo and an onevra page, light and dark
 ```
 
 ## Composer
