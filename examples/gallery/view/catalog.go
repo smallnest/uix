@@ -112,6 +112,7 @@ var catalog = []Section{
 		Entries: []Entry{
 			{"datepicker", "DatePicker", Uix, lucide.CalendarDays, demoDatePicker},
 			{"timeinput", "TimeInput", Uix, lucide.Clock, demoTimeInput},
+			{"timepicker", "TimePicker", Onevra, lucide.AlarmClock, demoTimePicker},
 			{"datetimepicker", "DateTimePicker", Uix, lucide.CalendarClock, demoDateTimePicker},
 			{"calendar", "Calendar", Uix, lucide.Calendar, demoCalendar},
 		},
@@ -121,6 +122,7 @@ var catalog = []Section{
 		Entries: []Entry{
 			{"colorpicker", "ColorPicker", Uix, lucide.Palette, demoColorPicker},
 			{"colorwell", "ColorWell", Uix, lucide.SwatchBook, demoColorWell},
+			{"colorview", "ColorView", Onevra, lucide.Eye, demoColorView},
 		},
 	},
 	{
@@ -150,7 +152,9 @@ var catalog = []Section{
 			{"list", "List", Uix, lucide.List, demoList},
 			{"gridview", "GridView", Uix, lucide.LayoutGrid, demoGridView},
 			{"table", "Table", Uix, lucide.Table, demoTable},
+			{"tablevirtualized", "TableVirtualized", Onevra, lucide.Table2, demoTableVirtualized},
 			{"tree", "Tree", Uix, lucide.ListTree, demoTree},
+			{"treevirtualized", "TreeVirtualized", Onevra, lucide.FolderTree, demoTreeVirtualized},
 			{"outline", "Outline", Mygo, lucide.GitBranch, demoOutline},
 			{"linechart", "LineChart", Uix, lucide.ChartLine, demoLineChart},
 			{"barchart", "BarChart", Uix, lucide.ChartColumn, demoBarChart},
@@ -180,6 +184,7 @@ var catalog = []Section{
 			{"toast", "Toast", Uix, lucide.Bell, demoToast},
 			{"spinner", "Spinner", Uix, lucide.LoaderCircle, demoSpinner},
 			{"progress", "Progress", Uix, lucide.CircleDot, demoProgress},
+			{"progressring", "ProgressRing", Onevra, lucide.RotateCw, demoProgressRing},
 			{"command", "Command", Uix, lucide.Terminal, demoCommand},
 			{"alert", "Alert", Uix, lucide.CircleAlert, demoAlert},
 			{"loadingbutton", "LoadingButton", Uix, lucide.Loader, demoLoadingButton},
@@ -206,6 +211,7 @@ var catalog = []Section{
 			{"diffview", "DiffView", Mygo, lucide.FileDiff, demoDiffView},
 			{"resultsummary", "ResultSummary", Onevra, lucide.Summary, demoResultSummary},
 			{"glasscomposer", "GlassComposer", Onevra, lucide.GlassWater, demoGlassComposer},
+			{"conversation", "Conversation", Onevra, lucide.Speech, demoConversation},
 		},
 	},
 	{

@@ -392,6 +392,37 @@ func demoResultSummary(c *ui.Context, t *ui.Theme) {
 	})
 }
 
+// demoConversation shows onevra's transcript of a finished turn: the
+// prompt, the steps that ran, and the answer, the steps folding behind a
+// summary once done. The turn is expanded in the demo's state, so the
+// transcript shows it whole.
+func demoConversation(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(560).Height(320).Children(func() {
+		ochat.Conversation(c, &Demo.OConv, "回到底部", func(c *ui.Context) {
+			ochat.Turn(c, &Demo.OTurn, ochat.TurnOptions{
+				ID:      "sample",
+				Status:  ochat.Completed,
+				Summary: "已运行 2 个步骤",
+				Prompt: func(c *ui.Context) {
+					ui.Text(c, "帮我审查这段代码。")
+				},
+				Steps: []ochat.Step{
+					{ID: "reason", Message: func(c *ui.Context) {
+						ui.Text(c, "先读源码,再对照示例。").TextColor(t.TextMuted)
+					}},
+					{ID: "tools", Title: "并行检查", Group: &Demo.OGroup, Activities: []ochat.Activity{
+						{ID: "read", Action: "读取", Detail: "main.go", Status: ochat.Completed},
+						{ID: "scan", Action: "检查", Detail: "示例目录", Status: ochat.Completed},
+					}},
+				},
+				Final: func(c *ui.Context) {
+					ui.Text(c, "审查完成,没有发现明显问题。")
+				},
+			})
+		})
+	})
+}
+
 // demoGlassComposer shows onevra's message box on a glass panel over the
 // backdrop; the draft and the layout the composer keeps come from the
 // demo's state.

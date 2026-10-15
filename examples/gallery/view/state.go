@@ -8,6 +8,7 @@ import (
 	"github.com/egoist/mygo/ui"
 	"github.com/egoist/mygo/ui/editor"
 
+	components "github.com/oneo-me/onevra/source/components"
 	ochat "github.com/oneo-me/onevra/source/components/chat"
 
 	"github.com/smallnest/uix/components/carousel"
@@ -148,11 +149,20 @@ type DemoState struct {
 	MotionRun uint64
 	Diff      editor.DiffState
 	OutlineT  ui.OutlineState[string]
-	// The onevra pages: the summary's expansion and the composer's
-	// draft and measured glass, which the components keep.
+	// The onevra pages: the summary's expansion, the composer's draft
+	// and measured glass, the clock of the time picker, the color of the
+	// color view, the rows and branches of the virtualized collections,
+	// and the transcript of the conversation, which the components keep.
 	OSummary  ochat.SummaryState
 	OComposer string
 	OLayout   ochat.FloatingConversationState
+	OTime     time.Time
+	OColor    ui.Color
+	OTable    components.TableVirtualizedState
+	OTree     components.TreeVirtualizedState[string]
+	OTurn     ochat.TurnState
+	OConv     ochat.ConversationState
+	OGroup    ochat.GroupState
 }
 
 // Reset puts the example in its initial state, for the tests and the
@@ -207,7 +217,16 @@ func Reset() {
 			Old: editor.NewBuffer("func main() {\n\tfmt.Println(\"hello\")\n}\n"),
 			New: editor.NewBuffer("func main() {\n\tfmt.Println(\"你好\")\n}\n"),
 		},
+		OTime:  time.Now(),
+		OColor: ui.Color{R: 110, G: 90, B: 230, A: 255},
 	}
+	// The onevra pages begin with something worth looking at: the tree
+	// with its folders open, the finished turn and its steps expanded
+	// rather than folded behind the summary.
+	Demo.OTree.Open.Add("src")
+	Demo.OTree.Open.Add("docs")
+	Demo.OTurn.SetExpanded(true)
+	Demo.OGroup.SetExpanded(true)
 }
 
 // feedRows is a page of the infinite feed, "第 n 行" upward.

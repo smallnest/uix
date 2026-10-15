@@ -115,6 +115,37 @@ func TestRailStaysInItsPanel(t *testing.T) {
 	}
 }
 
+// TestOnevraPagesDrawContent opens the onevra pages whose demos build
+// their own content and makes sure it shows, and that the onevra filter
+// lists every onevra page, so the filter is not smaller than the library.
+func TestOnevraPagesDrawContent(t *testing.T) {
+	tt := ui.NewTester(GalleryView, Width, Height)
+	for _, tc := range []struct{ id, want string }{
+		{"timepicker", "时间"},
+		{"colorview", "颜色"},
+		{"tablevirtualized", "文件_1.go"},
+		{"treevirtualized", "file_0001.go"},
+		{"conversation", "帮我审查这段代码。"},
+	} {
+		Reset()
+		State.Selected = tc.id
+		tt.Frame()
+		if !tt.HasText(tc.want) {
+			t.Errorf("%s: missing %q in %q", tc.id, tc.want, tt.Texts())
+		}
+	}
+	Reset()
+	tt.Frame()
+	if err := tt.Click("onevra"); err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range []string{"DonutChart", "TimePicker", "ColorView", "ProgressRing", "TableVirtualized", "TreeVirtualized", "Conversation"} {
+		if !tt.HasText(s) {
+			t.Errorf("the onevra filter misses %q: %q", s, tt.Texts())
+		}
+	}
+}
+
 // TestStartupStateRenders draws every page from the state of a window
 // that forgot Reset: zero choices, only the pointers the package inits
 // (the buffer and the history). Clicking mygo jumped to TextInputBuffer

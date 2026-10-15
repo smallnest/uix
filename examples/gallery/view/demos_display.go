@@ -1,6 +1,7 @@
 package view
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/egoist/mygo/ui"
@@ -493,6 +494,66 @@ func demoChart(c *ui.Context, t *ui.Theme) {
 			mchart.Rect(c, x.Band(i), y.Span(0, v)).Background(t.Accent).Radius(4)
 		}
 	}).Height(200).Gap(6)
+}
+
+// demoTimePicker shows onevra's clock dial choosing a time of day.
+func demoTimePicker(c *ui.Context, t *ui.Theme) {
+	components.TimePicker(c, &Demo.OTime).Label("时间")
+}
+
+// demoColorView shows onevra's color as its value in the color formats,
+// each editable.
+func demoColorView(c *ui.Context, t *ui.Theme) {
+	components.ColorView(c, &Demo.OColor).Label("颜色")
+}
+
+// demoProgressRing shows onevra's circular progress at a completion and
+// at work whose end it does not know.
+func demoProgressRing(c *ui.Context, t *ui.Theme) {
+	ui.Row(c).Gap(t.Space(4)).AlignItems(ui.Center).Children(func() {
+		components.ProgressRing(c, 0.64)
+		components.ProgressRing(c, -1)
+	})
+}
+
+// demoTableVirtualized shows onevra's table that builds only the rows on
+// screen: ten thousand files scroll without a row for every file.
+func demoTableVirtualized(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(520).Height(240).Children(func() {
+		components.TableVirtualized(c, &Demo.OTable, []ui.TableColumn{
+			{Title: "名称"},
+			{Title: "大小", Width: 90},
+		}, 10000, func(row, col int) {
+			if col == 0 {
+				ui.Text(c, fmt.Sprintf("文件_%d.go", row+1)).SingleLine()
+			} else {
+				ui.Text(c, fmt.Sprintf("%d KB", row*7919%977+1)).SingleLine()
+			}
+		}).FillWidth()
+	})
+}
+
+// demoTreeVirtualized shows onevra's tree that builds only the rows on
+// screen: the folders hold many files, yet only those in view are rows.
+func demoTreeVirtualized(c *ui.Context, t *ui.Theme) {
+	ui.Box(c).Width(320).Height(240).Children(func() {
+		components.TreeVirtualized(c, &Demo.OTree, []string{"src", "docs"},
+			func(k string) []string {
+				if k == "src" {
+					// Enough files that scrolling matters.
+					names := make([]string, 2000)
+					for i := range names {
+						names[i] = fmt.Sprintf("file_%04d.go", i+1)
+					}
+					return names
+				}
+				if k == "docs" {
+					return []string{"guide.md", "api.md"}
+				}
+				return nil
+			},
+			func(k string) { ui.Text(c, k).SingleLine() })
+	})
 }
 
 // demoOutlineTable shows mygo's outline as a table of columns, folders
