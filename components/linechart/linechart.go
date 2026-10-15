@@ -70,7 +70,7 @@ func LineChart(c *ui.Context, p Props) ui.Element {
 		title = "Revenue"
 	}
 	label, current, previous, delta, up := headline(t, p.Data, selected, title)
-	return ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius * 2).
+	return ui.Column(c).Fill().Background(t.Surface).Radius(t.Radius*2).
 		Padding(t.Space(4), t.Space(4), t.Space(3), t.Space(4)).
 		Gap(t.Space(4)).Children(func() {
 		chartHeader(c, t, label, current, previous, delta, up)

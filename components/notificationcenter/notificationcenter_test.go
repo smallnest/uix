@@ -77,8 +77,8 @@ func TestMarkAllRead(t *testing.T) {
 	items := append([]Item(nil), sample...)
 	marked := 0
 	tt := ui.NewTester(frame(Props{
-		Items:         items,
-		Tab:           &tab,
+		Items: items,
+		Tab:   &tab,
 		OnMarkAllRead: func() {
 			marked++
 			for i := range items {

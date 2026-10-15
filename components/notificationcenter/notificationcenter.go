@@ -109,7 +109,7 @@ func NotificationCenter(c *ui.Context, p Props) ui.Element {
 			unread++
 		}
 	}
-	return ui.Column(c).FillWidth().Background(t.Background).Radius(t.Radius * 3).
+	return ui.Column(c).FillWidth().Background(t.Background).Radius(t.Radius*3).
 		Border(1, t.Border).Children(func() {
 		ui.Column(c).Padding(t.Space(4), t.Space(4), t.Space(1.5), t.Space(4)).
 			Gap(t.Space(3)).Children(func() {

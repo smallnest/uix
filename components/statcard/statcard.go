@@ -163,7 +163,7 @@ func footerCard(c *ui.Context, t *ui.Theme, s Stat) {
 			caption = "From last month"
 		}
 		ui.Row(c).FillWidth().Justify(ui.SpaceBetween).AlignItems(ui.Center).
-			Gap(t.Space(2)).Background(t.Background).Radius(t.Radius + 2).
+			Gap(t.Space(2)).Background(t.Background).Radius(t.Radius+2).
 			Padding(t.Space(2.5), t.Space(1.5), t.Space(2.5), t.Space(2.5)).
 			Children(func() {
 				ui.Text(c, caption).TextColor(t.TextMuted).Grow(1).SingleLine()

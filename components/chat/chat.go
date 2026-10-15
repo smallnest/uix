@@ -127,34 +127,34 @@ func transcript(c *ui.Context, t *ui.Theme, p Props) {
 func empty(c *ui.Context, t *ui.Theme, p Props) {
 	ui.Column(c).Grow(1).FillWidth().Center().Gap(t.Space(4)).
 		Padding(0, t.Space(4)).Children(func() {
-			ui.Column(c).Center().Gap(t.Space(1)).Children(func() {
-				ui.Text(c, "What can I help with?").
-					FontSize(t.FontSize * 1.4).FontWeight(600).TextColor(t.Text)
-				ui.Text(c, "The chat runs against your own model key. "+
-					"History stays in this app.").
-					TextColor(t.TextMuted).TextAlign(ui.Center)
-			})
-			if len(p.Suggestions) > 0 {
-				ui.Row(c).Wrap().Justify(ui.Center).Gap(t.Space(2)).Children(func() {
-					for _, s := range p.Suggestions {
-						chip(c, t, p, s)
-					}
-				})
-			}
-			if p.Thinking {
-				ui.Row(c).Children(func() {
-					thinking.Thinking(c, thinking.Props{
-						Label:   "Thinking",
-						Variant: thinking.Wave,
-					})
-				})
-			}
+		ui.Column(c).Center().Gap(t.Space(1)).Children(func() {
+			ui.Text(c, "What can I help with?").
+				FontSize(t.FontSize * 1.4).FontWeight(600).TextColor(t.Text)
+			ui.Text(c, "The chat runs against your own model key. "+
+				"History stays in this app.").
+				TextColor(t.TextMuted).TextAlign(ui.Center)
 		})
+		if len(p.Suggestions) > 0 {
+			ui.Row(c).Wrap().Justify(ui.Center).Gap(t.Space(2)).Children(func() {
+				for _, s := range p.Suggestions {
+					chip(c, t, p, s)
+				}
+			})
+		}
+		if p.Thinking {
+			ui.Row(c).Children(func() {
+				thinking.Thinking(c, thinking.Props{
+					Label:   "Thinking",
+					Variant: thinking.Wave,
+				})
+			})
+		}
+	})
 }
 
 // chip is one suggestion, a pill that sends itself when clicked.
 func chip(c *ui.Context, t *ui.Theme, p Props, s string) {
-	b := ui.ButtonBase(c).Radius(t.Radius + 12).Background(t.Background).
+	b := ui.ButtonBase(c).Radius(t.Radius+12).Background(t.Background).
 		Padding(t.Space(2), t.Space(3.5))
 	if b.Clicked() && p.OnSubmit != nil {
 		p.OnSubmit(s)
@@ -177,11 +177,11 @@ func message(c *ui.Context, t *ui.Theme, m Message) {
 	default:
 		ui.Row(c).FillWidth().Justify(ui.Start).AlignItems(ui.End).
 			Gap(t.Space(1)).Children(func() {
-				ui.Text(c, m.Text).MaxWidthPercent(85).TextColor(t.Text)
-				if m.Streaming {
-					caret(c, t)
-				}
-			})
+			ui.Text(c, m.Text).MaxWidthPercent(85).TextColor(t.Text)
+			if m.Streaming {
+				caret(c, t)
+			}
+		})
 	}
 }
 
