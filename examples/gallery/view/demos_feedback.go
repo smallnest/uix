@@ -124,12 +124,24 @@ func demoTooltip(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoToast shows a transient notification at a window corner.
+// demoToast shows a transient notification at a window corner, in each
+// of the four kinds; the button of a kind shows its toast.
 func demoToast(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		button.Button(c, button.Props{Label: "显示提示", Variant: button.Secondary, OnClick: func() {
-			toast.Push(c, toast.Props{Title: "设置已保存", Description: "立即生效。", Type: toast.Success})
-		}})
+		ui.Row(c).Wrap().Gap(t.Space(2)).Children(func() {
+			button.Button(c, button.Props{Label: "信息", Variant: button.Secondary, OnClick: func() {
+				toast.Push(c, toast.Props{Title: "新消息", Description: "你有一条新消息。"})
+			}})
+			button.Button(c, button.Props{Label: "成功", Variant: button.Secondary, OnClick: func() {
+				toast.Push(c, toast.Props{Title: "设置已保存", Description: "立即生效。", Type: toast.Success})
+			}})
+			button.Button(c, button.Props{Label: "警告", Variant: button.Secondary, OnClick: func() {
+				toast.Push(c, toast.Props{Title: "磁盘空间不足", Description: "还剩 5 GB。", Type: toast.Warning})
+			}})
+			button.Button(c, button.Props{Label: "错误", Variant: button.Secondary, OnClick: func() {
+				toast.Push(c, toast.Props{Title: "保存失败", Description: "网络连接断开。", Type: toast.Error})
+			}})
+		})
 		ui.Text(c, "提示出现在角落并淡出。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 	toast.Viewport(c)
@@ -191,39 +203,76 @@ func demoNotificationCenter(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoCode shows retained syntax highlighting.
+// demoCode shows retained syntax highlighting in a few languages.
 func demoCode(c *ui.Context, t *ui.Theme) {
-	code.Parse("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello\")\n}\n", "go").Render(c)
+	ui.Column(c).Gap(t.Space(3)).Children(func() {
+		code.Parse("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"你好, 组件画廊\")\n}\n", "go").Render(c)
+		code.Parse("def greet(name: str) -> str:\n    return f\"你好, {name}!\"\n\nprint(greet(\"画廊\"))\n", "python").Render(c)
+		code.Parse("{\n  \"name\": \"uix\",\n  \"components\": 117,\n  \"language\": \"go\",\n  \"gui\": \"mygo\"\n}\n", "json").Render(c)
+	})
 }
 
-// demoMarkdown shows markdown with tables and highlighted code.
+// mdSample is the document of the Markdown page: every CommonMark and
+// GFM construct the component renders, from headings and emphasis to
+// task lists, tables and code.
+const mdSample = "# 一级标题\n\n" +
+	"一段正文,包含 **加粗**、*斜体*、***加粗斜体***、~~删除线~~、`行内代码`、[链接](https://example.com) 和自动链接 https://example.com。\n\n" +
+	"## 二级标题\n\n" +
+	"### 三级标题\n\n" +
+	"#### 四级标题\n\n" +
+	"## 列表\n\n" +
+	"- 无序列表项\n- 第二个列表项\n  - 嵌套项\n    - 再嵌套一层\n\n" +
+	"1. 有序列表项\n2. 第二个有序列表项\n\n" +
+	"### 任务列表\n\n" +
+	"- [x] 已完成的任务\n- [ ] 未完成的任务\n\n" +
+	"## 引用\n\n" +
+	"> 引用一段文字,可以有 **加粗** 和 *斜体*。\n>\n> 第二行引用。\n\n" +
+	"## 表格\n\n" +
+	"| 组件 | 库 | 状态 |\n| :--- | :---: | ---: |\n| Button | uix | 已完成 |\n| Sidebar | uix | 已完成 |\n| Chart | mygo | 进行中 |\n\n" +
+	"## 代码\n\n" +
+	"```go\nfunc main() {\n\tfmt.Println(\"带语法高亮的 Go 代码块\")\n}\n```\n\n" +
+	"   缩进式代码块保持原文。\n\n" +
+	"![示例图片](image.png)\n\n" +
+	"---\n\n" +
+	"分隔线之后的文字。"
+
+// demoMarkdown shows a whole document of CommonMark with GFM: headings,
+// emphasis, inline and fenced code, lists, task lists, a table, a
+// blockquote, links and a rule. The fenced block shows its header and a
+// copy button, and the missing image shows its alternative text.
 func demoMarkdown(c *ui.Context, t *ui.Theme) {
-	markdown.Markdown(c, "# 组件画廊\n\n一个带 **markdown** 和 `代码` 的视图。\n\n| 列 | 列 |\n| --- | --- |\n| 一 | 二 |\n")
+	ui.Box(c).FillWidth().Children(func() {
+		markdown.Markdown(c, mdSample, markdown.Options{CodeHeaders: true, CopyCodeLabel: "复制代码"})
+	})
 }
 
-// demoCodeEditor shows mygo's code editor, read-only here.
+// demoCodeEditor shows mygo's code editor, read-only here, with enough
+// source to show line numbers and a longer scroll.
 func demoCodeEditor(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Height(220).Children(func() {
+	ui.Box(c).Height(280).Children(func() {
 		editor.View(c, &editor.State{
-			Buffer:   editor.NewBuffer("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello\")\n}\n"),
+			Buffer:   editor.NewBuffer("package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tfmt.Println(\"你好, 组件画廊\")\n\n\tfor i := 0; i < 5; i++ {\n\t\tfmt.Println(i)\n\t}\n\n\tfmt.Println(time.Now())\n}\n"),
 			ReadOnly: true,
 		})
 	})
 }
 
-// demoChat shows a transcript and a composer.
+// demoChat shows a transcript of several turns and a composer with
+// suggestions, streaming controls and a model label.
 func demoChat(c *ui.Context, t *ui.Theme) {
 	chat.Chat(c, chat.Props{
 		Messages: []chat.Message{
-			{Role: chat.User, Text: "uix 是什么？"},
-			{Role: chat.Assistant, Text: "一个用纯 Go 写的 MyGo 原生 UI 组件库。"},
+			{Role: chat.User, Text: "uix 是什么?"},
+			{Role: chat.Assistant, Text: "一个用纯 Go 写的 MyGo 原生 UI 组件库,提供 117 个组件。"},
+			{Role: chat.User, Text: "它有哪些输入组件?"},
+			{Role: chat.Assistant, Text: "输入、文本域、数字输入、搜索框、下拉选择、令牌输入等。"},
 		},
 		Value:       &Demo.Chat,
 		Model:       "claude-fable-5",
 		Provider:    "anthropic",
 		OnSubmit:    func(string) {},
 		OnStop:      func() {},
-		Suggestions: []string{"展示一个组件", "列出所有库"},
+		Suggestions: []string{"展示一个组件", "列出所有库", "什么是 mygo?"},
 	})
 }
 
@@ -239,13 +288,21 @@ func demoComposer(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoMessage shows a turn of a conversation.
+// demoMessage shows turns of a conversation: on either side, and as a
+// system note in the secondary style.
 func demoMessage(c *ui.Context, t *ui.Theme) {
-	ui.Row(c).Gap(t.Space(2)).Children(func() {
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		message.Message(c, message.Props{
-			Name:   "Ada",
-			Header: "Ada · 2分钟前",
-			Text:   "对话中的一条消息气泡。",
+			Name: "Ada", Header: "Ada · 2分钟前",
+			Text: "对话中的一条消息气泡。",
+		})
+		message.Message(c, message.Props{
+			Name: "你", Header: "现在",
+			Text: "一条靠右的消息。", Align: bubble.End,
+		})
+		message.Message(c, message.Props{
+			Name: "系统", Header: "系统 · 1小时前",
+			Text: "系统消息使用次要样式。", Variant: bubble.Secondary,
 		})
 	})
 }
@@ -316,11 +373,13 @@ func demoSettings(c *ui.Context, t *ui.Theme) {
 	}, settings.SettingsOptions{})
 }
 
-// demoBubble shows the framed bubble of a conversation, on either side.
+// demoBubble shows the framed bubble of a conversation: the primary
+// face, the secondary face and the far side.
 func demoBubble(c *ui.Context, t *ui.Theme) {
-	ui.Row(c).Gap(t.Space(2)).Children(func() {
-		bubble.Bubble(c, bubble.Props{Text: "早上好。", Align: bubble.End})
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		bubble.Bubble(c, bubble.Props{Text: "早上好。"})
 		bubble.Bubble(c, bubble.Props{Text: "收到,还有别的吗?", Variant: bubble.Secondary})
+		bubble.Bubble(c, bubble.Props{Text: "最后一条。", Align: bubble.End})
 	})
 }
 
@@ -370,7 +429,7 @@ func demoResponsiveModal(c *ui.Context, t *ui.Theme) {
 // demoDiffView shows mygo's editor reviewing a change: the old and new
 // texts side by side, the changed lines marked.
 func demoDiffView(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Width(560).Height(240).Children(func() {
+	ui.Box(c).Width(640).Height(260).Children(func() {
 		editor.DiffView(c, &Demo.Diff)
 	})
 }

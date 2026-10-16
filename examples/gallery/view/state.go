@@ -114,16 +114,20 @@ type DemoState struct {
 	FileUp   fileupload.State
 	Settings settings.SettingsState
 	// The layout controls.
-	Split          float32
-	Collapse, Acc1 bool
-	Acc2           bool
-	Tree1, Tree2   bool
+	Split               float32
+	Collapse, Acc1      bool
+	Acc2                bool
+	Tree1, Tree2, Tree3 bool
 	// The grid keeps its place and choice.
 	Grid ui.GridState
 	// The navigation extras.
 	Run   uint64
 	Nav   navigationmenu.State
 	Istep int
+	// The pagination page shown, and the table's choice and sort.
+	Page      int
+	TableList ui.ListState
+	TableSort ui.SortOrder
 	// The carousel keeps where its track is and which slide shows.
 	CarouselScroll ui.ScrollState
 	Carousel       carousel.State
@@ -148,6 +152,7 @@ type DemoState struct {
 	SplitV    float32
 	MotionRun uint64
 	Diff      editor.DiffState
+	OutlineS  ui.OutlineState[string]
 	OutlineT  ui.OutlineState[string]
 	// The onevra pages: the summary's expansion, the composer's draft
 	// and measured glass, the clock of the time picker, the color of the
@@ -206,6 +211,8 @@ func Reset() {
 		Collapse:  true,
 		Acc1:      true,
 		Tree1:     true,
+		Tree2:     true,
+		Tree3:     true,
 		FindOpen:  true,
 		FeedRows:  feedRows(1, 8),
 		FeedN:     9,
@@ -214,12 +221,16 @@ func Reset() {
 		Step:      50,
 		SplitV:    80,
 		Diff: editor.DiffState{
-			Old: editor.NewBuffer("func main() {\n\tfmt.Println(\"hello\")\n}\n"),
-			New: editor.NewBuffer("func main() {\n\tfmt.Println(\"你好\")\n}\n"),
+			Old: editor.NewBuffer("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello\")\n\tfmt.Println(\"world\")\n}\n"),
+			New: editor.NewBuffer("package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tfmt.Println(\"你好, 画廊\")\n\tfmt.Println(time.Now())\n}\n"),
 		},
 		OTime:  time.Now(),
 		OColor: ui.Color{R: 110, G: 90, B: 230, A: 255},
+		Page:   3,
 	}
+	// The table sorts by the column the visitor last chose; the header
+	// clicks set it.
+	Demo.TableList.Sort = &Demo.TableSort
 	// The onevra pages begin with something worth looking at: the tree
 	// with its folders open, the finished turn and its steps expanded
 	// rather than folded behind the summary.

@@ -33,6 +33,7 @@ func demoCheckboxGroup(c *ui.Context, t *ui.Theme) {
 		Children: func(c *ui.Context) {
 			checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Check, Label: "Go"})
 			checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Tg2, Label: "Rust"})
+			checkbox.Checkbox(c, checkbox.Props{Checked: &Demo.Tg3, Label: "Zig"})
 		},
 	})
 }
@@ -54,12 +55,22 @@ func demoRadio(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoSlider shows a slider with a label and a readout.
+// demoSlider shows sliders: one continuous and one that snaps to a step,
+// each with a label and a readout.
 func demoSlider(c *ui.Context, t *ui.Theme) {
-	slider.Slider(c, slider.Props{
-		Value: &Demo.Slider,
-		Min:   0, Max: 100, Step: 1,
-		Label: "音量",
+	ui.Column(c).Width(340).Gap(t.Space(3)).Children(func() {
+		slider.Slider(c, slider.Props{
+			Value: &Demo.Slider,
+			Min:   0, Max: 100, Step: 1,
+			Label: "音量",
+		})
+		ui.Text(c, fmt.Sprintf("音量: %.0f", Demo.Slider)).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		slider.Slider(c, slider.Props{
+			Value: &Demo.StepperV,
+			Min:   0, Max: 10, Step: 1,
+			Label: "步进",
+		})
+		ui.Text(c, fmt.Sprintf("步进: %.0f", Demo.StepperV)).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 }
 
@@ -72,9 +83,15 @@ func demoRangeSlider(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoRating shows stars that set a score, read-only here.
+// demoRating shows stars that set a score, and the same score read-only,
+// as a review shows it.
 func demoRating(c *ui.Context, t *ui.Theme) {
-	rating.Rating(c, rating.Props{Value: &Demo.Rating, Max: 5, ReadOnly: true})
+	ui.Column(c).Gap(t.Space(3)).Children(func() {
+		rating.Rating(c, rating.Props{Value: &Demo.Rating, Max: 5})
+		ui.Text(c, fmt.Sprintf("可点击的评分: %d 星", Demo.Rating)).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		rating.Rating(c, rating.Props{Value: &Demo.Rating, Max: 5, ReadOnly: true})
+		ui.Text(c, "只读的评分。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+	})
 }
 
 // demoMeter shows a progress meter that colors by its value.

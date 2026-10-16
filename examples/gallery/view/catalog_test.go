@@ -146,6 +146,45 @@ func TestOnevraPagesDrawContent(t *testing.T) {
 	}
 }
 
+// TestDemoContentShows opens the demos whose pages build rich content
+// and makes sure the content that matters shows. The render-every-page
+// test proves a page draws its name; this proves the enrichment drew
+// what a visitor should see, from the markdown document to the table
+// rows to the pagination readout.
+func TestDemoContentShows(t *testing.T) {
+	tt := ui.NewTester(GalleryView, Width, Height)
+	for _, tc := range []struct{ id, want string }{
+		{"markdown", "复制代码"},
+		{"markdown", "已完成的任务"},
+		{"markdown", "分隔线之后的文字"},
+		{"code", "def greet"},
+		{"richtext", "波浪线"},
+		{"chat", "它有哪些输入组件?"},
+		{"message", "系统消息使用次要样式。"},
+		{"bubble", "最后一条。"},
+		{"table", "Ada Lovelace"},
+		{"tree", "catalog.go"},
+		{"empty", "清除搜索"},
+		{"card", "查看更多"},
+		{"slider", "步进"},
+		{"rating", "只读的评分"},
+		{"pagination", "当前第 3 页"},
+		{"tabs", "概览页的内容。"},
+		{"menu", "分隔线下有禁用的项"},
+		{"link", "onevra"},
+		{"grid", "格 1"},
+		{"outline", "go.mod"},
+		{"toast", "错误"},
+	} {
+		Reset()
+		State.Selected = tc.id
+		tt.Frame()
+		if !tt.HasText(tc.want) {
+			t.Errorf("%s: missing %q in %q", tc.id, tc.want, tt.Texts())
+		}
+	}
+}
+
 // TestStartupStateRenders draws every page from the state of a window
 // that forgot Reset: zero choices, only the pointers the package inits
 // (the buffer and the history). Clicking mygo jumped to TextInputBuffer

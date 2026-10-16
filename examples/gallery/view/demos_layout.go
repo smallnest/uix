@@ -72,14 +72,18 @@ func demoForm(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoGrid shows a grid layout of columns the children fill in order.
+// demoGrid shows a grid layout of columns the children fill in order,
+// each cell labeled.
 func demoGrid(c *ui.Context, t *ui.Theme) {
 	grid.Grid(c, grid.Props{
 		Columns: 3,
 		Gap:     t.Space(2),
 		Children: func(c *ui.Context) {
 			for i := 0; i < 6; i++ {
-				ui.Box(c).Height(56).Radius(t.Radius).Background(t.Accent.Alpha(1 - float32(i)*0.12))
+				ui.Box(c).Height(56).Radius(t.Radius).Background(t.Accent.Alpha(1 - float32(i)*0.12)).
+					Children(func() {
+						ui.Text(c, fmt.Sprintf("格 %d", i+1)).TextColor(t.AccentText).Center()
+					})
 			}
 		},
 	})

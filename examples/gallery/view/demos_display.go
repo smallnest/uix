@@ -103,11 +103,12 @@ func demoImage(c *ui.Context, t *ui.Theme) {
 	image.Image(c, image.Props{Src: lucide.Palette(), Width: 64, Height: 64})
 }
 
-// demoAvatar shows a circle with initials or a photo.
+// demoAvatar shows circles with initials at several sizes.
 func demoAvatar(c *ui.Context, t *ui.Theme) {
-	ui.Row(c).Gap(t.Space(3)).Children(func() {
-		avatar.Avatar(c, avatar.Props{Name: "Ada Lovelace", Size: 40})
+	ui.Row(c).Gap(t.Space(4)).AlignItems(ui.Center).Children(func() {
+		avatar.Avatar(c, avatar.Props{Name: "Ada Lovelace", Size: 56})
 		avatar.Avatar(c, avatar.Props{Name: "Alan Turing", Size: 40})
+		avatar.Avatar(c, avatar.Props{Name: "Grace Hopper", Size: 28})
 	})
 }
 
@@ -121,11 +122,19 @@ func demoBadge(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoKbd shows a key of the keyboard as a chip.
+// demoKbd shows keys of the keyboard as chips, a shortcut read as one
+// gesture.
 func demoKbd(c *ui.Context, t *ui.Theme) {
-	ui.Row(c).Gap(t.Space(2)).Children(func() {
-		kbd.Kbd(c, kbd.Props{Label: "⌘"})
-		kbd.Kbd(c, kbd.Props{Label: "K"})
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		ui.Row(c).Gap(t.Space(2)).Children(func() {
+			kbd.Kbd(c, kbd.Props{Label: "⌘"})
+			kbd.Kbd(c, kbd.Props{Label: "K"})
+		})
+		ui.Row(c).Gap(t.Space(2)).Children(func() {
+			kbd.Kbd(c, kbd.Props{Label: "⌘"})
+			kbd.Kbd(c, kbd.Props{Label: "Shift"})
+			kbd.Kbd(c, kbd.Props{Label: "P"})
+		})
 	})
 }
 
@@ -142,19 +151,30 @@ func demoMarker(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoInlineCode shows a code chip in the prose.
+// demoInlineCode shows code chips in the prose.
 func demoInlineCode(c *ui.Context, t *ui.Theme) {
-	ui.Row(c).Gap(t.Space(1.5)).AlignItems(ui.Center).Children(func() {
-		ui.Text(c, "运行").TextColor(t.TextMuted)
-		inlinecode.InlineCode(c, inlinecode.Props{Text: "go run ./examples/gallery"})
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		ui.Row(c).Gap(t.Space(1.5)).AlignItems(ui.Center).Children(func() {
+			ui.Text(c, "运行").TextColor(t.TextMuted)
+			inlinecode.InlineCode(c, inlinecode.Props{Text: "go run ./examples/gallery"})
+		})
+		ui.Row(c).Gap(t.Space(1.5)).AlignItems(ui.Center).Children(func() {
+			ui.Text(c, "安装").TextColor(t.TextMuted)
+			inlinecode.InlineCode(c, inlinecode.Props{Text: "go get github.com/smallnest/uix"})
+		})
 	})
 }
 
 // demoBlockquote shows a quote on a muted face with an accent bar.
 func demoBlockquote(c *ui.Context, t *ui.Theme) {
-	blockquote.Blockquote(c, blockquote.Props{
-		Text:   "预测未来最好的方式是创造它。",
-		Author: "— Alan Kay",
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		blockquote.Blockquote(c, blockquote.Props{
+			Text:   "预测未来最好的方式是创造它。",
+			Author: "— Alan Kay",
+		})
+		blockquote.Blockquote(c, blockquote.Props{
+			Text: "简单比复杂更难:你必须努力让你的思考变得干净,让它变得简单。",
+		})
 	})
 }
 
@@ -164,22 +184,55 @@ func demoHeadingWithAnchor(c *ui.Context, t *ui.Theme) {
 	headingwithanchor.Heading(c, headingwithanchor.Props{Text: "安装", Anchor: "install"})
 }
 
-// demoRichText shows styled runs of text.
+// demoRichText shows styled runs of text in one paragraph: weights,
+// italics, colors, decorations and a highlight, as a search result
+// shows.
 func demoRichText(c *ui.Context, t *ui.Theme) {
 	richtext.RichText(c, richtext.Props{Spans: []ui.Span{
-		{Text: "一段"},
+		{Text: "普通文字、"},
 		{Text: "加粗", Weight: 600},
-		{Text: "、一段"},
-		{Text: "彩色", Color: t.Accent},
-		{Text: "的文字。"},
+		{Text: "、"},
+		{Text: "斜体", Italic: true},
+		{Text: "、"},
+		{Text: "加粗斜体", Weight: 600, Italic: true},
+		{Text: "、"},
+		{Text: "强调色", Color: t.Accent},
+		{Text: "、"},
+		{Text: "次要色", Color: t.TextMuted},
+		{Text: "、"},
+		{Text: "成功色", Color: t.Success},
+		{Text: "、"},
+		{Text: "删除线", Strikethrough: true},
+		{Text: "、"},
+		{Text: "下划线", Underline: true},
+		{Text: "、"},
+		{Text: "波浪线", WavyUnderline: true},
+		{Text: "、"},
+		{Text: "高亮", Background: t.Accent.Alpha(0.2)},
+		{Text: "和"},
+		{Text: "更大的字号", Size: t.FontSize * 1.3},
+		{Text: "的一段文字。"},
 	}})
 }
 
-// demoCard shows a rounded container with a header and a body.
+// demoCard shows rounded containers with a header, a body and a footer,
+// one with an action in its footer.
 func demoCard(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Width(280).Children(func() {
-		card.Card(c, card.Props{Title: "卡片", Description: "带圆角的内容容器。"}, func() {
-			ui.Text(c, "卡片的正文。")
+	ui.Row(c).Gap(t.Space(3)).AlignItems(ui.Start).Children(func() {
+		ui.Box(c).Width(260).Children(func() {
+			card.Card(c, card.Props{Title: "标准卡", Description: "带圆角的内容容器。"}, func() {
+				ui.Text(c, "卡片的正文。").TextColor(t.TextMuted)
+			})
+		})
+		ui.Box(c).Width(260).Children(func() {
+			card.Card(c, card.Props{
+				Title: "带操作的卡", Description: "页脚放着一个按钮。",
+				Footer: func() {
+					button.Button(c, button.Props{Label: "查看更多", Variant: button.Outline, Size: button.Sm, OnClick: func() {}})
+				},
+			}, func() {
+				ui.Text(c, "页脚的操作靠右对齐。").TextColor(t.TextMuted)
+			})
 		})
 	})
 }
@@ -193,20 +246,31 @@ func demoStatCard(c *ui.Context, t *ui.Theme) {
 	}})
 }
 
-// demoSkeleton shows placeholders of content still loading.
+// demoSkeleton shows placeholders of content still loading: lines, an
+// avatar and a card, pulsing as the loader draws them.
 func demoSkeleton(c *ui.Context, t *ui.Theme) {
-	ui.Column(c).Gap(t.Space(2)).Children(func() {
-		skeleton.Skeleton(c, skeleton.Props{Width: 200, Height: 16, Radius: 4})
-		skeleton.Skeleton(c, skeleton.Props{Width: 160, Height: 16, Radius: 4})
+	ui.Column(c).Gap(t.Space(3)).Children(func() {
+		ui.Row(c).Gap(t.Space(2)).AlignItems(ui.Center).Children(func() {
+			skeleton.Skeleton(c, skeleton.Props{Width: 40, Height: 40, Radius: 20})
+			ui.Column(c).Gap(t.Space(1.5)).Children(func() {
+				skeleton.Skeleton(c, skeleton.Props{Width: 160, Height: 14, Radius: 4})
+				skeleton.Skeleton(c, skeleton.Props{Width: 220, Height: 14, Radius: 4})
+			})
+		})
+		skeleton.Skeleton(c, skeleton.Props{Width: 320, Height: 90, Radius: 8})
+		skeleton.Skeleton(c, skeleton.Props{Width: 260, Height: 14, Radius: 4})
 	})
 }
 
-// demoEmpty shows an empty state: an icon over a title and a description.
+// demoEmpty shows an empty state: an icon over a title and a
+// description, with an action that clears the search.
 func demoEmpty(c *ui.Context, t *ui.Theme) {
 	empty.Empty(c, empty.Props{
 		Icon:        lucide.Search(),
-		Title:       "没有结果",
-		Description: "换个关键词试试。",
+		Title:       "没有匹配的组件",
+		Description: "换个关键词,或清除搜索再看全部组件。",
+		ActionLabel: "清除搜索",
+		OnAction:    func() { State.Query = "" },
 	})
 }
 
@@ -235,33 +299,86 @@ func demoGridView(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoTable shows a data table with a header band.
+// demoTable shows a data table with sortable columns: a click on a
+// column header sorts the rows by it, another reverses, and the header
+// shows the order. The rows are sorted here from the column the header
+// sets, as an app sorts its data.
 func demoTable(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Height(180).Children(func() {
+	names := []string{"Ada Lovelace", "Alan Turing", "Grace Hopper", "Linus Torvalds", "Margaret Hamilton", "Edsger Dijkstra", "Dennis Ritchie", "Ken Thompson"}
+	roles := []string{"分析师", "数学家", "海军上将", "工程师", "软件工程师", "计算机科学家", "工程师", "工程师"}
+	statuses := []string{"在线", "在线", "离开", "在线", "在线", "离开", "在线", "离开"}
+	ratings := []int{5, 4, 5, 3, 4, 4, 5, 3}
+	order := []int{0, 1, 2, 3, 4, 5, 6, 7}
+	if s := Demo.TableList.Sort; s != nil {
+		less := func(a, b int) bool {
+			switch s.Column {
+			case "name":
+				return names[a] < names[b]
+			case "role":
+				return roles[a] < roles[b]
+			case "rating":
+				return ratings[a] < ratings[b]
+			}
+			return false
+		}
+		// A sort on by the header: keep the rows in the order it wants.
+		order = []int{0, 1, 2, 3, 4, 5, 6, 7}
+		for i := 1; i < len(order); i++ {
+			for j := i; j > 0 && less(order[j], order[j-1]); j-- {
+				order[j], order[j-1] = order[j-1], order[j]
+			}
+		}
+		if s.Descending {
+			for i, j := 0, len(order)-1; i < j; i, j = i+1, j-1 {
+				order[i], order[j] = order[j], order[i]
+			}
+		}
+	}
+	ui.Box(c).Height(220).Children(func() {
 		table.Table(c, table.Props{
+			State: &Demo.TableList,
 			Columns: []ui.TableColumn{
-				{Title: "姓名"},
-				{Title: "角色"},
+				{Title: "姓名", ID: "name", Sortable: true},
+				{Title: "角色", ID: "role", Sortable: true},
 				{Title: "状态"},
+				{Title: "评分", ID: "rating", Sortable: true, Align: ui.End},
 			},
-			Rows: 4,
+			Rows: len(names),
 			Cell: func(row, col int) {
-				names := []string{"Ada Lovelace", "Alan Turing", "Grace Hopper", "Linus Torvalds"}
-				roles := []string{"分析师", "数学家", "海军上将", "工程师"}
-				statuses := []string{"在线", "在线", "离开", "在线"}
-				cell := [][]string{names, roles, statuses}[col]
-				ui.Text(c, cell[row]).SingleLine()
+				i := order[row]
+				switch col {
+				case 0:
+					ui.Text(c, names[i]).SingleLine()
+				case 1:
+					ui.Text(c, roles[i]).SingleLine()
+				case 2:
+					ui.Text(c, statuses[i]).SingleLine()
+				default:
+					ui.Text(c, fmt.Sprintf("%d", ratings[i])).SingleLine()
+				}
 			},
 		})
 	})
 }
 
-// demoTree shows a hierarchical list whose branches open and close.
+// demoTree shows a hierarchical list whose branches open and close,
+// here a project of nested folders.
 func demoTree(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Height(200).Children(func() {
+	ui.Box(c).Width(280).Height(220).Children(func() {
 		tree.Tree(c, tree.Props{
 			Items: []tree.Item{
-				{Label: "src", Open: &Demo.Tree1, Children: []tree.Item{{Label: "main.go"}, {Label: "view"}}},
+				{Label: "src", Open: &Demo.Tree1, Children: []tree.Item{
+					{Label: "main.go"},
+					{Label: "view", Open: &Demo.Tree2, Children: []tree.Item{
+						{Label: "view.go"},
+						{Label: "state.go"},
+						{Label: "catalog.go"},
+					}},
+				}},
+				{Label: "docs", Open: &Demo.Tree3, Children: []tree.Item{
+					{Label: "guide.md"},
+					{Label: "api.md"},
+				}},
 				{Label: "README.md"},
 				{Label: "go.mod"},
 			},
@@ -269,13 +386,19 @@ func demoTree(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoOutline shows mygo's collapsible outline of a hierarchy.
+// demoOutline shows mygo's collapsible outline of a hierarchy, here a
+// project of folders opening to their files.
 func demoOutline(c *ui.Context, t *ui.Theme) {
-	ui.Box(c).Height(180).Width(220).Children(func() {
-		ui.Outline(c, &ui.OutlineState[string]{}, []string{"src", "go.mod"},
+	ui.Box(c).Height(220).Width(240).Children(func() {
+		ui.Outline(c, &Demo.OutlineS, []string{"src", "docs", "go.mod"},
 			func(k string) []string {
-				if k == "src" {
-					return []string{"main.go", "view.go"}
+				switch k {
+				case "src":
+					return []string{"main.go", "view"}
+				case "view":
+					return []string{"view.go", "state.go"}
+				case "docs":
+					return []string{"guide.md"}
 				}
 				return nil
 			},

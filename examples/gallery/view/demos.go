@@ -92,12 +92,21 @@ func demoButtonToggleGroup(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoLink shows a link that opens a URL.
+// demoLink shows links that open a URL, one plain and one in a sentence.
 func demoLink(c *ui.Context, t *ui.Theme) {
-	link.Link(c, link.Props{Label: "uix 仓库", URL: "https://github.com/smallnest/uix"})
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		link.Link(c, link.Props{Label: "uix 仓库", URL: "https://github.com/smallnest/uix"})
+		ui.Row(c).Gap(t.Space(1)).Children(func() {
+			ui.Text(c, "更多组件见").TextColor(t.TextMuted)
+			link.Link(c, link.Props{Label: "mygo", URL: "https://github.com/egoist/mygo"})
+			ui.Text(c, "与").TextColor(t.TextMuted)
+			link.Link(c, link.Props{Label: "onevra", URL: "https://github.com/oneo-me/onevra"})
+		})
+	})
 }
 
-// demoMenu shows a button that opens a menu of actions.
+// demoMenu shows a button that opens a menu of actions, with a
+// separator and a disabled item.
 func demoMenu(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Gap(t.Space(2)).Children(func() {
 		menu.Menu(c, menu.Props{
@@ -106,9 +115,12 @@ func demoMenu(c *ui.Context, t *ui.Theme) {
 				{Label: "新建", Action: func() {}},
 				{Label: "打开", Action: func() {}},
 				{Label: "保存", Action: func() {}},
+				{Separator: true},
+				{Label: "重命名", Action: func() {}},
+				{Label: "删除", Disabled: true, Action: func() {}},
 			},
 		})
-		ui.Text(c, "点击按钮打开菜单。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+		ui.Text(c, "点击按钮打开菜单,分隔线下有禁用的项。").FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
 	})
 }
 
@@ -143,9 +155,15 @@ func demoBreadcrumbs(c *ui.Context, t *ui.Theme) {
 	breadcrumbs.Breadcrumbs(c, breadcrumbs.Props{Items: []string{"首页", "文档", "安装"}})
 }
 
-// demoTabs shows a tab list with an accent bar on the active tab.
+// demoTabs shows a tab list with an accent bar on the active tab, and
+// the pane of the chosen tab beneath it.
 func demoTabs(c *ui.Context, t *ui.Theme) {
-	tabs.Tabs(c, tabs.Props{Selected: &Demo.Tabs, Labels: []string{"概览", "动态", "设置"}})
+	ui.Column(c).Width(420).Gap(t.Space(2)).Children(func() {
+		tabs.Tabs(c, tabs.Props{Selected: &Demo.Tabs, Labels: []string{"概览", "动态", "设置"}})
+		pane := []string{"概览页的内容。", "动态页的内容。", "设置页的内容。"}[Demo.Tabs]
+		ui.Box(c).FillWidth().Padding(t.Space(3)).Radius(t.Radius).Background(t.Surface).
+			Children(func() { ui.Text(c, pane).TextColor(t.TextMuted) })
+	})
 }
 
 // demoNavSidebar shows a navigation rail of sections and items.
@@ -175,9 +193,17 @@ func demoToolbar(c *ui.Context, t *ui.Theme) {
 	})
 }
 
-// demoPagination shows the page numbers with the previous and next.
+// demoPagination shows the page numbers with the previous and next; the
+// buttons move the page, which the readout shows.
 func demoPagination(c *ui.Context, t *ui.Theme) {
-	pagination.Pagination(c, pagination.Props{Page: 3, TotalPages: 9})
+	ui.Column(c).Gap(t.Space(2)).Children(func() {
+		pagination.Pagination(c, pagination.Props{
+			Page:       Demo.Page,
+			TotalPages: 9,
+			OnChange:   func(p int) { Demo.Page = p },
+		})
+		ui.Text(c, fmt.Sprintf("当前第 %d 页,共 9 页。", Demo.Page)).FontSize(t.FontSize * 0.85).TextColor(t.TextMuted)
+	})
 }
 
 // demoButtonSegmented shows a switch between views, one chosen.
