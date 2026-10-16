@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -15,10 +16,19 @@ func frame(p Props) func(c *ui.Context) {
 	}
 }
 
+// tester draws the field in a 24-hour region, the format the Chinese
+// locale of the gallery shows; the headless tester otherwise defaults to
+// 12-hour English, and the hours of a quarter to 3 would read "3".
+func tester(p Props, w, h int) *ui.Tester {
+	tt := ui.NewTester(frame(p), w, h)
+	tt.SetRegion(i18n.Region{HourCycle: 24})
+	return tt
+}
+
 // TestRenders draws the field with the hours and the minutes in it.
 func TestRenders(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm}), 260, 100)
+	tt := tester(Props{Value: &tm}, 260, 100)
 	if _, ok := tt.Find("Time"); !ok {
 		t.Fatal("field not found")
 	}
@@ -32,7 +42,7 @@ func TestRenders(t *testing.T) {
 // TestStepsUp raises the hours with Up while they have the focus.
 func TestStepsUp(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm}), 260, 100)
+	tt := tester(Props{Value: &tm}, 260, 100)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +55,7 @@ func TestStepsUp(t *testing.T) {
 // TestStepsDown wraps the minutes around with Down.
 func TestStepsDown(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm}), 260, 100)
+	tt := tester(Props{Value: &tm}, 260, 100)
 	if err := tt.Click("30"); err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +68,7 @@ func TestStepsDown(t *testing.T) {
 // TestTypes sets the hours from the digits typed.
 func TestTypes(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm}), 260, 100)
+	tt := tester(Props{Value: &tm}, 260, 100)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +82,7 @@ func TestTypes(t *testing.T) {
 // TestDisabled keeps the field from being changed.
 func TestDisabled(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm, Disabled: true}), 260, 100)
+	tt := tester(Props{Value: &tm, Disabled: true}, 260, 100)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -86,7 +96,7 @@ func TestDisabled(t *testing.T) {
 // TestDarkMode draws the field under the dark appearance too.
 func TestDarkMode(t *testing.T) {
 	tm := time.Date(2026, 10, 7, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &tm}), 260, 100)
+	tt := tester(Props{Value: &tm}, 260, 100)
 	tt.SetDark(true)
 	if _, ok := tt.Find("Time"); !ok {
 		t.Fatal("field missing under dark mode")

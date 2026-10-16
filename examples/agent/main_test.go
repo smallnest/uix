@@ -17,12 +17,11 @@ func newTester(t *testing.T) *ui.Tester {
 	return ui.NewTester(view.AgentView, view.Width, view.Height)
 }
 
-// drive advances the demo's paces by running frames as time passes, and
+// drive advances the demo's paces by moving the tester's clock, and
 // returns after it has run out of steps or frames.
 func drive(tt *ui.Tester, done func() bool) {
 	for i := 0; i < 80 && !done(); i++ {
-		time.Sleep(3 * time.Millisecond)
-		tt.Frame()
+		tt.Advance(3 * time.Millisecond)
 	}
 }
 

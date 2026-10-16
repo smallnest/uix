@@ -3,16 +3,27 @@ package main
 import (
 	"testing"
 
+	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/examples/events/view"
 )
 
+// newTester draws the example headless in a 24-hour region, the format
+// the fields of the Chinese locale show; the headless tester otherwise
+// defaults to 12-hour English, where an afternoon "14" reads "2 PM".
+func newTester(t *testing.T) *ui.Tester {
+	t.Helper()
+	view.Reset()
+	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt.SetRegion(i18n.Region{HourCycle: 24})
+	return tt
+}
+
 // TestRenders draws the panel headless: every field and the summary line
 // that reflects the initial state.
 func TestRenders(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	for _, s := range []string{
 		"Event", "Date", "Time", "Color", "Remind me", "Off",
 		"The event is on October 15, 2026 at 14:30.",
@@ -28,8 +39,7 @@ func TestRenders(t *testing.T) {
 // TestDate chooses another day in the calendar of the date field, which
 // the summary line shows at once.
 func TestDate(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	// The field label "Date" shares its text with the field, so the field
 	// itself is clicked by the name it carries.
 	if err := tt.Click("Event date"); err != nil {
@@ -52,8 +62,7 @@ func TestDate(t *testing.T) {
 // TestTime raises the hours of the time field with Up, which the summary
 // line shows at once.
 func TestTime(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -69,8 +78,7 @@ func TestTime(t *testing.T) {
 // TestColor picks a color from the swatches of the color field, which the
 // summary line shows at once.
 func TestColor(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	if err := tt.Click("Event color"); err != nil {
 		t.Fatal(err)
 	}
@@ -88,8 +96,7 @@ func TestColor(t *testing.T) {
 // TestToggle arms the reminder with a click and disarms it with another,
 // which the summary line shows at once.
 func TestToggle(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	if err := tt.Click("Off"); err != nil {
 		t.Fatal(err)
 	}
@@ -112,8 +119,7 @@ func TestToggle(t *testing.T) {
 
 // TestDarkMode draws the panel under the dark appearance too.
 func TestDarkMode(t *testing.T) {
-	view.Reset()
-	tt := ui.NewTester(view.EventView, view.Width, view.Height)
+	tt := newTester(t)
 	tt.SetDark(true)
 	if !tt.HasText("Event") {
 		t.Fatal("dark panel missing the title")

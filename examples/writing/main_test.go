@@ -34,8 +34,7 @@ func TestRenders(t *testing.T) {
 // TestTypes shows the typewriter line once the typing is done.
 func TestTypes(t *testing.T) {
 	tt := newTester(t)
-	time.Sleep(1100 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(1100 * time.Millisecond)
 	if !tt.HasText("Build native apps with uix.") {
 		t.Fatalf("the typewriter line is missing in %q", tt.Texts())
 	}

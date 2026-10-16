@@ -139,7 +139,7 @@ func TestOnevraPagesDrawContent(t *testing.T) {
 	if err := tt.Click("onevra"); err != nil {
 		t.Fatal(err)
 	}
-	for _, s := range []string{"DonutChart", "TimePicker", "ColorView", "ProgressRing", "TableVirtualized", "TreeVirtualized", "Conversation"} {
+	for _, s := range []string{"DonutChart", "TimePicker", "ColorView", "ProgressRing", "TableVirtualized", "TreeVirtualized", "Conversation", "SignalField"} {
 		if !tt.HasText(s) {
 			t.Errorf("the onevra filter misses %q: %q", s, tt.Texts())
 		}
@@ -175,6 +175,7 @@ func TestDemoContentShows(t *testing.T) {
 		{"grid", "格 1"},
 		{"outline", "go.mod"},
 		{"toast", "错误"},
+		{"signalfield", "欢迎来到组件画廊"},
 	} {
 		Reset()
 		State.Selected = tc.id

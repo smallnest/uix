@@ -4,22 +4,27 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/ui"
 
 	"github.com/smallnest/uix/examples/fields/view"
 )
 
-// newTester draws the example headless in its initial state.
+// newTester draws the example headless in its initial state, in a
+// 24-hour region: the format the fields of the Chinese locale show, and
+// the headless tester otherwise defaults to 12-hour English.
 func newTester(t *testing.T) *ui.Tester {
 	t.Helper()
 	view.Reset()
-	return ui.NewTester(view.FieldsView, view.Width, view.Height)
+	tt := ui.NewTester(view.FieldsView, view.Width, view.Height)
+	tt.SetRegion(i18n.Region{HourCycle: 24})
+	return tt
 }
 
 // TestRenders draws the heading, the fields and the date of the picker.
 func TestRenders(t *testing.T) {
 	tt := newTester(t)
-	for _, s := range []string{"New event", "Invite guests", "2026-10-18", "15"} {
+	for _, s := range []string{"New event", "Invite guests", "10/18/2026", "15"} {
 		if !tt.HasText(s) {
 			t.Fatalf("missing %q in %q", s, tt.Texts())
 		}

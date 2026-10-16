@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -15,14 +16,23 @@ func frame(p Props) func(c *ui.Context) {
 	}
 }
 
+// tester draws the picker in a 24-hour region, the format the Chinese
+// locale of the gallery shows; the headless tester otherwise defaults to
+// 12-hour English.
+func tester(p Props, w, h int) *ui.Tester {
+	tt := ui.NewTester(frame(p), w, h)
+	tt.SetRegion(i18n.Region{HourCycle: 24})
+	return tt
+}
+
 // TestRenders draws the date and the time in the row.
 func TestRenders(t *testing.T) {
 	when := time.Date(2026, 10, 11, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &when}), 420, 100)
+	tt := tester(Props{Value: &when}, 420, 100)
 	if _, ok := tt.Find("When"); !ok {
 		t.Fatal("picker not found")
 	}
-	for _, s := range []string{"2026-10-11", "14", ":", "30"} {
+	for _, s := range []string{"10/11/2026", "14", ":", "30"} {
 		if !tt.HasText(s) {
 			t.Fatalf("missing %q in %q", s, tt.Texts())
 		}
@@ -32,7 +42,7 @@ func TestRenders(t *testing.T) {
 // TestEditsTime steps the hours without touching the date.
 func TestEditsTime(t *testing.T) {
 	when := time.Date(2026, 10, 11, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &when}), 420, 100)
+	tt := tester(Props{Value: &when}, 420, 100)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +55,7 @@ func TestEditsTime(t *testing.T) {
 // TestDisabled keeps the fields from being changed.
 func TestDisabled(t *testing.T) {
 	when := time.Date(2026, 10, 11, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &when, Disabled: true}), 420, 100)
+	tt := tester(Props{Value: &when, Disabled: true}, 420, 100)
 	if err := tt.Click("14"); err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +68,7 @@ func TestDisabled(t *testing.T) {
 // TestDarkMode draws the picker under the dark appearance too.
 func TestDarkMode(t *testing.T) {
 	when := time.Date(2026, 10, 11, 14, 30, 0, 0, time.UTC)
-	tt := ui.NewTester(frame(Props{Value: &when}), 420, 100)
+	tt := tester(Props{Value: &when}, 420, 100)
 	tt.SetDark(true)
 	if _, ok := tt.Find("When"); !ok {
 		t.Fatal("picker missing under dark mode")

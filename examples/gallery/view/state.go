@@ -168,6 +168,14 @@ type DemoState struct {
 	OTurn     ochat.TurnState
 	OConv     ochat.ConversationState
 	OGroup    ochat.GroupState
+	// The shader background of the signalfield page, and its tuning: the
+	// intensity and the dot scale of the sliders, and the switches that
+	// freeze the drift or ignore the pointer.
+	ShaderIntensity float64
+	ShaderScale     float64
+	ShaderStill     bool
+	ShaderInert     bool
+	ShaderPrompt    string
 }
 
 // Reset puts the example in its initial state, for the tests and the
@@ -227,6 +235,10 @@ func Reset() {
 		OTime:  time.Now(),
 		OColor: ui.Color{R: 110, G: 90, B: 230, A: 255},
 		Page:   3,
+		// The shader starts at its defaults: the sliders sit mid-range and
+		// the background follows the pointer.
+		ShaderIntensity: 1,
+		ShaderScale:     1,
 	}
 	// The table sorts by the column the visitor last chose; the header
 	// clicks set it.

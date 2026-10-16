@@ -97,8 +97,7 @@ func TestTooltip(t *testing.T) {
 	}
 	tt.Move(r.X+r.W/2, r.Y+r.H/2)
 	tt.Frame()
-	time.Sleep(650 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(650 * time.Millisecond)
 	if !tt.HasText("Save the note") {
 		t.Fatal("the tip did not show")
 	}

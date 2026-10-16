@@ -19,8 +19,7 @@ func frame(p Props) func(c *ui.Context) {
 // quickly, is done.
 func TestRenders(t *testing.T) {
 	tt := ui.NewTester(frame(Props{Text: "Hi", Speed: 5 * time.Millisecond}), 320, 100)
-	time.Sleep(50 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(50 * time.Millisecond)
 	if !tt.HasText("Hi") {
 		t.Fatalf("texts %q", tt.Texts())
 	}
@@ -32,18 +31,15 @@ func TestTypesOut(t *testing.T) {
 	if tt.HasText("Hello World") {
 		t.Fatal("the text is already typed")
 	}
-	time.Sleep(400 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(400 * time.Millisecond)
 	if tt.HasText("Hello World") {
 		t.Fatal("the text typed too early")
 	}
-	time.Sleep(1500 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(1500 * time.Millisecond)
 	if !tt.HasText("Hello World") {
 		t.Fatal("the text never finished")
 	}
-	time.Sleep(300 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(300 * time.Millisecond)
 	if !tt.HasText("Hello World") {
 		t.Fatal("the text did not stay")
 	}
@@ -59,10 +55,8 @@ func TestOnComplete(t *testing.T) {
 		State:      st,
 		OnComplete: func() { calls++ },
 	}), 320, 100)
-	time.Sleep(80 * time.Millisecond)
-	tt.Frame()
-	time.Sleep(80 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(80 * time.Millisecond)
+	tt.Advance(80 * time.Millisecond)
 	if !st.Done {
 		t.Fatal("the typewriter did not finish")
 	}
@@ -74,8 +68,7 @@ func TestOnComplete(t *testing.T) {
 // TestDarkMode draws the typewriter under the dark appearance too.
 func TestDarkMode(t *testing.T) {
 	tt := ui.NewTester(frame(Props{Text: "Hi", Speed: 5 * time.Millisecond}), 320, 100)
-	time.Sleep(50 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(50 * time.Millisecond)
 	tt.SetDark(true)
 	if !tt.HasText("Hi") {
 		t.Fatal("typewriter missing under dark mode")

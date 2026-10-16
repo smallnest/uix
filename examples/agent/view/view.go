@@ -237,8 +237,11 @@ func tick(c *ui.Context) {
 			if now.Before(State.nextWord) {
 				c.After(State.nextWord.Sub(now))
 			} else {
+				// The next frame is the first word's, asked for here: a
+				// window draws anyway, a tester only when asked.
 				State.Thinking = false
 				State.nextWord = now.Add(StreamPace)
+				c.After(StreamPace)
 			}
 		} else {
 			last := &State.Messages[len(State.Messages)-1]

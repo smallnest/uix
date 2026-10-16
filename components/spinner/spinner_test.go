@@ -31,8 +31,7 @@ func TestRenders(t *testing.T) {
 func TestTurns(t *testing.T) {
 	tt := ui.NewTester(frame(Props{}), 200, 100)
 	first := tt.Image()
-	time.Sleep(100 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(100 * time.Millisecond)
 	second := tt.Image()
 	if bytes.Equal(first.Pix, second.Pix) {
 		t.Fatal("the spinner does not turn")

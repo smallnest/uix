@@ -28,8 +28,9 @@ func hover(t *testing.T, tt *ui.Tester, s string) {
 	}
 	tt.Move(r.X+r.W/2, r.Y+r.H/2)
 	tt.Frame()
-	time.Sleep(650 * time.Millisecond)
-	tt.Frame()
+	// The tip waits out the tooltip's delay, so the tester's clock
+	// advances past it rather than sleeping the wall clock.
+	tt.Advance(650 * time.Millisecond)
 }
 
 // TestShows draws the tip once the pointer has rested on the anchor.

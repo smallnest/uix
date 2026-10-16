@@ -35,12 +35,9 @@ func view(s *fu) func(c *ui.Context) {
 	}
 }
 
-// pump runs frames as time passes, for the simulated upload to advance.
+// pump advances the tester's clock, for the simulated upload to advance.
 func pump(tt *ui.Tester, n int) {
-	for i := 0; i < n; i++ {
-		time.Sleep(2 * time.Millisecond)
-		tt.Frame()
-	}
+	tt.Advance(time.Duration(n) * 2 * time.Millisecond)
 }
 
 // TestIdle draws the invite: the zone, the tagline and the kinds with

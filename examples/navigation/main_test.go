@@ -17,12 +17,9 @@ func newTester(t *testing.T) *ui.Tester {
 	return ui.NewTester(view.NavigationView, view.Width, view.Height)
 }
 
-// pump runs frames as time passes, for the simulated upload to advance.
+// pump advances the tester's clock, for the simulated upload to advance.
 func pump(tt *ui.Tester, n int) {
-	for i := 0; i < n; i++ {
-		time.Sleep(2 * time.Millisecond)
-		tt.Frame()
-	}
+	tt.Advance(time.Duration(n) * 2 * time.Millisecond)
 }
 
 // TestRenders draws the example headless: the heading, the three

@@ -163,6 +163,7 @@ var catalog = []Section{
 			{"stackedbar", "StackedBar", Onevra, lucide.ChartColumnBig, demoStackedBar},
 			{"graph", "Graph", Onevra, lucide.Network, demoGraph},
 			{"pixelgrid", "PixelGrid", Onevra, lucide.Grid3x3, demoPixelGrid},
+			{"signalfield", "SignalField", Onevra, lucide.Sparkles, demoSignalField},
 			{"animate", "Animate", Uix, lucide.Clapperboard, demoAnimate},
 			{"infinitescroll", "InfiniteScroll", Uix, lucide.Infinity, demoInfiniteScroll},
 			{"item", "Item", Uix, lucide.Layers, demoItem},

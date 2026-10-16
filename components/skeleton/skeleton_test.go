@@ -39,12 +39,9 @@ func TestFills(t *testing.T) {
 func TestPulses(t *testing.T) {
 	tt, _ := tester(Props{Width: 120, Height: 24})
 	first := tt.Image().RGBAAt(30, 27)
-	// Let the pulse move: frames over a good part of the period, with
-	// time passing between them, as the animation reads the clock.
-	for i := 0; i < 30; i++ {
-		time.Sleep(10 * time.Millisecond)
-		tt.Frame()
-	}
+	// Let the pulse move: advance the tester's clock over a good part of
+	// the period, as the animation reads it.
+	tt.Advance(300 * time.Millisecond)
 	second := tt.Image().RGBAAt(30, 27)
 	if first == second {
 		t.Fatalf("the pulse did not move the tone: %v both frames", first)

@@ -22,7 +22,7 @@ func TestRenders(t *testing.T) {
 	if _, ok := tt.Find("Date"); !ok {
 		t.Fatal("field not found")
 	}
-	if !tt.HasText("2026-10-07") {
+	if !tt.HasText("10/7/2026") {
 		t.Fatalf("texts %q", tt.Texts())
 	}
 }

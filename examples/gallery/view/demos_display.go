@@ -10,6 +10,7 @@ import (
 	"github.com/oneo-me/onevra/source/components"
 	"github.com/oneo-me/onevra/source/components/chart"
 	"github.com/oneo-me/onevra/source/components/graph"
+	"github.com/oneo-me/onevra/source/components/shaders"
 
 	"github.com/smallnest/uix/components/animate"
 	"github.com/smallnest/uix/components/avatar"
@@ -25,6 +26,7 @@ import (
 	"github.com/smallnest/uix/components/image"
 	"github.com/smallnest/uix/components/infinitescroll"
 	"github.com/smallnest/uix/components/inlinecode"
+	"github.com/smallnest/uix/components/input"
 	"github.com/smallnest/uix/components/item"
 	"github.com/smallnest/uix/components/kbd"
 	"github.com/smallnest/uix/components/label"
@@ -34,7 +36,9 @@ import (
 	"github.com/smallnest/uix/components/marker"
 	"github.com/smallnest/uix/components/richtext"
 	"github.com/smallnest/uix/components/skeleton"
+	"github.com/smallnest/uix/components/slider"
 	"github.com/smallnest/uix/components/statcard"
+	sw "github.com/smallnest/uix/components/switch"
 	"github.com/smallnest/uix/components/table"
 	"github.com/smallnest/uix/components/tree"
 	"github.com/smallnest/uix/components/webview"
@@ -491,6 +495,45 @@ func demoPixelGrid(c *ui.Context, t *ui.Theme) {
 		Background(t.Background).Border(1, t.Border).Children(func() {
 		ui.Column(c).Fill().Center().Children(func() {
 			ui.Text(c, "方格背景").TextColor(t.TextMuted)
+		})
+	})
+}
+
+// demoSignalField shows onevra's ambient GPU background: a field of dots
+// that breathe and gather light around the pointer, rippling where it
+// clicks, behind a welcome and a panel that tunes it. Only a GPU renderer
+// draws the field; headless it leaves the theme background as it is.
+func demoSignalField(c *ui.Context, t *ui.Theme) {
+	shaders.SignalField(c, shaders.Options{
+		Intensity: float32(Demo.ShaderIntensity),
+		Scale:     float32(Demo.ShaderScale),
+		Still:     Demo.ShaderStill,
+		Inert:     Demo.ShaderInert,
+	}).Column().Children(func() {
+		ui.Column(c).FillWidth().Grow(1).MinWidth(0).MinHeight(0).AlignItems(ui.Center).Justify(ui.Center).
+			Padding(t.Space(6)).Gap(t.Space(4)).Children(func() {
+			ui.Column(c).AlignItems(ui.Center).Gap(t.Space(3)).Children(func() {
+				icon.Icon(c, icon.Props{SVG: lucide.Sparkles(), Label: "光点", Width: 32, Height: 32}).TextColor(t.Accent)
+				ui.Text(c, "欢迎来到组件画廊").FontSize(t.FontSize * 1.6).Bold().TextAlign(ui.Center).Wrap()
+				ui.Text(c, "光点随指针流动,点击泛起涟漪;深色外观下同样清晰。").TextColor(t.TextMuted).TextAlign(ui.Center).Wrap()
+			})
+			ui.Row(c).FillWidth().MaxWidth(440).MinWidth(0).Gap(t.Space(2)).Children(func() {
+				input.Input(c, input.Props{Value: &Demo.ShaderPrompt, Placeholder: "随便问点什么"})
+				button.Button(c, button.Props{Label: "开始", OnClick: func() {}})
+			})
+		})
+		ui.Row(c).FillWidth().Justify(ui.Center).Padding(t.Space(4)).Children(func() {
+			ui.Row(c).Wrap().MinWidth(0).AlignItems(ui.Center).Justify(ui.Center).Gap(t.Space(4)).
+				Padding(t.Space(2), t.Space(3)).Background(t.Surface.Alpha(0.88)).Border(1, t.Border).Radius(t.Radius).Children(func() {
+				ui.Box(c).Width(120).Children(func() {
+					slider.Slider(c, slider.Props{Value: &Demo.ShaderIntensity, Min: 0.2, Max: 2, Step: 0.1, Label: "强度"})
+				})
+				ui.Box(c).Width(120).Children(func() {
+					slider.Slider(c, slider.Props{Value: &Demo.ShaderScale, Min: 0.5, Max: 2, Step: 0.1, Label: "密度"})
+				})
+				sw.Switch(c, sw.Props{On: &Demo.ShaderStill, Label: "静止"})
+				sw.Switch(c, sw.Props{On: &Demo.ShaderInert, Label: "忽略指针"})
+			})
 		})
 	})
 }
