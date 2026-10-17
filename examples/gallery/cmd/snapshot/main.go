@@ -13,12 +13,13 @@ import (
 	"github.com/smallnest/uix/examples/gallery/view"
 )
 
-// pages are the snapshots: a uix page, a mygo page and an onevra page,
-// by the sidebar ID of each.
+// pages are the snapshots: a uix page, a mygo page, an onevra page and
+// a MujicaUI page, by the sidebar ID of each.
 var pages = []struct{ name, id string }{
 	{"gallery", "button"},
 	{"gallery-box", "box"},
 	{"gallery-pixelgrid", "pixelgrid"},
+	{"gallery-mujica-appshell", "001"},
 }
 
 func main() {

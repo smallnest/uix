@@ -146,6 +146,37 @@ func TestOnevraPagesDrawContent(t *testing.T) {
 	}
 }
 
+// TestMujicaPagesDrawContent opens the ported MujicaUI pages whose demos
+// build their own content and makes sure it shows, and that the mujica
+// filter lists every mujica page, so the filter is not smaller than the
+// library.
+func TestMujicaPagesDrawContent(t *testing.T) {
+	tt := ui.NewTester(GalleryView, Width, Height)
+	for _, tc := range []struct{ id, want string }{
+		{"001", "Chronicles"},
+		{"001", "Entry 1 of the court record"},
+		{"021", "Save changes"},
+		{"021", "Variants"},
+	} {
+		Reset()
+		State.Selected = tc.id
+		tt.Frame()
+		if !tt.HasText(tc.want) {
+			t.Errorf("%s: missing %q in %q", tc.id, tc.want, tt.Texts())
+		}
+	}
+	Reset()
+	tt.Frame()
+	if err := tt.Click("mujica"); err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range []string{"AppShell", "Button", "LineChart", "Terminal", "Calendar"} {
+		if !tt.HasText(s) {
+			t.Errorf("the mujica filter misses %q: %q", s, tt.Texts())
+		}
+	}
+}
+
 // TestDemoContentShows opens the demos whose pages build rich content
 // and makes sure the content that matters shows. The render-every-page
 // test proves a page draws its name; this proves the enrichment drew

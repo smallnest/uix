@@ -1,11 +1,11 @@
 // Package view builds the gallery example: a shell like onevra's
 // showcase, with a sidebar of the components and one page each. Every
-// page shows a component of one of the three libraries — uix's own,
-// mygo's primitives, or onevra's — with a badge naming the library;
-// where the same component exists in several, the gallery keeps the
-// one of uix, then mygo, then onevra. A search box above the sidebar
-// filters the items. The main package shows it in a window; the tests
-// and the snapshot command draw it headless.
+// page shows a component of one of the four libraries — uix's own,
+// mygo's primitives, onevra's, or the ported MujicaUI — with a badge
+// naming the library; where the same component exists in several, the
+// gallery keeps the one of uix, then mygo, then onevra. A search box
+// above the sidebar filters the items. The main package shows it in a
+// window; the tests and the snapshot command draw it headless.
 package view
 
 import (
@@ -49,11 +49,11 @@ func rail(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Width(244).FillHeight().Shrink(0).Gap(t.Space(2)).
 		Background(t.Surface).Radius(t.Radius * 3).Padding(t.Space(2.5)).Children(func() {
 		ui.Text(c, "组件画廊").FontSize(t.FontSize * 1.2).Bold()
-		// The library filter: 全部 mixes the three libraries, and each
+		// The library filter: 全部 mixes the libraries, and each
 		// name shows that library's components alone.
 		segmented.Segmented(c, segmented.Props{
 			Selected: &State.Filter,
-			Labels:   []string{"全部", "uix", "mygo", "onevra"},
+			Labels:   []string{"全部", "uix", "mygo", "onevra", "mujica"},
 			Label:    "按库过滤",
 		})
 		searchfield.SearchField(c, searchfield.Props{Value: &State.Query, Placeholder: "搜索组件…"})

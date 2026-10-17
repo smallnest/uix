@@ -8,13 +8,15 @@ import (
 
 // Library names the library a component comes from. The gallery keeps
 // one page per role, by priority: uix's own component when there is one,
-// else mygo's primitive, else onevra's.
+// else mygo's primitive, else onevra's. The MujicaUI pages are theirs
+// alone, ported whole, so they never dedupe.
 type Library int
 
 const (
 	Uix Library = iota
 	Mygo
 	Onevra
+	Mujica
 )
 
 // Entry is one component of the gallery: its name, the library it comes
@@ -42,7 +44,8 @@ type Section struct {
 }
 
 // catalog is the gallery: every component of the three libraries, one
-// page each, the duplicates resolved by priority.
+// page each, the duplicates resolved by priority, then MujicaUI's whole
+// catalog as a fourth library.
 var catalog = []Section{
 	{
 		Title: "操作与导航",
@@ -236,4 +239,10 @@ var catalog = []Section{
 			{"appshell", "AppShell", Uix, lucide.LayoutPanelTop, demoAppShell},
 		},
 	},
+}
+
+// The MujicaUI pages follow the three libraries as a fourth: the ported
+// catalog becomes one gallery section per MujicaUI category.
+func init() {
+	catalog = append(catalog, mujicaSections()...)
 }

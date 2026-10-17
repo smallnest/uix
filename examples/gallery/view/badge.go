@@ -4,13 +4,15 @@ import "github.com/egoist/mygo/ui"
 
 // libraryColor returns the color that marks a library in the gallery:
 // the accent for uix's own components, the success for mygo's
-// primitives, the warning for onevra's.
+// primitives, the warning for onevra's, the danger for MujicaUI's.
 func libraryColor(t *ui.Theme, lib Library) ui.Color {
 	switch lib {
 	case Mygo:
 		return t.Success
 	case Onevra:
 		return t.Warning
+	case Mujica:
+		return t.Danger
 	}
 	return t.Accent
 }
@@ -22,6 +24,8 @@ func libraryName(lib Library) string {
 		return "mygo"
 	case Onevra:
 		return "onevra"
+	case Mujica:
+		return "mujica"
 	}
 	return "uix"
 }
