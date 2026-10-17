@@ -16,7 +16,7 @@ func newTester(t *testing.T) *ui.Tester {
 }
 
 // countExact counts the texts of the frame equal to s. The library
-// filter in the rail names the three libraries, so a library's text
+// filter in the rail names the four libraries, so a library's text
 // appears there even on a page of another library: once when only the
 // filter names it, twice when the page's badge names it too.
 func countExact(tt *ui.Tester, s string) int {
@@ -34,7 +34,7 @@ func countExact(tt *ui.Tester, s string) int {
 func TestRenders(t *testing.T) {
 	tt := newTester(t)
 	for _, s := range []string{
-		"组件画廊", "全部", "操作与导航",
+		"组件画廊", "操作与导航",
 		"Button", "主要", "次要", "描边", "幽灵", "危险", "禁用",
 	} {
 		if !tt.HasText(s) {
@@ -66,6 +66,9 @@ func reach(t *testing.T, tt *ui.Tester, query, item string) {
 // item into view first.
 func TestNavigate(t *testing.T) {
 	tt := newTester(t)
+	// The PixelGrid page is onevra's, and the sidebar shows one library
+	// at a time, so the filter chooses it before the search finds it.
+	view.State.Filter = int(view.Onevra)
 	reach(t, tt, "pixel", "PixelGrid")
 	if view.State.Selected != "pixelgrid" {
 		t.Fatalf("the click chose %q, want pixelgrid", view.State.Selected)
@@ -79,10 +82,14 @@ func TestNavigate(t *testing.T) {
 // mygo page carries the mygo badge, an onevra page the onevra badge.
 func TestLibraries(t *testing.T) {
 	tt := newTester(t)
+	// Each page belongs to one library, which the sidebar shows alone, so
+	// the filter picks the page's library before the search finds it.
+	view.State.Filter = int(view.Mygo)
 	reach(t, tt, "box", "Box")
 	if countExact(tt, "mygo") < 2 {
 		t.Fatal("the Box page lacks the mygo badge beside the filter")
 	}
+	view.State.Filter = int(view.Onevra)
 	reach(t, tt, "donut", "DonutChart")
 	if countExact(tt, "onevra") < 2 {
 		t.Fatal("the DonutChart page lacks the onevra badge")
@@ -93,8 +100,7 @@ func TestLibraries(t *testing.T) {
 }
 
 // TestLibraryFilter clicks a library and the sidebar shows that
-// library's components alone, and the page lands on one of them; the
-// 全部 segment restores the mixed sidebar.
+// library's components alone, and the page lands on one of them.
 func TestLibraryFilter(t *testing.T) {
 	tt := newTester(t)
 	if err := tt.Click("mygo"); err != nil {
@@ -124,6 +130,8 @@ func TestLibraryFilter(t *testing.T) {
 // opens its page.
 func TestSearch(t *testing.T) {
 	tt := newTester(t)
+	// DonutChart is onevra's, and the sidebar shows one library at a time.
+	view.State.Filter = int(view.Onevra)
 	view.State.Query = "chart"
 	tt.Frame()
 	if !tt.HasText("DonutChart") {

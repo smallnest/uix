@@ -37,6 +37,9 @@ func TestEveryPageRenders(t *testing.T) {
 	for _, s := range catalog {
 		for _, e := range s.Entries {
 			Reset()
+			// The sidebar shows the entry only under its library's filter,
+			// which the heading needs beside it to prove the page drew.
+			State.Filter = int(e.Lib)
 			State.Selected = e.ID
 			func() {
 				defer func() {
@@ -62,6 +65,20 @@ func count(s string, texts []string) int {
 		}
 	}
 	return n
+}
+
+// filterTo sets the library filter to the page's own library, so a test
+// that opens a page by ID draws that page: the gallery jumps a chosen
+// page that is not of the filtered library to the library's first.
+func filterTo(id string) {
+	for _, s := range catalog {
+		for _, e := range s.Entries {
+			if e.ID == id {
+				State.Filter = int(e.Lib)
+				return
+			}
+		}
+	}
 }
 
 // sameColor reports whether the pixel holds the theme color, ignoring
@@ -128,6 +145,7 @@ func TestOnevraPagesDrawContent(t *testing.T) {
 		{"conversation", "帮我审查这段代码。"},
 	} {
 		Reset()
+		filterTo(tc.id)
 		State.Selected = tc.id
 		tt.Frame()
 		if !tt.HasText(tc.want) {
@@ -159,6 +177,7 @@ func TestMujicaPagesDrawContent(t *testing.T) {
 		{"021", "Variants"},
 	} {
 		Reset()
+		filterTo(tc.id)
 		State.Selected = tc.id
 		tt.Frame()
 		if !tt.HasText(tc.want) {
@@ -209,6 +228,7 @@ func TestDemoContentShows(t *testing.T) {
 		{"signalfield", "欢迎来到组件画廊"},
 	} {
 		Reset()
+		filterTo(tc.id)
 		State.Selected = tc.id
 		tt.Frame()
 		if !tt.HasText(tc.want) {
@@ -228,6 +248,7 @@ func TestStartupStateRenders(t *testing.T) {
 	tt := ui.NewTester(GalleryView, Width, Height)
 	for _, s := range catalog {
 		for _, e := range s.Entries {
+			State.Filter = int(e.Lib) // the filter always shows one library
 			State.Selected = e.ID
 			func() {
 				defer func() {

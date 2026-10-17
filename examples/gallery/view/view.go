@@ -29,9 +29,9 @@ const Width, Height = 960, 600
 func GalleryView(c *ui.Context) {
 	c.SetTheme(tokens.For(c.Theme().Dark))
 	t := c.Theme()
-	// A library filter that does not show the chosen page lands on the
-	// first page of the library it does show.
-	if lib, ok := filterLib(); ok && !inLib(lib, State.Selected) {
+	// The chosen page belongs to the filtered library, or the gallery
+	// lands on the library's first page, so the sidebar shows the page.
+	if lib := Library(State.Filter); !inLib(lib, State.Selected) {
 		if e, ok := firstOf(lib); ok {
 			State.Selected = e.ID
 		}
@@ -49,11 +49,14 @@ func rail(c *ui.Context, t *ui.Theme) {
 	ui.Column(c).Width(244).FillHeight().Shrink(0).Gap(t.Space(2)).
 		Background(t.Surface).Radius(t.Radius * 3).Padding(t.Space(2.5)).Children(func() {
 		ui.Text(c, "组件画廊").FontSize(t.FontSize * 1.2).Bold()
-		// The library filter: 全部 mixes the libraries, and each
-		// name shows that library's components alone.
+		// The library filter shows one library's components at a time.
+		// Five segments would not fit the rail, and the visitor starts on
+		// uix, so the gallery has no "all" segment: each name shows that
+		// library's components alone, and the current page jumps to the
+		// library's first when it does not belong to the chosen one.
 		segmented.Segmented(c, segmented.Props{
 			Selected: &State.Filter,
-			Labels:   []string{"全部", "uix", "mygo", "onevra", "mujica"},
+			Labels:   []string{"uix", "mygo", "onevra", "mujica"},
 			Label:    "按库过滤",
 		})
 		searchfield.SearchField(c, searchfield.Props{Value: &State.Query, Placeholder: "搜索组件…"})
@@ -101,18 +104,17 @@ func current() (Entry, string) {
 }
 
 // sectionsFor returns the sidebar sections whose items match the query
-// and the library filter: every item when the query is empty, else
+// and the filtered library: every item when the query is empty, else
 // those whose name or ID contains it, case-insensitively; and only the
-// filtered library's items when the filter is on. Each item carries the
-// icon of its component.
+// filtered library's items. Each item carries the icon of its component.
 func sectionsFor(query string) []sidebar.Section {
 	q := strings.ToLower(strings.TrimSpace(query))
-	lib, filtered := filterLib()
+	lib := Library(State.Filter)
 	var out []sidebar.Section
 	for _, s := range catalog {
 		var items []sidebar.Item
 		for _, e := range s.Entries {
-			if filtered && e.Lib != lib {
+			if e.Lib != lib {
 				continue
 			}
 			if q == "" || strings.Contains(strings.ToLower(e.Name), q) || strings.Contains(strings.ToLower(e.ID), q) {
@@ -124,15 +126,6 @@ func sectionsFor(query string) []sidebar.Section {
 		}
 	}
 	return out
-}
-
-// filterLib returns the library the sidebar is filtered to, and whether
-// a filter is on; Filter 0 (全部) filters none.
-func filterLib() (Library, bool) {
-	if State.Filter == 0 {
-		return 0, false
-	}
-	return Library(State.Filter - 1), true
 }
 
 // firstOf returns the first catalog entry of the library, for the

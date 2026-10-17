@@ -42,8 +42,8 @@ type GalleryState struct {
 	Selected string
 	// Query filters the sidebar items.
 	Query string
-	// Filter is the chosen segment of the library filter: 0 shows every
-	// library mixed, 1 uix, 2 mygo, 3 onevra and 4 mujica alone.
+	// Filter is the chosen segment of the library filter: 0 uix, 1 mygo,
+	// 2 onevra and 3 mujica alone; the gallery has no "all" segment.
 	Filter int
 }
 

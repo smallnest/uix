@@ -14,18 +14,24 @@ import (
 )
 
 // pages are the snapshots: a uix page, a mygo page, an onevra page and
-// a MujicaUI page, by the sidebar ID of each.
-var pages = []struct{ name, id string }{
-	{"gallery", "button"},
-	{"gallery-box", "box"},
-	{"gallery-pixelgrid", "pixelgrid"},
-	{"gallery-mujica-appshell", "001"},
+// a MujicaUI page, by the sidebar ID and library of each. The gallery
+// shows one library at a time, so the filter picks the page's library
+// or the gallery lands on the library's first page instead.
+var pages = []struct {
+	name, id string
+	lib      view.Library
+}{
+	{"gallery", "button", view.Uix},
+	{"gallery-box", "box", view.Mygo},
+	{"gallery-pixelgrid", "pixelgrid", view.Onevra},
+	{"gallery-mujica-appshell", "001", view.Mujica},
 }
 
 func main() {
 	for _, dark := range []bool{false, true} {
 		for _, p := range pages {
 			view.Reset()
+			view.State.Filter = int(p.lib)
 			view.State.Selected = p.id
 			tt := ui.NewTester(view.GalleryView, view.Width, view.Height)
 			tt.SetDark(dark)
