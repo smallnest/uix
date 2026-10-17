@@ -1,7 +1,7 @@
 // Package view builds the gallery example: a shell like onevra's
 // showcase, with a sidebar of the components and one page each. Every
 // page shows a component of one of the four libraries — uix's own,
-// mygo's primitives, onevra's, or the ported MujicaUI — with a badge
+// mygo's primitives, onevra's, or MujicaUI's — with a badge
 // naming the library; where the same component exists in several, the
 // gallery keeps the one of uix, then mygo, then onevra. A search box
 // above the sidebar filters the items. The main package shows it in a

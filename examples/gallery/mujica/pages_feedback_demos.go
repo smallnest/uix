@@ -363,7 +363,11 @@ func loadingOverlayDemo(c *ui.Context, log func(string)) {
 		loading, cancel bool
 		saves           int
 	}
-	s := ui.Local(c.Root(), "100", func() state { return state{loading: true, cancel: true} })
+	// The overlay starts closed, as the gallery's overlays do, and not
+	// only for looks: upstream's scrim holds its Ring element across the
+	// frame after it exits, and mygo panics on the stale element. The
+	// Loading check box opens it.
+	s := ui.Local(c.Root(), "100", func() state { return state{loading: false, cancel: true} })
 	ui.Column(c).Gap(16).FillWidth().Children(func() {
 		feedbackSection(c, "Parameters", func() {
 			ui.Row(c).Gap(16).Children(func() {

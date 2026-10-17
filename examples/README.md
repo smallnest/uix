@@ -170,8 +170,8 @@ go run ./examples/docreader/cmd/snapshot   write docreader.png, docreader-find.p
 ## Gallery
 
 The gallery example shows the components of the four libraries in one
-window: uix's own components, mygo's primitives, onevra's and the
-ported MujicaUI's. A sidebar of the components, with a search box above
+window: uix's own components, mygo's primitives, onevra's and
+MujicaUI's. A sidebar of the components, with a search box above
 it, chooses the page, and every page shows one component with a badge
 naming its library. Where the same component exists in more than one
 library, the gallery keeps one, preferring uix, then mygo, then onevra.
