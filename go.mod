@@ -6,7 +6,7 @@ require (
 	git.zacharyzhang.com/ZacharyZhang-NY/MujicaUI v0.0.0-20261017053754-bcce34cda1c7 // the author upgraded it to mygo v0.5.5; no fork needed
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/egoist/mygo v0.5.5
-	github.com/oneo-me/onevra/source v0.2026.11
+	github.com/oneo-me/onevra/source v0.2026.13
 	github.com/yuin/goldmark v1.8.6
 )
 
