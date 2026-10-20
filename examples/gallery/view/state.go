@@ -10,6 +10,8 @@ import (
 
 	components "github.com/oneo-me/onevra/source/components"
 	ochat "github.com/oneo-me/onevra/source/components/chat"
+	"github.com/oneo-me/onevra/source/components/flow"
+	"github.com/oneo-me/onevra/source/components/treemap"
 
 	"github.com/smallnest/uix/components/carousel"
 	"github.com/smallnest/uix/components/command"
@@ -176,6 +178,23 @@ type DemoState struct {
 	ShaderStill     bool
 	ShaderInert     bool
 	ShaderPrompt    string
+	// The onevra v0.2026.13 pages: the deck of the card stack, the hold
+	// that confirmed, the compare slider's position, the drill of the
+	// treemap and the camera of the flow, and the board the floating
+	// button group edits.
+	OCardStack components.CardStackState
+	OHold      bool
+	OCompare   float32
+	OTreemap   treemap.State
+	OFlow      flow.State
+	OFloating  floatingDemoState
+}
+
+// floatingDemoState is the sample board of the floating button group: how
+// many edits it has and undid, and whether presenting is on.
+type floatingDemoState struct {
+	edits, undone int
+	presenting    bool
 }
 
 // Reset puts the example in its initial state, for the tests and the

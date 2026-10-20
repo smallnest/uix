@@ -143,6 +143,15 @@ func TestOnevraPagesDrawContent(t *testing.T) {
 		{"tablevirtualized", "文件_1.go"},
 		{"treevirtualized", "file_0001.go"},
 		{"conversation", "帮我审查这段代码。"},
+		// The v0.2026.13 pages.
+		{"treemap", "磁盘占用"},
+		{"flow", "发布"},
+		{"cardstack", "里斯本"},
+		{"holdtoconfirm", "长按归档"},
+		{"avatargroup", "Alan Turing"},
+		{"imagecompare", "原图"},
+		{"scrolledgebar", "文件列表"},
+		{"floatingbuttongroup", "撤销"},
 	} {
 		Reset()
 		filterTo(tc.id)

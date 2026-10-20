@@ -13,10 +13,11 @@ import (
 	"github.com/smallnest/uix/examples/gallery/view"
 )
 
-// pages are the snapshots: a uix page, a mygo page, an onevra page and
-// a MujicaUI page, by the sidebar ID and library of each. The gallery
-// shows one library at a time, so the filter picks the page's library
-// or the gallery lands on the library's first page instead.
+// pages are the snapshots: a uix page, a mygo page, two onevra pages —
+// the established one and a v0.2026.13 newcomer — and a MujicaUI page,
+// by the sidebar ID and library of each. The gallery shows one library
+// at a time, so the filter picks the page's library or the gallery lands
+// on the library's first page instead.
 var pages = []struct {
 	name, id string
 	lib      view.Library
@@ -24,6 +25,7 @@ var pages = []struct {
 	{"gallery", "button", view.Uix},
 	{"gallery-box", "box", view.Mygo},
 	{"gallery-pixelgrid", "pixelgrid", view.Onevra},
+	{"gallery-imagecompare", "imagecompare", view.Onevra},
 	{"gallery-mujica-appshell", "001", view.Mujica},
 }
 

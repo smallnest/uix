@@ -71,6 +71,8 @@ var catalog = []Section{
 			{"magicback", "MagicBack", Uix, lucide.Undo2, demoMagicBack},
 			{"interactivestepper", "InteractiveStepper", Uix, lucide.Footprints, demoInteractiveStepper},
 			{"backbutton", "BackButton", Mygo, lucide.CornerUpLeft, demoBackButton},
+			{"holdtoconfirm", "HoldToConfirm", Onevra, lucide.Hand, demoHoldToConfirm},
+			{"floatingbuttongroup", "FloatingButtonGroup", Onevra, lucide.Boxes, demoFloatingButtonGroup},
 		},
 	},
 	{
@@ -108,6 +110,7 @@ var catalog = []Section{
 			{"rating", "Rating", Uix, lucide.Star, demoRating},
 			{"meter", "Meter", Uix, lucide.Gauge, demoMeter},
 			{"stepslider", "StepSlider", Mygo, lucide.ListMusic, demoStepSlider},
+			{"cardstack", "CardStack", Onevra, lucide.Layers2, demoCardStack},
 		},
 	},
 	{
@@ -174,6 +177,10 @@ var catalog = []Section{
 			{"motion", "Motion", Mygo, lucide.Film, demoMotion},
 			{"chart", "Chart", Mygo, lucide.ChartScatter, demoChart},
 			{"outlinetable", "OutlineTable", Mygo, lucide.TableProperties, demoOutlineTable},
+			{"avatargroup", "AvatarGroup", Onevra, lucide.Users, demoAvatarGroup},
+			{"imagecompare", "ImageCompare", Onevra, lucide.Images, demoImageCompare},
+			{"treemap", "Treemap", Onevra, lucide.Blocks, demoTreemap},
+			{"flow", "Flow", Onevra, lucide.Workflow, demoFlow},
 		},
 	},
 	{
@@ -237,6 +244,7 @@ var catalog = []Section{
 			{"canvas", "Canvas", Mygo, lucide.PenTool, demoCanvas},
 			{"splitvertical", "SplitVertical", Mygo, lucide.AlignVerticalJustifyStart, demoSplitVertical},
 			{"appshell", "AppShell", Uix, lucide.LayoutPanelTop, demoAppShell},
+			{"scrolledgebar", "ScrollEdgeBar", Onevra, lucide.PanelTopOpen, demoScrollEdgeBar},
 		},
 	},
 }
