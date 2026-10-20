@@ -60,6 +60,10 @@ type NeedleOptions struct {
 	// Turns sweeps of the arc the needle makes across the domain: a
 	// clock's minute hand turns 12 times while the hour hand turns once.
 	Turns int
+	// Gap is the radius of a clear circle around the center, in design
+	// units, that splits the needle so a readout can sit between the
+	// halves. 0 draws it whole.
+	Gap float32
 	// End is the end of a range the needle points at.
 	End End
 }
@@ -91,6 +95,12 @@ func (g *Canvas) Needle(o NeedleOptions) {
 	if tailColor == (ui.Color{}) {
 		tailColor = color
 	}
+	// A gap is a length like any other, so a negative one is none rather
+	// than a circle struck outside the needle.
+	gap := o.Gap
+	if gap < 0 {
+		gap = 0
+	}
 
 	value := g.value
 	if o.End == EndFrom {
@@ -106,12 +116,30 @@ func (g *Canvas) Needle(o NeedleOptions) {
 	}
 
 	if o.Style == NeedleLine {
-		tx, ty := g.xy(polar(0, 0, reach, angle))
-		bx, by := g.xy(polar(0, 0, -tail, angle))
-		var p ui.Path
-		p.MoveTo(bx, by).LineTo(tx, ty)
-		g.pt.StrokePath(&p, g.width(width), color)
+		// The gap is cut out of the stroke by starting it that far along
+		// the needle: a stroke has no shape to hollow, so the two halves
+		// are two lengths of line rather than one line and a hole.
+		inner := gap
+		if inner < 0 {
+			inner = 0
+		}
+		if inner < reach {
+			tx, ty := g.xy(polar(0, 0, reach, angle))
+			sx, sy := g.xy(polar(0, 0, inner, angle))
+			var p ui.Path
+			p.MoveTo(sx, sy).LineTo(tx, ty)
+			g.pt.StrokePath(&p, g.width(width), color)
+		}
+		backEnd := -tail
+		if backEnd < -inner {
+			bx, by := g.xy(polar(0, 0, backEnd, angle))
+			sx, sy := g.xy(polar(0, 0, -inner, angle))
+			var p ui.Path
+			p.MoveTo(bx, by).LineTo(sx, sy)
+			g.pt.StrokePath(&p, g.width(width), tailColor)
+		}
 		if tailDot > 0 {
+			bx, by := g.xy(polar(0, 0, -tail, angle))
 			g.fillCircle(bx, by, tailDot, tailColor)
 		}
 		return
@@ -122,6 +150,11 @@ func (g *Canvas) Needle(o NeedleOptions) {
 	// pivot, and each end keeps a fifth of the width and is rounded off
 	// with a disc of that size, as a round cap would, so a thin needle
 	// never vanishes to a point.
+	//
+	// A gap moves the base they meet at out to the circle, each half
+	// closed along that circle's chord: the chord is perpendicular to the
+	// needle, so it is the same across-the-needle pair as the base, at
+	// the gap's distance instead of zero.
 	left := pt(width/2, angle-90)
 	right := pt(width/2, angle+90)
 	endRadius := width * 0.2
@@ -151,22 +184,36 @@ func (g *Canvas) Needle(o NeedleOptions) {
 		headLeft := pt(width*2, angle-90)
 		headRight := pt(width*2, angle+90)
 		if tail > 0 {
+			// The tail runs back from the gap, not from the center, so a
+			// readout between the halves is not covered by either. Its
+			// corners are the axis point carried sideways, which is what
+			// pin does; a polar point at a negative radius would swing
+			// round the center instead of staying on the axis.
+			rearLeft := pin(back, shaftLeft)
+			rearRight := pin(back, shaftRight)
+			backInnerLeft := pin(pt(-gap, angle), shaftLeft)
+			backInnerRight := pin(pt(-gap, angle), shaftRight)
 			g.fillPoly(g.dev([][2]float32{
-				shaftLeft, shaftRight,
-				pin(back, shaftRight),
-				pin(back, shaftLeft),
+				backInnerLeft, backInnerRight, rearRight, rearLeft,
 			}), tailColor)
 			bx, by := g.xy(back[0], back[1])
 			g.fillCircle(bx, by, width/2, tailColor)
 		}
+		frontLeft, frontRight := shaftLeft, shaftRight
+		if gap > 0 {
+			// The shaft starts at the circle rather than the pivot, so
+			// the hole is left clear between the head and the tail.
+			atGap := pt(gap, angle)
+			frontLeft, frontRight = pin(atGap, shaftLeft), pin(atGap, shaftRight)
+		}
 		g.fillPoly(g.dev([][2]float32{
-			shaftLeft,
+			frontLeft,
 			pin(base, shaftLeft),
 			pin(base, headLeft),
 			tip,
 			pin(base, headRight),
 			pin(base, shaftRight),
-			shaftRight,
+			frontRight,
 		}), color)
 		if tailDot > 0 {
 			bx, by := g.xy(back[0], back[1])
@@ -189,13 +236,49 @@ func (g *Canvas) Needle(o NeedleOptions) {
 		}
 	}
 	if tail > 0 {
-		g.fillPoly(g.dev(rear), tailColor)
+		switch {
+		case gap <= 0:
+			g.fillPoly(g.dev(rear), tailColor)
+		case o.Style == NeedleCompass:
+			// A compass tapers the same both ways, so its tail is the
+			// same blade, cut at the circle: the taper runs from the
+			// half width across the needle to the fine end behind.
+			outer := pt(-tail, angle)
+			atGap := pt(-gap, angle)
+			g.fillPoly(g.dev([][2]float32{
+				pin(outer, endLeft), pin(outer, endRight),
+				pin(atGap, endRight), pin(atGap, endLeft),
+			}), tailColor)
+		default:
+			// A pointer's stub keeps its blunt end but starts at the
+			// circle, so neither half covers the readout between them.
+			outer := pt(-tail, angle)
+			atGap := pt(-gap, angle)
+			stub := func(p [2]float32) [2]float32 {
+				return pin(p, [2]float32{left[0] * 0.6, left[1] * 0.6})
+			}
+			wide := func(p [2]float32) [2]float32 {
+				return pin(p, [2]float32{right[0] * 0.6, right[1] * 0.6})
+			}
+			g.fillPoly(g.dev([][2]float32{
+				stub(outer), wide(outer), wide(atGap), stub(atGap),
+			}), tailColor)
+		}
 		if o.Style == NeedleCompass {
 			bx, by := g.xy(back[0], back[1])
 			g.fillCircle(bx, by, endRadius, tailColor)
 		}
 	}
-	g.fillPoly(g.dev(blade(tip)), color)
+	if gap <= 0 {
+		g.fillPoly(g.dev(blade(tip)), color)
+	} else {
+		// The blade's wide end is the gap's chord rather than the pivot,
+		// so the tip half starts outside the hole; the fine end stays at
+		// the tip, where the disc below rounds it off.
+		g.fillPoly(g.dev([][2]float32{
+			pin(tip, endLeft), pin(tip, endRight), right, left,
+		}), color)
+	}
 	tx, ty := g.xy(tip[0], tip[1])
 	g.fillCircle(tx, ty, endRadius, color)
 	if tailDot > 0 {

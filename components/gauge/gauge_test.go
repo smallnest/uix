@@ -165,6 +165,44 @@ func count(tt *ui.Tester, c ui.Color) int {
 	return n
 }
 
+// inRect is how many pixels lit inside the rectangle r, so a test can
+// ask whether a given part of the dial carries ink at all.
+func inRect(tt *ui.Tester, r ui.Rect) int {
+	img := tt.Image()
+	b := img.Bounds()
+	n := 0
+	for x := b.Min.X; x < b.Max.X; x++ {
+		for y := b.Min.Y; y < b.Max.Y; y++ {
+			if !r.Contains(float32(x), float32(y)) {
+				continue
+			}
+			cr, cg, cb, _ := img.At(x, y).RGBA()
+			if !near(ui.Color{R: uint8(cr >> 8), G: uint8(cg >> 8), B: uint8(cb >> 8)}, lastBackground) {
+				n++
+			}
+		}
+	}
+	return n
+}
+
+// TestCompassNeedleTakesTwoColors draws the compass lozenge with a tail
+// color of its own and requires both halves on the canvas, since two
+// colors in one needle is the whole point of the style: a wind vane's
+// counterweight, a magnetic needle's north.
+func TestCompassNeedleTakesTwoColors(t *testing.T) {
+	north, south := ui.RGB(200, 40, 40), ui.RGB(30, 60, 200)
+	tt := frame(Options{Value: 50, Draw: func(g *Canvas) {
+		g.Needle(NeedleOptions{Style: NeedleCompass, Width: 14, Length: 0.9, Tail: 70,
+			Color: north, TailColor: south})
+	}})
+	if count(tt, north) < 20 {
+		t.Fatalf("the compass point took %d pixels of its color", count(tt, north))
+	}
+	if count(tt, south) < 20 {
+		t.Fatalf("the compass tail took %d pixels of its own color, want a lozenge of two halves", count(tt, south))
+	}
+}
+
 // TestTickFillLightsTheValue draws the tick fill over the whole sweep
 // and checks the lit stretch takes the lit color while the rest does
 // not, so a fill that painted every tick fails. It also moves the value
@@ -269,6 +307,43 @@ func TestNeedleStylesRender(t *testing.T) {
 		if lit(tt) < 100 {
 			t.Fatalf("needle style %d drew nothing", s)
 		}
+	}
+}
+
+// TestNeedleGapSplitsTheNeedle draws each style whole and with a gap, and
+// requires the gap to clear a disc at the center without shrinking the
+// needle: the two must differ, the tip must still be reached, and the
+// middle of the dial must go bare. The upstream wind vane relies on this
+// to seat a readout between the halves.
+func TestNeedleGapSplitsTheNeedle(t *testing.T) {
+	// The wedge is the arrow reaching from well above the center to well
+	// below it, so the tip and the counterweight both fall outside.
+	const cx, cy = 116, 116
+	tip := ui.Rect{X: cx - 14, Y: cy - 90, W: 28, H: 30}
+	weight := ui.Rect{X: cx - 10, Y: cy + 26, W: 20, H: 16}
+	hole := ui.Rect{X: cx - 12, Y: cy - 12, W: 24, H: 24}
+	ink := func(gap float32) *ui.Tester {
+		return frame(Options{Value: 50, Size: 200, Draw: func(g *Canvas) {
+			g.Needle(NeedleOptions{Style: NeedleArrow, Length: 1, Width: 10, Tail: 60, Gap: gap})
+		}})
+	}
+	whole, split := ink(0), ink(40)
+	if bytes.Equal(whole.Image().Pix, split.Image().Pix) {
+		t.Fatal("a gap drew the same needle as no gap")
+	}
+	if inRect(whole, hole) == 0 {
+		t.Fatal("the ungapped needle should cross the center")
+	}
+	if inRect(split, hole) != 0 {
+		t.Fatalf("the gap left %d pixels inside the circle it should clear", inRect(split, hole))
+	}
+	// The gap clears the middle alone: the tip still reaches the top of
+	// the dial and the tail still carries its weight.
+	if inRect(split, tip) == 0 {
+		t.Fatal("the gapped needle stopped short of its tip")
+	}
+	if inRect(split, weight) == 0 {
+		t.Fatal("the gapped needle dropped its counterweight")
 	}
 }
 

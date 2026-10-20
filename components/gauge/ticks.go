@@ -322,6 +322,8 @@ type TickLabelsOptions struct {
 	Offset float32
 	// FontSize is the label size in design units; 16 when zero.
 	FontSize float32
+	// Font is the family; the theme's when zero.
+	Font FontFamily
 	// Color colors every label, or each by its value; the theme's text
 	// when zero.
 	Color ValueColor
@@ -363,6 +365,6 @@ func (g *Canvas) TickLabels(o TickLabelsOptions) {
 			label = o.Format(v)
 		}
 		x, y := g.point(g.radius+offset, g.angleOf(v))
-		g.textAt(label, x, y, size, weight, TextMiddle, paint(v))
+		g.textAt(label, x, y, size, weight, TextMiddle, paint(v), o.Font)
 	}
 }

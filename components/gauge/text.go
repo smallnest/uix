@@ -18,16 +18,50 @@ const (
 	TextEnd
 )
 
+// FontFamily is the family a label is drawn in.
+type FontFamily int
+
+const (
+	// FontSans is the theme's own family and the zero value, so a label
+	// with no family asked for follows the app.
+	FontSans FontFamily = iota
+	// FontMono is a monospaced family, which holds the digits of a
+	// readout in place while its value changes.
+	FontMono
+	// FontRounded is a rounded family, the softer face of a dial's large
+	// reading. Not every platform has one, so this asks for the nearest.
+	FontRounded
+)
+
+// family is the family list this font asks the shaper for. The shaper
+// takes a list, so each falls back through what the platform is likely
+// to have.
+func (f FontFamily) family(theme string) string {
+	switch f {
+	case FontMono:
+		return "monospace"
+	case FontRounded:
+		return "SF Pro Rounded, ui-rounded, Nunito, Verdana, sans-serif"
+	default:
+		return theme
+	}
+}
+
 // textAt draws s, its center at the device point (x, y), at the design
 // font size, measured and drawn by the same shaping so the label is
 // exactly centered. A value in tabular figures, so digits line up as the
 // needle moves.
-func (g *Canvas) textAt(s string, x, y float32, size float32, weight int, anchor TextAnchor, color ui.Color) {
+func (g *Canvas) textAt(s string, x, y float32, size float32, weight int, anchor TextAnchor, color ui.Color, f FontFamily) {
 	if s == "" {
 		return
 	}
 	fs := g.fontSize(size)
-	layout := ui.ShapeText(s, ui.Font{Size: fs, Weight: weight, Features: "tnum"}, 0)
+	layout := ui.ShapeText(s, ui.Font{
+		Family:   f.family(g.t.Font),
+		Size:     fs,
+		Weight:   weight,
+		Features: "tnum",
+	}, 0)
 	w, h := layout.Size()
 	tx := x
 	switch anchor {
@@ -46,6 +80,8 @@ type TextOptions struct {
 	X, Y float32
 	// FontSize is the label size in design units; 24 when zero.
 	FontSize float32
+	// Font is the family; the theme's when zero.
+	Font FontFamily
 	// Color is the label; the theme's text when zero.
 	Color ui.Color
 	// Weight is the font weight; 500 when zero.
@@ -68,7 +104,7 @@ func (g *Canvas) Text(o TextOptions) {
 		weight = 500
 	}
 	x, y := g.xy(o.X, o.Y)
-	g.textAt(o.Text, x, y, size, weight, o.Anchor, g.color(o.Color))
+	g.textAt(o.Text, x, y, size, weight, o.Anchor, g.color(o.Color), o.Font)
 }
 
 // ValueOptions draws the current value as text.
@@ -78,6 +114,9 @@ type ValueOptions struct {
 	X, Y float32
 	// FontSize is the readout size in design units; 96 when zero.
 	FontSize float32
+	// Font is the family; the theme's when zero. A readout that holds
+	// still as it changes asks for FontMono.
+	Font FontFamily
 	// Color is the readout; the theme's text when zero.
 	Color ui.Color
 	// Weight is the font weight; 600 when zero.
@@ -124,5 +163,5 @@ func (g *Canvas) Value(o ValueOptions) {
 		s = text(g.value)
 	}
 	x, y := g.xy(o.X, o.Y)
-	g.textAt(s, x, y, size, weight, TextMiddle, g.color(o.Color))
+	g.textAt(s, x, y, size, weight, TextMiddle, g.color(o.Color), o.Font)
 }
