@@ -200,7 +200,7 @@ func (g *Canvas) TickFill(o TickFillOptions) {
 
 	// ahead is how far round from the start a value sits, on a closed
 	// ring; between whether it lies between the ends.
-	ahead := func(v float64) float64 { return foldValue(v-tail+eps, 0, span) }
+	ahead := func(v float64) float64 { return Fold(v-tail+eps, 0, span) }
 	between := func(v float64) bool {
 		if g.wrap {
 			return ahead(v) <= ahead(head)+eps

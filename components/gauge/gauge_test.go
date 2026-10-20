@@ -515,8 +515,8 @@ func TestCompassLabelFoldsNegativeBearings(t *testing.T) {
 		{-90, "W"}, {-10, "350°"}, {315, "NW"}, {-45, "NW"},
 	}
 	for _, c := range cases {
-		if got := compassLabel(c.degrees); got != c.want {
-			t.Fatalf("compassLabel(%g) = %q, want %q", c.degrees, got, c.want)
+		if got := CompassLabel(c.degrees); got != c.want {
+			t.Fatalf("CompassLabel(%g) = %q, want %q", c.degrees, got, c.want)
 		}
 	}
 }
@@ -536,8 +536,8 @@ func TestDurationLabelKeepsOneSign(t *testing.T) {
 		{-0.001, "0h 00m"}, {-0.004, "0h 00m"},
 	}
 	for _, c := range cases {
-		if got := durationLabel(c.hours); got != c.want {
-			t.Fatalf("durationLabel(%g) = %q, want %q", c.hours, got, c.want)
+		if got := DurationLabel(c.hours); got != c.want {
+			t.Fatalf("DurationLabel(%g) = %q, want %q", c.hours, got, c.want)
 		}
 	}
 }

@@ -89,7 +89,7 @@ func (g *Canvas) Arc(o ArcOptions) {
 	// start, as gauge-ui's GaugeArc does.
 	forward := g.rangeMode && g.wrap && o.From == nil && o.To == nil
 	if forward {
-		head = tail + foldValue(head-tail, 0, math.Abs(g.max-g.min))
+		head = tail + Fold(head-tail, 0, math.Abs(g.max-g.min))
 	}
 	lo, hi := math.Min(tail, head), math.Max(tail, head)
 
@@ -100,7 +100,7 @@ func (g *Canvas) Arc(o ArcOptions) {
 			return
 		}
 		perUnit := (g.endAngle - g.startAngle) / span
-		a0 = g.startAngle + foldValue(lo-g.min, 0, span)*perUnit
+		a0 = g.startAngle + Fold(lo-g.min, 0, span)*perUnit
 		a1 = a0 + math.Min((hi-lo)*perUnit, 360)
 	} else if o.Reverse {
 		a0 = g.angleOf(g.max - (hi - lo))

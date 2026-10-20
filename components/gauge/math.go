@@ -25,9 +25,10 @@ func polar(cx, cy, r float32, a float64) (x, y float32) {
 // clamp bounds v to [lo, hi].
 func clamp(v, lo, hi float64) float64 { return math.Max(lo, math.Min(hi, v)) }
 
-// foldValue folds v back inside [min, max) modulo the span, as a closed
-// ring: 370° on a compass reads as 10°, and 25 o'clock as 1.
-func foldValue(v, min, max float64) float64 {
+// Fold folds v back inside [min, max) modulo the span, as a closed ring:
+// 370° on a compass reads as 10°, and 25 o'clock as 1. Use it to bring a
+// heading back onto a dial's domain.
+func Fold(v, min, max float64) float64 {
 	lo := math.Min(min, max)
 	span := math.Abs(max - min)
 	if span == 0 {

@@ -181,8 +181,17 @@ it never dedupes.
 ```
 go run ./examples/gallery                open the window
 go test ./examples/gallery/...           render and check it headless
-go run ./examples/gallery/cmd/snapshot   write the gallery PNGs: two uix, a mygo, two onevra and a mujica page, light and dark
+go run ./examples/gallery/cmd/snapshot   write the gallery PNGs: seven uix, a mygo, two onevra and a mujica page, light and dark
 ```
+
+The `gauge` component has a page of its own, and six more pages follow
+it that show the whole instrument clusters the gauge was built for: a
+server monitor, a day of health readings, world clocks, a weather
+station, and a cockpit six-pack. Each scene page composes many gauges,
+so between them the gallery draws every primitive the gauge package
+exports. Two tests hold that line: one reads the pages and fails when a
+primitive is called by none of them, and one draws every page and
+requires each dial to paint.
 
 ## Composer
 

@@ -24,6 +24,11 @@ var pages = []struct {
 }{
 	{"gallery", "button", view.Uix},
 	{"gallery-gauge", "gauge", view.Uix},
+	{"gallery-gauge-monitor", "gauge-monitor", view.Uix},
+	{"gallery-gauge-health", "gauge-health", view.Uix},
+	{"gallery-gauge-time", "gauge-time", view.Uix},
+	{"gallery-gauge-weather", "gauge-weather", view.Uix},
+	{"gallery-gauge-cockpit", "gauge-cockpit", view.Uix},
 	{"gallery-box", "box", view.Mygo},
 	{"gallery-pixelgrid", "pixelgrid", view.Onevra},
 	{"gallery-imagecompare", "imagecompare", view.Onevra},

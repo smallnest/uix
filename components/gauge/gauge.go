@@ -144,7 +144,7 @@ func Gauge(c *ui.Context, o Options) ui.Element {
 	wrap := o.Wrap
 	settle := func(v float64) float64 {
 		if wrap {
-			return foldValue(v, lo, hi)
+			return Fold(v, lo, hi)
 		}
 		return clamp(v, lo, hi)
 	}
@@ -186,7 +186,7 @@ func Gauge(c *ui.Context, o Options) ui.Element {
 	// A wrapped domain folds what a tween overshoots, so a bounce past
 	// the seam reads as the value past it, as the spring of gauge-ui does.
 	if wrap {
-		shownFrom, shownTo = foldValue(shownFrom, lo, hi), foldValue(shownTo, lo, hi)
+		shownFrom, shownTo = Fold(shownFrom, lo, hi), Fold(shownTo, lo, hi)
 	}
 	startAngle, endAngle := angles(o.StartAngle, o.EndAngle)
 	startAngle += o.Rotate
@@ -325,12 +325,12 @@ func (g *Canvas) Inset(o InsetOptions) {
 	ig.value = o.Value
 	if o.Range != nil {
 		if o.Wrap {
-			ig.from, ig.value = foldValue(o.Range[0], lo, hi), foldValue(o.Range[1], lo, hi)
+			ig.from, ig.value = Fold(o.Range[0], lo, hi), Fold(o.Range[1], lo, hi)
 		} else {
 			ig.from, ig.value = clamp(math.Min(o.Range[0], o.Range[1]), lo, hi), clamp(math.Max(o.Range[0], o.Range[1]), lo, hi)
 		}
 	} else if o.Wrap {
-		ig.value = foldValue(o.Value, lo, hi)
+		ig.value = Fold(o.Value, lo, hi)
 	} else {
 		ig.value = clamp(o.Value, lo, hi)
 	}

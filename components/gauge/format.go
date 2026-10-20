@@ -44,10 +44,10 @@ var compassPoints = [...]string{
 	"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
 }
 
-// compassLabel formats a heading in degrees as a compass point when it
+// CompassLabel formats a heading in degrees as a compass point when it
 // lands on one of the sixteen, and as degrees otherwise, so a 0–360
 // domain reads like a bezel: N, 30°, 60°, E, and so on.
-func compassLabel(degrees float64) string {
+func CompassLabel(degrees float64) string {
 	// Fold the heading into [0, 360) first: a bearing of -10 is 350, and
 	// math.Mod would keep the sign and read the far side of the rose.
 	turn := math.Mod(math.Mod(degrees, 360)+360, 360)
@@ -58,9 +58,9 @@ func compassLabel(degrees float64) string {
 	return fmt.Sprintf("%d°", int(math.Round(turn)))
 }
 
-// clockLabel formats a value in hours as a clock numeral, so 0 and 12
+// ClockLabel formats a value in hours as a clock numeral, so 0 and 12
 // both read "12".
-func clockLabel(hours float64) string {
+func ClockLabel(hours float64) string {
 	step := (int(math.Round(hours))%12 + 12) % 12
 	if step == 0 {
 		return "12"
@@ -76,10 +76,10 @@ func padTwo(n int) string {
 	return fmt.Sprintf("%d", n)
 }
 
-// clockTime formats hours past midnight as a 24-hour clock time: 6.5
+// ClockTime formats hours past midnight as a 24-hour clock time: 6.5
 // reads "06:30". Negative hours reach back into the day before, and past
 // 24 into the day after.
-func clockTime(hours float64) string {
+func ClockTime(hours float64) string {
 	minutes := int(math.Round(math.Mod(hours, 24) * 60))
 	if minutes < 0 {
 		minutes += 24 * 60
@@ -87,10 +87,10 @@ func clockTime(hours float64) string {
 	return padTwo(minutes/60%24) + ":" + padTwo(minutes%60)
 }
 
-// durationLabel formats a duration in hours as "7h 32m". Hours going
+// DurationLabel formats a duration in hours as "7h 32m". Hours going
 // back past midnight stay negative on the hours alone, so the minutes
 // never carry a sign of their own: -0.5 is "-0h 30m", not "0h -30m".
-func durationLabel(hours float64) string {
+func DurationLabel(hours float64) string {
 	minutes := int(math.Round(hours * 60))
 	sign := ""
 	if minutes < 0 {
