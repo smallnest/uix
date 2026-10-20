@@ -162,6 +162,7 @@ var catalog = []Section{
 			{"tree", "Tree", Uix, lucide.ListTree, demoTree},
 			{"treevirtualized", "TreeVirtualized", Onevra, lucide.FolderTree, demoTreeVirtualized},
 			{"outline", "Outline", Mygo, lucide.GitBranch, demoOutline},
+			{"gauge", "Gauge", Uix, lucide.Gauge, demoGauge},
 			{"linechart", "LineChart", Uix, lucide.ChartLine, demoLineChart},
 			{"barchart", "BarChart", Uix, lucide.ChartColumn, demoBarChart},
 			{"donutchart", "DonutChart", Onevra, lucide.ChartPie, demoDonutChart},

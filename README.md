@@ -146,6 +146,7 @@ func main() {
 | `notificationcenter` | Panel of notifications in tabs, opened from a bell button |
 | `appshell` | App frame with a title, a sidebar and the page it switches |
 | `statcard` | Metric card with the delta against the previous period |
+| `gauge` | Composable gauges: a track, arcs, zones, ticks, a needle and its hub, in one shared domain |
 | `linechart` | Line chart that follows the pointer, against a year earlier |
 | `barchart` | Paired bar chart that follows the pointer, against a year earlier |
 | `carousel` | Slides you flip with buttons, dots or a trackpad |
@@ -192,7 +193,10 @@ The rows below are ports of the
 [onevra](https://github.com/oneo-me/onevra) components to MyGo's native
 UI. They keep the same roles: parsing happens once on the application
 side, and rendering draws the retained result, so the UI thread never
-runs a parser.
+runs a parser. The `gauge` package is a port of
+[gauge-ui](https://github.com/thordursk/gauge-ui) on the same terms: the
+primitives and the gauge-degree geometry it defines, composed in a draw
+callback instead of nested elements.
 
 | Component | Role |
 | --- | --- |

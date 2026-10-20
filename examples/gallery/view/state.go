@@ -182,6 +182,10 @@ type DemoState struct {
 	// that confirmed, the compare slider's position, the drill of the
 	// treemap and the camera of the flow, and the board the floating
 	// button group edits.
+	// The gauge page: the reading its slider sets and the fuel dial of
+	// the nested face under the speedometer.
+	GaugeValue float64
+	GaugeFuel  float64
 	OCardStack components.CardStackState
 	OHold      bool
 	OCompare   float32
@@ -251,9 +255,11 @@ func Reset() {
 			Old: editor.NewBuffer("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello\")\n\tfmt.Println(\"world\")\n}\n"),
 			New: editor.NewBuffer("package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tfmt.Println(\"你好, 画廊\")\n\tfmt.Println(time.Now())\n}\n"),
 		},
-		OTime:  time.Now(),
-		OColor: ui.Color{R: 110, G: 90, B: 230, A: 255},
-		Page:   3,
+		OTime:      time.Now(),
+		GaugeValue: 68,
+		GaugeFuel:  42,
+		OColor:     ui.Color{R: 110, G: 90, B: 230, A: 255},
+		Page:       3,
 		// The shader starts at its defaults: the sliders sit mid-range and
 		// the background follows the pointer.
 		ShaderIntensity: 1,

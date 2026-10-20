@@ -23,6 +23,7 @@ var pages = []struct {
 	lib      view.Library
 }{
 	{"gallery", "button", view.Uix},
+	{"gallery-gauge", "gauge", view.Uix},
 	{"gallery-box", "box", view.Mygo},
 	{"gallery-pixelgrid", "pixelgrid", view.Onevra},
 	{"gallery-imagecompare", "imagecompare", view.Onevra},

@@ -181,7 +181,7 @@ it never dedupes.
 ```
 go run ./examples/gallery                open the window
 go test ./examples/gallery/...           render and check it headless
-go run ./examples/gallery/cmd/snapshot   write the gallery PNGs: a uix, a mygo, two onevra and a mujica page, light and dark
+go run ./examples/gallery/cmd/snapshot   write the gallery PNGs: two uix, a mygo, two onevra and a mujica page, light and dark
 ```
 
 ## Composer
