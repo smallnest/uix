@@ -200,6 +200,7 @@ var catalog = []Section{
 			{"tooltip", "Tooltip", Uix, lucide.Info, demoTooltip},
 			{"toast", "Toast", Uix, lucide.Bell, demoToast},
 			{"spinner", "Spinner", Uix, lucide.LoaderCircle, demoSpinner},
+			{"loading", "Loading", Mygo, lucide.LoaderPinwheel, demoLoading},
 			{"progress", "Progress", Uix, lucide.CircleDot, demoProgress},
 			{"progressring", "ProgressRing", Onevra, lucide.RotateCw, demoProgressRing},
 			{"command", "Command", Uix, lucide.Terminal, demoCommand},

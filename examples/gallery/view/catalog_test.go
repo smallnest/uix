@@ -234,6 +234,9 @@ func TestDemoContentShows(t *testing.T) {
 		{"gauge", "读数"},
 		{"gauge", "车速"},
 		{"gauge", "刻度表"},
+		{"loading", "Arc"},
+		{"loading", "Ripple"},
+		{"loading", "Wave"},
 		// The scene pages carry their readings as accessible labels,
 		// because the glyphs a gauge paints are not text the tree can
 		// read. Asserting one label per page is what proves the page drew

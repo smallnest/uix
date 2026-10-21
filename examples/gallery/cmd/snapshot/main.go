@@ -30,6 +30,7 @@ var pages = []struct {
 	{"gallery-gauge-weather", "gauge-weather", view.Uix},
 	{"gallery-gauge-cockpit", "gauge-cockpit", view.Uix},
 	{"gallery-box", "box", view.Mygo},
+	{"gallery-loading", "loading", view.Mygo},
 	{"gallery-pixelgrid", "pixelgrid", view.Onevra},
 	{"gallery-imagecompare", "imagecompare", view.Onevra},
 	{"gallery-mujica-appshell", "001", view.Mujica},

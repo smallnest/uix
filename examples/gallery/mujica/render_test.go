@@ -11,8 +11,8 @@ import (
 var currentPage Page
 
 // TestEveryPageRenders draws every page of the ported catalog headless,
-// as the uix gallery will. A demo that panics after the mygo v0.5.5
-// migration fails here, so a broken page never reaches the gallery.
+// as the uix gallery will. A demo that breaks after a mygo upgrade
+// fails here, so a broken page never reaches the gallery.
 func TestEveryPageRenders(t *testing.T) {
 	pages := Pages()
 	currentPage = pages[0] // the tester draws its first frame at construction
