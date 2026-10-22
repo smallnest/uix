@@ -74,17 +74,6 @@ func Command(c *ui.Context, p Props) ui.Element {
 		st.Query = ""
 		return ui.Element{}
 	}
-	// The commands the query leaves, and the choice kept within them: a
-	// new query chooses the first again, and a shorter list drops a
-	// choice past its end.
-	shown := visible(p.Items, st.Query)
-	if st.Query != st.prev {
-		st.prev = st.Query
-		st.sel = 0
-	}
-	if st.sel >= len(shown) {
-		st.sel = -1
-	}
 	st.ls.Selected = &st.sel
 	panel := ui.DialogBase(c, p.Open, func(back, wp ui.Element) {
 		back.Background(ui.RGBA(0, 0, 0, 0.4))
@@ -94,22 +83,57 @@ func Command(c *ui.Context, p Props) ui.Element {
 			Shadow(0, 10, 30, 0, ui.RGBA(0, 0, 0, 0.3))
 		wp.Children(func() {
 			ui.Column(c).Children(func() {
-				search(c, t, st)
+				in := search(c, t, st)
+				// Enter is asked first: asking applies the typing of this
+				// frame to the query, so the commands below are the ones
+				// the query leaves now, not those of the frame before.
+				enter := in.Submitted()
+				// The commands the query leaves, and the choice kept
+				// within them: a new query chooses the first again, and a
+				// shorter list drops a choice past its end.
+				shown := visible(p.Items, st.Query)
+				if st.Query != st.prev {
+					st.prev = st.Query
+					st.sel = 0
+				}
+				if st.sel >= len(shown) {
+					st.sel = -1
+				}
+				// The field keeps the focus while the palette is used, so
+				// the arrows and Enter are the field's to pass on to the
+				// list, as the field of a combobox does: the list hears
+				// them only while it has the focus itself.
+				down, up := in.Shortcut(0, ui.KeyDown), in.Shortcut(0, ui.KeyUp)
+				if n := len(shown); n > 0 && (down || up) {
+					if down {
+						st.sel = min(st.sel+1, n-1)
+					} else {
+						st.sel = max(st.sel-1, 0)
+					}
+					st.ls.ScrollIntoView(st.sel)
+				}
 				list(c, t, st, shown, p)
+				if enter && st.sel >= 0 {
+					run(p, shown[st.sel])
+				}
 			})
 		})
 	})
 	return panel
 }
 
-// search draws the field of the palette: a magnifier and the query,
-// which the field takes the focus of as the palette opens, so the typing
-// filters at once.
-func search(c *ui.Context, t *ui.Theme, st *State) {
+// search draws the field of the palette, a magnifier and the query, and
+// returns the field. The dialog gives its first field the focus as it
+// opens, so the typing filters at once. The field does not take the focus
+// itself (AutoFocus): that happens before the dialog notes what had the
+// focus, and closing the palette would not give it back.
+func search(c *ui.Context, t *ui.Theme, st *State) ui.Element {
+	var in ui.Element
 	ui.Row(c).FillWidth().Padding(t.Space(2), t.Space(3)).Gap(t.Space(2)).Children(func() {
 		ui.Icon(c, magnifier).TextColor(t.TextMuted)
-		ui.TextInputBase(c, &st.Query).Grow(1).Placeholder("Type a command…").AutoFocus()
+		in = ui.TextInputBase(c, &st.Query).Grow(1).Placeholder("Type a command…")
 	})
+	return in
 }
 
 // list draws the commands the query left, of which the arrows choose one
