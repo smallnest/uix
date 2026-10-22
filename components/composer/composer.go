@@ -52,6 +52,9 @@ type Props struct {
 	// MessageCount is the number of messages in the thread, for the
 	// status row; 0 reads "New chat".
 	MessageCount int
+	// CountLabel is the status row's text for the size of the thread, in
+	// the host's language; empty writes it in English from MessageCount.
+	CountLabel string
 }
 
 // Composer draws the pill and the status row and returns them, so a view
@@ -186,6 +189,9 @@ func statusRow(c *ui.Context, t *ui.Theme, p Props) {
 		count := plural(p.MessageCount)
 		if p.MessageCount == 0 {
 			count = "New chat"
+		}
+		if p.CountLabel != "" {
+			count = p.CountLabel
 		}
 		statusItem(c, t, func() { sparkle(c, 14, t.TextMuted) }, count)
 	})
